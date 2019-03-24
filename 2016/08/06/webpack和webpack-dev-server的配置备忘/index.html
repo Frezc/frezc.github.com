@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2016/08/06/webpack和webpack-dev-server的配置备忘/">
+    
+    
+    <title>webpack和webpack-dev-server的配置备忘 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="webpack,webpack-dev-server">
+    <meta name="description" content="自从上次用webpack写web应用感觉已经过了一段时间了，这次重新拾起又花了不少时间。 为了下次能更快地使用webpack开发，决定写篇文章把配置的问题记录下来。">
+<meta name="keywords" content="webpack,webpack-dev-server">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webpack和webpack-dev-server的配置备忘">
+<meta property="og:url" content="https://frezc.github.io/2016/08/06/webpack和webpack-dev-server的配置备忘/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="自从上次用webpack写web应用感觉已经过了一段时间了，这次重新拾起又花了不少时间。 为了下次能更快地使用webpack开发，决定写篇文章把配置的问题记录下来。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-21T13:48:42.047Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="webpack和webpack-dev-server的配置备忘">
+<meta name="twitter:description" content="自从上次用webpack写web应用感觉已经过了一段时间了，这次重新拾起又花了不少时间。 为了下次能更快地使用webpack开发，决定写篇文章把配置的问题记录下来。">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">webpack和webpack-dev-server的配置备忘</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">webpack和webpack-dev-server的配置备忘</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2016-08-06T14:17:00.000Z" itemprop="datePublished" class="page-time">
+  2016-08-06
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#webpack基本配置"><span class="post-toc-number">1.</span> <span class="post-toc-text">webpack基本配置</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#常用插件"><span class="post-toc-number">2.</span> <span class="post-toc-text">常用插件</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#webpack-dev-server和react-hot-loader的相关配置"><span class="post-toc-number">3.</span> <span class="post-toc-text">webpack-dev-server和react-hot-loader的相关配置</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-webpack和webpack-dev-server的配置备忘" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">webpack和webpack-dev-server的配置备忘</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2016-08-06 22:17:00" datetime="2016-08-06T14:17:00.000Z" itemprop="datePublished">2016-08-06</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>自从上次用webpack写web应用感觉已经过了一段时间了，这次重新拾起又花了不少时间。</p>
+<p>为了下次能更快地使用webpack开发，决定写篇文章把配置的问题记录下来。</p>
+<a id="more"></a>
+<h3 id="webpack基本配置"><a href="#webpack基本配置" class="headerlink" title="webpack基本配置"></a>webpack基本配置</h3><ul>
+<li><p>devtool: 在开发中可以使用<code>&#39;eval&#39;</code>(打包速度快)、<code>&#39;inline-source-map&#39;</code>(打包速度慢，但在浏览器里能直接查看编译前的代码)等值；生成环境中不要设置或设为<code>false</code></p>
+</li>
+<li><p>entry: 结构可以是</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">entry: &#123;</span><br><span class="line">    app: APP_DIR + <span class="string">'/app.js'</span>,</span><br><span class="line">    vendor: APP_DIR + <span class="string">'/scripts/vendor.js'</span>,</span><br><span class="line">    login: [</span><br><span class="line">        APP_DIR + <span class="string">'/login.js'</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>output: 注意下<code>publicPath</code>，要设置为打包后资源的url路径</p>
+</li>
+<li><p>module: 注意下scss的loaders的写法</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 开发中</span></span><br><span class="line">loaders: [<span class="string">'style'</span>, <span class="string">'css'</span>, <span class="string">'postcss'</span>, <span class="string">'sass'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 生成环境 导出到一个css文件</span></span><br><span class="line">loader: ExtractTextPlugin.extract(<span class="string">'style'</span>, [<span class="string">'css'</span>, <span class="string">'postcss'</span>, <span class="string">'sass'</span>])</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>resolve: 可以用<code>extensions</code>来指定<code>import</code>时可以省略的后缀名；可以用<code>alias</code>指定从非npm引入的库，如<code>jquery: path.resolve(__dirname, &#39;./bower_components/jquery/dist/jquery.js&#39;)</code>，这样在<code>import</code>时可以替换引用路径</p>
+</li>
+<li><p>externals: 指定从全局引入的库，如<code>jquery: &quot;jQuery&quot;</code>，这样在<code>require(&#39;jquery&#39;)</code>时会引入<code>jQuery</code>对象</p>
+</li>
+</ul>
+<h3 id="常用插件"><a href="#常用插件" class="headerlink" title="常用插件"></a>常用插件</h3><ul>
+<li><p>ProvidePlugin: 定义一些在import时能自动引入的变量，如定义了<code>$: &#39;jquery&#39;</code>后，可以在文件中直接使用$，webpack可以自动帮你加上<code>var $ = require(&#39;jquery&#39;)</code></p>
+</li>
+<li><p>CommonsChunkPlugin: 将多个entry里的公共模块提取出来放到一个文件里，这个插件可以用来将库和自己代码分离</p>
+</li>
+<li><p>DllPlugin: 将一些模块预编译，类似windows里的dll，可以在项目中直接使用，无需再构建。注意要在output中指定<code>library</code>，并在DllPlugin中指定与其一致的<code>name</code>，在有多个入口时可以使用<code>[name]</code>和<code>[hash]</code>来区分，因为这个参数是要赋值到global上的，所以这里使用<code>[hash]</code>不容易出现变量名冲突的情况</p>
+</li>
+<li><p>DllReferencePlugin: 引用之前打包好的dll文件，注意下context参数，这个应该根据manifest.json文件中的引用情况来赋值，如果引用的都是npm安装的库，这里就填项目根目录就好了</p>
+</li>
+<li><p>NoErrorsPlugin: 在打包时不会因为错误而中断</p>
+</li>
+<li><p>DefinePlugin: 可以定义编译时的全局变量，有很多库（React, Vue等）会根据<code>NODE_ENV</code>这个变量来判断当前环境。为了尽可能减少包大小，在生产环境中要定义其为<code>JSON.stringify(&quot;production&quot;)</code></p>
+</li>
+<li><p>optimize.UglifyJsPlugin: 配置压缩代码，如</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">compress: &#123;</span><br><span class="line">    unused: <span class="literal">true</span>,</span><br><span class="line">    dead_code: <span class="literal">true</span>,</span><br><span class="line">    warnings: <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>optimize.OccurrenceOrderPlugin: 可以减少文件大小</p>
+</li>
+<li><p>optimize.DedupePlugin: 可以减少重复文件数</p>
+</li>
+<li><p>ExtractTextPlugin: 可以将所有css文件打包到一个css文件中，配置见loader</p>
+</li>
+</ul>
+<h3 id="webpack-dev-server和react-hot-loader的相关配置"><a href="#webpack-dev-server和react-hot-loader的相关配置" class="headerlink" title="webpack-dev-server和react-hot-loader的相关配置"></a>webpack-dev-server和react-hot-loader的相关配置</h3><p>如果只进行客户端开发，不适用nodejs渲染的话，推荐安装webpack-dev-server CLI，可以省去很多配置。</p>
+<p>首先看看cli里常用的几项配置：</p>
+<ul>
+<li><p>–port=8080：这项指定了服务器端口，相当于在entry中加上<code>webpack-dev-server/client?http://0.0.0.0:8080</code>，前者是后者的简便用法，注意这两个不要重复。</p>
+</li>
+<li><p>–hot：开启热替换功能。如果要使用react-hot-loader，这项是必须要开启的；如果只是想在更新代码后自动刷新页面，则不需要。这项等同于在<code>plugins</code>中添加<code>new webpack.HotModuleReplacementPlugin()</code>，同样注意不要重复。</p>
+</li>
+<li><p>–inline：这个的功能是为了能在你自己的测试服务器上获取的html页面中获取webpack-dev-server动态生成的js文件，基本上如果要用webpack-dev-server这个是必要的。详情说明见<a href="http://webpack.github.io/docs/webpack-dev-server.html#combining-with-an-existing-server" target="_blank" rel="noopener">文档</a>。这个参数会在entry里加上<code>webpack/hot/dev-server</code>，注意不要重复了。<br> 虽然加了这项就能变更后自动刷新页面了，但是要用hmr还有几点要注意：</p>
+<ol>
+<li>output.publicPath一定要使用完整的url，如<code>&quot;http://localhost:8080/dist/&quot;</code>，端口要和wds相同，不然会出现跨域的错误提醒。</li>
+<li>在html页面中当然也要以完整的url来引入。</li>
+</ol>
+</li>
+</ul>
+<p>如果要写同构应用的话，使用<a href="https://github.com/glenjamin/webpack-hot-middleware" target="_blank" rel="noopener">webpack-hot-middleware</a>并按照文档的写法就可以了。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/webpack/">webpack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/webpack-dev-server/">webpack-dev-server</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2016/08/06/webpack和webpack-dev-server的配置备忘/&title=《webpack和webpack-dev-server的配置备忘》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2016/08/06/webpack和webpack-dev-server的配置备忘/&title=《webpack和webpack-dev-server的配置备忘》 — Code for fun&source=自从上次用webpack写web应用感觉已经过了一段时间了，这次重新拾起又花了不少时间。
+为了下次能更快地使用webpack开发，决定写篇文章把配置的问题..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2016/08/06/webpack和webpack-dev-server的配置备忘/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《webpack和webpack-dev-server的配置备忘》 — Code for fun&url=https://frezc.github.io/2016/08/06/webpack和webpack-dev-server的配置备忘/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2016/08/06/webpack和webpack-dev-server的配置备忘/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/12/16/这个博客不会再更新了/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">这个博客不会再更新了</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2016/06/26/给RN的app添加widgets/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">给RN的app添加widgets</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2016/08/06/webpack和webpack-dev-server的配置备忘/&title=《webpack和webpack-dev-server的配置备忘》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2016/08/06/webpack和webpack-dev-server的配置备忘/&title=《webpack和webpack-dev-server的配置备忘》 — Code for fun&source=自从上次用webpack写web应用感觉已经过了一段时间了，这次重新拾起又花了不少时间。
+为了下次能更快地使用webpack开发，决定写篇文章把配置的问题..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2016/08/06/webpack和webpack-dev-server的配置备忘/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《webpack和webpack-dev-server的配置备忘》 — Code for fun&url=https://frezc.github.io/2016/08/06/webpack和webpack-dev-server的配置备忘/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2016/08/06/webpack和webpack-dev-server的配置备忘/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACu0lEQVR42u3a22rlMAwF0P7/T3dgnjowOd1bsnuBladS0sTLBUuR9PYWX+9/r48/f/xNe3/ytNd/dfjCw8PDGy396Xp69NOdT4AN/vVfvV4JHh4e3j3e7HB//crk6N8Em9f34OHh4f0EXpKvbkjJW/Dw8PB+Fy8vDSTJbpIif3Pcw8PDw3vJS4oReXiY3T8LPMdqLXh4eHjdG+sG2Pf+fL2/h4eHhzfqqifNsLy8u0nfh6vFw8PDu8BLWvv7cYG2yDtrqj2GDTw8PLwLvLbVlPCiAutoAKtts+Hh4eHd4M3S2dmC9lWCupiLh4eHd403aymdKkzkW5B8DODh4eHd47Wf9LPDur2zTd9X3wd4eHh4Ja8FtMd0/vqc2g434OHh4d3gta/PA0CyHe2T68EsPDw8vKO8fVKb8/KRhU0B4rEYgYeHh3eUt3nxrAzRlkVmJQw8PDy8G7xNYXc/XrBZdLJleHh4eDd47YLqqYSgzJo8J0nr8fDw8L6G1y43P5pPlW7b1Ra1ajw8PLwR7z24NsNY+eJOBaRPGmB4eHh4R3n5MNPZAanNyFcU6/Dw8PCO8tqP/+g4bme+FsEmSsTx8PDwvoSXL3RfAm4P+jaY4eHh4d3gtc2k/VJmJY+iJj3bFTw8PLz4O/3UoZ8n2bPhg7YlhoeHh3ebNxsjmI2ZtgXftrTxz+gAHh4e3lFeHgZm4WFW8G3T+k9Sczw8PLyjvLYZ3ya7s62ZUaP/Gx4eHt41XpsuJxsUtfnLJB4PDw/v63mzIukskOyHtHJSjcTDw8MreUkwaBtaswCzGTh4fD4eHh7eNd4sGOSpef7GzRgWHh4e3k/jtQNSeSFjU7rFw8PD+428dpgg34hZYeI/xQg8PDy8C7xkuclGtGXftmFWbxMeHh7eBV7bAGvLr3lo2QSet82Fh4eHl/L+ADlekpcZ+1teAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

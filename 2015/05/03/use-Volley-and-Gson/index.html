@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2015/05/03/use-Volley-and-Gson/">
+    
+    
+    <title>如何结合Volley和Gson的使用 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="android,Volley,Gson">
+    <meta name="description" content="Volley和Gson都是谷歌开发的java库，一个处理网络请求，一个处理json，对于网络app来说这2个经常会一起使用，但谷歌似乎不考虑开发两者结合使用的api，所以就需要我们自己来写了。 自定义Request为了使请求能设置request体的参数，然后直接返回我们需要的对象，这时候需要重写Request，谷歌给出了一个重写Request的示例：GsonRequest1234567891011">
+<meta name="keywords" content="android,Volley,Gson">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何结合Volley和Gson的使用">
+<meta property="og:url" content="https://frezc.github.io/2015/05/03/use-Volley-and-Gson/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="Volley和Gson都是谷歌开发的java库，一个处理网络请求，一个处理json，对于网络app来说这2个经常会一起使用，但谷歌似乎不考虑开发两者结合使用的api，所以就需要我们自己来写了。 自定义Request为了使请求能设置request体的参数，然后直接返回我们需要的对象，这时候需要重写Request，谷歌给出了一个重写Request的示例：GsonRequest1234567891011">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-21T13:48:42.045Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何结合Volley和Gson的使用">
+<meta name="twitter:description" content="Volley和Gson都是谷歌开发的java库，一个处理网络请求，一个处理json，对于网络app来说这2个经常会一起使用，但谷歌似乎不考虑开发两者结合使用的api，所以就需要我们自己来写了。 自定义Request为了使请求能设置request体的参数，然后直接返回我们需要的对象，这时候需要重写Request，谷歌给出了一个重写Request的示例：GsonRequest1234567891011">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">如何结合Volley和Gson的使用</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">如何结合Volley和Gson的使用</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-05-03T10:33:33.000Z" itemprop="datePublished" class="page-time">
+  2015-05-03
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#自定义Request"><span class="post-toc-number">1.</span> <span class="post-toc-text">自定义Request</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#自定义数组json-Request"><span class="post-toc-number">2.</span> <span class="post-toc-text">自定义数组json Request</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-use-Volley-and-Gson" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">如何结合Volley和Gson的使用</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-05-03 18:33:33" datetime="2015-05-03T10:33:33.000Z" itemprop="datePublished">2015-05-03</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>Volley和Gson都是谷歌开发的java库，一个处理网络请求，一个处理json，对于网络app来说这2个经常会一起使用，但谷歌似乎不考虑开发两者结合使用的api，所以就需要我们自己来写了。</p>
+<h2 id="自定义Request"><a href="#自定义Request" class="headerlink" title="自定义Request"></a>自定义Request</h2><p>为了使请求能设置request体的参数，然后直接返回我们需要的对象，这时候需要重写Request，谷歌给出了一个重写Request的示例：<br><figure class="highlight java"><figcaption><span>GsonRequest</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GsonRequest</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">Request</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Gson gson = <span class="keyword">new</span> Gson();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Class&lt;T&gt; clazz;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, String&gt; headers;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Listener&lt;T&gt; listener;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Make a GET request and return a parsed object from JSON.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> url URL of the request to make</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> clazz Relevant class object, for Gson's reflection</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> headers Map of request headers</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GsonRequest</span><span class="params">(String url, Class&lt;T&gt; clazz, Map&lt;String, String&gt; headers,</span></span></span><br><span class="line"><span class="function"><span class="params">            Listener&lt;T&gt; listener, ErrorListener errorListener)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(Method.GET, url, errorListener);</span><br><span class="line">        <span class="keyword">this</span>.clazz = clazz;</span><br><span class="line">        <span class="keyword">this</span>.headers = headers;</span><br><span class="line">        <span class="keyword">this</span>.listener = listener;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Map&lt;String, String&gt; <span class="title">getHeaders</span><span class="params">()</span> <span class="keyword">throws</span> AuthFailureError </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> headers != <span class="keyword">null</span> ? headers : <span class="keyword">super</span>.getHeaders();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">deliverResponse</span><span class="params">(T response)</span> </span>&#123;</span><br><span class="line">        listener.onResponse(response);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Response&lt;T&gt; <span class="title">parseNetworkResponse</span><span class="params">(NetworkResponse response)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            String json = <span class="keyword">new</span> String(</span><br><span class="line">                    response.data,</span><br><span class="line">                    HttpHeaderParser.parseCharset(response.headers));</span><br><span class="line">            <span class="keyword">return</span> Response.success(</span><br><span class="line">                    gson.fromJson(json, clazz),</span><br><span class="line">                    HttpHeaderParser.parseCacheHeaders(response));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</span><br><span class="line">            <span class="keyword">return</span> Response.error(<span class="keyword">new</span> ParseError(e));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (JsonSyntaxException e) &#123;</span><br><span class="line">            <span class="keyword">return</span> Response.error(<span class="keyword">new</span> ParseError(e));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>如果需要设置参数，重写getParams()即可。</p>
+<h2 id="自定义数组json-Request"><a href="#自定义数组json-Request" class="headerlink" title="自定义数组json Request"></a>自定义数组json Request</h2><p>这里如果直接用<code>List&lt;MyClass&gt;</code>来作为 T 的类型是不对的，由于java的类型擦除机制，你从<code>List&lt;MyClass&gt;</code>获得的Class类是不包含<code>MyClass</code>信息的，gson解析时会抛出错误。</p>
+<p>很明显这个GsonRequest无法处理数组形式的json，但是我又想用一个通用的类来处理数组形式的json，要怎么改呢。<br>我这里提出几个方案供参考。</p>
+<ol>
+<li><p>继承<code>Request&lt;String&gt;</code><br>在<code>parseNetworkResponse</code>里得到的response转换为字符串后放到<code>Response.success()</code>函数中返回<br>然后在<code>deliverResponse</code>函数里将字符串转换为对象然后调用接口函数。<br>不过我个人不喜欢这种做法，因为<code>deliverResponse</code>是在UI线程中处理的，解析非常大的json时可能会卡ui，我更喜欢把json的处理放在在工作线程中处理的<code>parseNetworkResponse</code>函数中。</p>
+</li>
+<li><p>分别处理<br>我是将普通json和数组json分开处理，对于数组类型我传入的参数为</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GsonRequest(Context context, <span class="keyword">int</span> method, String url, Class&lt;T&gt; clazz, Map&lt;String,String&gt; headers,</span><br><span class="line">                       OnListResponseListener&lt;T&gt; listener, Response.ErrorListener errorListener)</span><br></pre></td></tr></table></figure>
+<p>这里我自定义了一个接口<code>OnListResponseListener&lt;T&gt;</code>，用于传递解析好的数组对象，<code>Context</code>对象是为了得到<em>MainLooper</em>，而使回调函数能在ui线程中进行，方便更新ui。<br>然后设置一个数组标记<code>isArray = true</code></p>
+<figure class="highlight java"><figcaption><span>GsonRequest重写的2个方法</span><a href="https://github.com/Frezc/BangumiTimeMachine/blob/master/app/src/main/java/frezc/bangumitimemachine/app/network/http/GsonRequest.java" target="_blank" rel="noopener">GsonRequest.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Response&lt;T&gt; <span class="title">parseNetworkResponse</span><span class="params">(NetworkResponse networkResponse)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            String json;</span><br><span class="line">            <span class="keyword">if</span>(<span class="string">"gzip"</span>.equals(networkResponse.headers.get(<span class="string">"Content-Encoding"</span>))) &#123;</span><br><span class="line">                json = NetWorkTool.GZipDecoderToString(networkResponse.data);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                json = <span class="keyword">new</span> String(networkResponse.data,</span><br><span class="line">                        HttpHeaderParser.parseCharset(networkResponse.headers));</span><br><span class="line">            &#125;</span><br><span class="line">            Log.i(<span class="string">"GsonRequest"</span>,json);</span><br><span class="line">            <span class="keyword">if</span>(isArray)&#123;</span><br><span class="line">                <span class="keyword">final</span> List&lt;T&gt; list = <span class="keyword">new</span> ArrayList&lt;T&gt;();</span><br><span class="line">                JsonParser parser = <span class="keyword">new</span> JsonParser();</span><br><span class="line">                JsonArray jsonArray = parser.parse(json).getAsJsonArray();</span><br><span class="line">                <span class="keyword">for</span>(JsonElement obj : jsonArray)&#123;</span><br><span class="line">                    T t = gson.fromJson(obj, clazz);</span><br><span class="line">                    list.add(t);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">new</span> Handler(context.getMainLooper()).post(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        <span class="keyword">if</span> (listListener != <span class="keyword">null</span>) &#123;</span><br><span class="line">                            listListener.onResponse(list);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">                <span class="keyword">return</span> Response.success(list.get(<span class="number">0</span>), HttpHeaderParser.parseCacheHeaders(networkResponse));</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> Response.success(gson.fromJson(json, clazz),</span><br><span class="line">                        HttpHeaderParser.parseCacheHeaders(networkResponse));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</span><br><span class="line">            <span class="keyword">return</span> Response.error(<span class="keyword">new</span> ParseError(e));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (JsonSyntaxException e) &#123;</span><br><span class="line">            <span class="keyword">return</span> Response.error(<span class="keyword">new</span> ParseError(e));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">deliverResponse</span><span class="params">(T t)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(listener != <span class="keyword">null</span>) &#123;</span><br><span class="line">            listener.onResponse(t);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><code>parseNetworkResponse</code>里先将返回的Gzip压缩的格式解码，再生成String，然后对于数组我是用过JsonParser转换成JsonArray再进行遍历生成每一个对象，最后在<code>MainLooper</code>里调用对应回调函数。</p>
+</li>
+<li><p>通过Type接口<br>查看Gson的fromJson函数的源码</p>
+<figure class="highlight java"><figcaption><span>https://github.com/google/gson/blob/master/gson/src/main/java/com/google/gson/Gson.java Gson.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">fromJson</span><span class="params">(String json, Class&lt;T&gt; classOfT)</span> <span class="keyword">throws</span> JsonSyntaxException </span>&#123;</span><br><span class="line">  Object object = fromJson(json, (Type) classOfT);</span><br><span class="line">  <span class="keyword">return</span> Primitives.wrap(classOfT).cast(object);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">fromJson</span><span class="params">(String json, Type typeOfT)</span> <span class="keyword">throws</span> JsonSyntaxException </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (json == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  StringReader reader = <span class="keyword">new</span> StringReader(json);</span><br><span class="line">  T target = (T) fromJson(reader, typeOfT);</span><br><span class="line">  <span class="keyword">return</span> target;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可见Gson终究是调用<code>fromJson(StringReader , Type )</code>来生成对象的，那么我们可以在创建<code>GsonRequest</code>时将传入<code>Class&lt;T&gt;</code>改为<code>Type</code>。<br>对于json对象传入<code>(Type)(MyClass.class)</code>，对于json数组传入<code>new TypeToken(ArrayList&lt;MyClass&gt;)(){}.getType()</code>。如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">request = <span class="keyword">new</span> GsonRequest_&lt;ArrayList&lt;WeekSubjects&gt;&gt;(Request.Method.GET,</span><br><span class="line">        NetParams.CALENDAR_URL, <span class="keyword">new</span> TypeToken&lt;ArrayList&lt;WeekSubjects&gt;&gt;()&#123;&#125;.getType(),headers,<span class="keyword">this</span>,<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+<p><code>Response.success</code>调用时将获得的Obeject对象强制转换为 <em>T</em>。<br>其他地方和原来一样即可。<br>GsonRequest具体例子看 <a href="https://github.com/Frezc/BangumiTimeMachine/blob/master/app/src/main/java/frezc/bangumitimemachine/app/network/http/GsonRequest_.java" target="_blank" rel="noopener">GsonRequest_</a></p>
+</li>
+</ol>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gson/">Gson</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Volley/">Volley</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/05/03/use-Volley-and-Gson/&title=《如何结合Volley和Gson的使用》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/05/03/use-Volley-and-Gson/&title=《如何结合Volley和Gson的使用》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/05/03/use-Volley-and-Gson/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《如何结合Volley和Gson的使用》 — Code for fun&url=https://frezc.github.io/2015/05/03/use-Volley-and-Gson/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/05/03/use-Volley-and-Gson/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2015/05/16/solve-preDexDebug/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Gradle的preDexDebug错误的解决办法(大概)</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2015/05/03/push-your-project-to-git/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">如何将你的项目上传到git远程库上</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/05/03/use-Volley-and-Gson/&title=《如何结合Volley和Gson的使用》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/05/03/use-Volley-and-Gson/&title=《如何结合Volley和Gson的使用》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/05/03/use-Volley-and-Gson/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《如何结合Volley和Gson的使用》 — Code for fun&url=https://frezc.github.io/2015/05/03/use-Volley-and-Gson/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/05/03/use-Volley-and-Gson/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACLklEQVR42u3awY6DMAxFUf7/pxlptqjhPrutinOzqkobOCwsO/Zx4HX+r+s313W9ut7z1c7HJ5YMGTIeyziX67p17ffrfV4xyL1kyJCxD2MdZNdbrHfgjPXvb+4oQ4YMGe2wyH8vQ4YMGf2Ay+vHTtiVIUOGjFoRm5ap6Sv4Ui0uQ4aMBzLSxsA3P3+wvyFDhoyHMM5wkR1qd289lQwZMkYzyFEaD7scQ5K/tFUgQ4aMqQz+tzSk1sJ02iKVIUPGDgwecHmLsX8wlw5wyJAhYwcG/xsZDqst/rJQmihDhozRjM5IRK185ZkeSlVlyJAxjsGTwtrj8sDaGcWQIUPGngye/KXpYwpGx3kyZMgYzegfgfGUkSSCtRcnQ4aM3RhpY6CWCKYlaxxwZciQMY5RawAEYxB8wAtPUNy0MGXIkDGIwRMvfliWhsh0jONlLS5DhoyhjPQR07I2vdqJnzJkyJjK4ONWnUK3Fr75q5QhQ8ZsRpq0Bcf0eCys/40MGTJmM/jtO4ljvwC+uSpDhowNGGmayI/JasVqsTEgQ4aMoQw+6FArQdP2JA/6NxW5DBkyBjHOcJHhCRJwSQoYtBZkyJAxmvGGaF0a+UqHKjqDZTJkyJjB4Ef/vDTtgHlIlSFDxm4M3m7kzc7jretmTxkyZMgI07X0SK42RiZDhgwZHQY5SksP4IJ+rAwZMoYy+IhqLUFMm51xcStDhozRjFpjoJ/8dcL321qYMmTI+HXGHxojN/U5TyEFAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

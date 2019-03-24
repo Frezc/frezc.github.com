@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2016/04/17/React的服务端渲染/">
+    
+    
+    <title>React的服务端渲染 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="react,server render">
+    <meta name="description" content="最近在使用React来做一个收藏夹类似的网站，同时也是为了学习一下前端技术，于是就尽可能的使用了流行的框架。 项目链接这个项目中使用了React + Redux + React-router + babel + webpack + scss，来构建了一个同构应用。虽然同构应用并不是十分必要的，不过为了尝试下新技术还是尽可能地去用了。 后端由于一开始就考虑用Laravel了（那时候还不知道有同构应用">
+<meta name="keywords" content="react,server render">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React的服务端渲染">
+<meta property="og:url" content="https://frezc.github.io/2016/04/17/React的服务端渲染/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="最近在使用React来做一个收藏夹类似的网站，同时也是为了学习一下前端技术，于是就尽可能的使用了流行的框架。 项目链接这个项目中使用了React + Redux + React-router + babel + webpack + scss，来构建了一个同构应用。虽然同构应用并不是十分必要的，不过为了尝试下新技术还是尽可能地去用了。 后端由于一开始就考虑用Laravel了（那时候还不知道有同构应用">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-21T13:48:42.024Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React的服务端渲染">
+<meta name="twitter:description" content="最近在使用React来做一个收藏夹类似的网站，同时也是为了学习一下前端技术，于是就尽可能的使用了流行的框架。 项目链接这个项目中使用了React + Redux + React-router + babel + webpack + scss，来构建了一个同构应用。虽然同构应用并不是十分必要的，不过为了尝试下新技术还是尽可能地去用了。 后端由于一开始就考虑用Laravel了（那时候还不知道有同构应用">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">React的服务端渲染</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">React的服务端渲染</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2016-04-16T17:19:00.000Z" itemprop="datePublished" class="page-time">
+  2016-04-17
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#在什么地方使用"><span class="post-toc-number">1.</span> <span class="post-toc-text">在什么地方使用</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Redux"><span class="post-toc-number">2.</span> <span class="post-toc-text">Redux</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#服务端渲染时的生命周期"><span class="post-toc-number">3.</span> <span class="post-toc-text">服务端渲染时的生命周期</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#配合React-Router和共用Action-Creator"><span class="post-toc-number">4.</span> <span class="post-toc-text">配合React-Router和共用Action Creator</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#服务器端的同步请求"><span class="post-toc-number">5.</span> <span class="post-toc-text">服务器端的同步请求</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#返回不同的状态码"><span class="post-toc-number">6.</span> <span class="post-toc-text">返回不同的状态码</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">7.</span> <span class="post-toc-text">其他</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-React的服务端渲染" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">React的服务端渲染</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2016-04-17 01:19:00" datetime="2016-04-16T17:19:00.000Z" itemprop="datePublished">2016-04-17</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>最近在使用React来做一个收藏夹类似的网站，同时也是为了学习一下前端技术，于是就尽可能的使用了流行的框架。</p>
+<p><a href="https://github.com/Frezc/Share-Favors-App" target="_blank" rel="noopener">项目链接</a><br>这个项目中使用了React + Redux + React-router + babel + webpack + scss，来构建了一个同构应用。虽然同构应用并不是十分必要的，不过为了尝试下新技术还是尽可能地去用了。</p>
+<p>后端由于一开始就考虑用Laravel了（那时候还不知道有同构应用这东西），而且直接丢给同学做了，所以并没有做到完全地同构，仅仅只是在渲染页面上同用一套代码。（由于不是用NodeJs，也就没使用GraphQL+Relay了）。</p>
+<a id="more"></a>
+<h2 id="在什么地方使用"><a href="#在什么地方使用" class="headerlink" title="在什么地方使用"></a>在什么地方使用</h2><p>服务端渲染能带的好处就是对搜索引擎友好，所以对于一般的SPA是不必要的。<br>所以在资源页面（用户信息页面、资源列表页面、资源详情页面等）上做好服务端渲染就行了。在一些编辑页面上就没什么必要了。</p>
+<h2 id="Redux"><a href="#Redux" class="headerlink" title="Redux"></a>Redux</h2><p>如果要使用React来做服务端渲染，我觉得像Redux这样的库是有必要的。<br>Redux使用单一的状态树，传回初始状态时会十分方便，将下面的标签放到你的脚本标签前就行了。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">  window.__INITIAL_STATE__ = $&#123;JSON.stringify(initialState)&#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>当然这里不要忘了过滤标签，我这里使用的方法是</p>
+<p><strong>[Server]</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> initState = <span class="built_in">JSON</span>.stringify(store.getState());</span><br><span class="line"><span class="comment">// 使用encodeURIComponent过滤掉特殊字符</span></span><br><span class="line"><span class="keyword">let</span> page = renderFullPage(initView, <span class="built_in">encodeURIComponent</span>(initState));</span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 别忘了引号</span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"><span class="built_in">window</span>.__INITIAL_STATE__ = <span class="string">"$&#123;initState&#125;"</span></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>[Client]</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> initState = <span class="built_in">window</span>.__INITIAL_STATE__;</span><br><span class="line"><span class="keyword">const</span> store = configureStore(<span class="built_in">JSON</span>.parse(<span class="built_in">decodeURIComponent</span>(initState)));</span><br></pre></td></tr></table></figure>
+<h2 id="服务端渲染时的生命周期"><a href="#服务端渲染时的生命周期" class="headerlink" title="服务端渲染时的生命周期"></a>服务端渲染时的生命周期</h2><p>忘了在哪看到服务端渲染时不会执行React组件的生命周期方法了，实际上<code>componentWillMount</code>这个方法还是会执行的，所以在这个方法内还要注意下执行环境。</p>
+<h2 id="配合React-Router和共用Action-Creator"><a href="#配合React-Router和共用Action-Creator" class="headerlink" title="配合React-Router和共用Action Creator"></a>配合React-Router和共用Action Creator</h2><p>可以使用React-Router提供的match来匹配路由表，然后通过回调函数得到路由信息，在路由信息中我们是可以得到对应的组件的，所以我们可以把调用的对应Action Creator（用过API获取数据）放到这个组件的一个静态方法里直接调用，这样我们就可以对所有路由一视同仁了。</p>
+<p>相信大多数人会把网络请求放到Action Creator中来写，那么我们就可能懒得再去对服务器端写API请求了，而是直接dispatch这个Action Creator。作为同构代码这个Action Creator就需要注意下运行环境了，首先当然是使用<code>isomorphic-fetch</code>这个库，当然你可以自己判断当前环境来使用浏览器或node上的<code>fetch</code>。</p>
+<h2 id="服务器端的同步请求"><a href="#服务器端的同步请求" class="headerlink" title="服务器端的同步请求"></a>服务器端的同步请求</h2><p>我这里的<strong>同步</strong>指的是服务端等待API请求结束后再返回页面。<br>在客户端只要在请求结束后进行异步地更新状态就好了，在服务端得等待这次请求（可能会有多个请求）完全结束才行。很多人会想到回调函数，不过给Action Creator加个回调函数的参数显得不太美观，而且似乎不能处理多个请求的情况。这里既然已经使用了<code>fetch</code>，那么干脆就使用es6中的<code>Promise</code>来处理。</p>
+<p>1、首先在需要预渲染数据的页面里实现一个相同名称的静态方法来调用Action Creator。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// server fetch</span></span><br><span class="line"><span class="keyword">static</span> fetchData = <span class="function">(<span class="params">params</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 注意要返回</span></span><br><span class="line">  <span class="keyword">return</span> fetchUserNetwork(params.id)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>2、然后在这个Action Creator中调用Api，同样要注意返回<code>fetch</code>返回的<code>Promise</code><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">fetchUserNetwork</span>(<span class="params">id</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">dispatch</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 这里调用的相当于 fetch(url)</span></span><br><span class="line">    <span class="keyword">return</span> Api.userInfo(id)</span><br><span class="line">      .then(<span class="function"><span class="params">response</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (response.ok) &#123;</span><br><span class="line">          <span class="comment">// 结果中有其他耗时处理的Promise同样要返回</span></span><br><span class="line">          <span class="keyword">return</span> response.json().then(<span class="function"><span class="params">json</span> =&gt;</span> &#123;</span><br><span class="line">            dispatch(fetchUserSuccess(json));</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 让服务端能判断是否请求成功</span></span><br><span class="line">            <span class="keyword">return</span> response.status;</span><br><span class="line">          &#125;);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">return</span> response.status;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">      &#125;)</span><br><span class="line">      .catch(<span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'error'</span>;</span><br><span class="line">      &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>3、在服务端我们将所有的<code>Promise</code>使用<code>Promise.all</code>方法放到一个<code>Promise</code>中<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fetchComponentsData</span>(<span class="params">dispatch, components, params</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> fetchData = components.reduce(<span class="function">(<span class="params">pre, cur</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Object</span>.keys(cur).reduce(<span class="function">(<span class="params">acc, key</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> cur[key].hasOwnProperty(<span class="string">'fetchData'</span>) ? acc.concat(cur[key].fetchData) : acc;</span><br><span class="line">    &#125;, pre)</span><br><span class="line">  &#125;, []);</span><br><span class="line">  <span class="keyword">const</span> promises = fetchData.map(<span class="function"><span class="params">fetch</span> =&gt;</span> dispatch(fetch(params)));</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Promise</span>.all(promises);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>4、最后我们在这个<code>Promise</code>的<code>then</code>和<code>catch</code>中将组件渲染啊成string再返回就可以了。</p>
+<h2 id="返回不同的状态码"><a href="#返回不同的状态码" class="headerlink" title="返回不同的状态码"></a>返回不同的状态码</h2><p>如果需要在返回页面时返回相应的状态码的话，只要像上面在<code>fetch().then</code>里<code>return response.status</code>。<br>然后就能通过<code>Promise.all</code>创建的<code>Promise</code>的<code>then</code>中得到一个状态码的数组了。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fetchComponentsData(store.dispatch, renderProps.components, renderProps.params)</span><br><span class="line">      .then(<span class="function"><span class="params">status</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'statu'</span>, status[<span class="number">0</span>])</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>判断当前环境的函数<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> isBrowser = <span class="keyword">new</span> <span class="built_in">Function</span>(<span class="string">"try &#123; return this === window; &#125; catch(e) &#123; return false; &#125;"</span>);</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> isNode = <span class="keyword">new</span> <span class="built_in">Function</span>(<span class="string">"try &#123; return this === global; &#125; catch(e) &#123; return false; &#125;"</span>);</span><br></pre></td></tr></table></figure></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/server-render/">server render</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2016/04/17/React的服务端渲染/&title=《React的服务端渲染》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2016/04/17/React的服务端渲染/&title=《React的服务端渲染》 — Code for fun&source=最近在使用React来做一个收藏夹类似的网站，同时也是为了学习一下前端技术，于是就尽可能的使用了流行的框架。
+项目链接这个项目中使用了React + Re..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2016/04/17/React的服务端渲染/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《React的服务端渲染》 — Code for fun&url=https://frezc.github.io/2016/04/17/React的服务端渲染/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2016/04/17/React的服务端渲染/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2016/04/18/谈谈4月新番/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">谈谈4月新番</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2016/03/06/标准化React-Redux-纯函数式编程？/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">标准化React + Redux = 纯函数式编程？</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2016/04/17/React的服务端渲染/&title=《React的服务端渲染》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2016/04/17/React的服务端渲染/&title=《React的服务端渲染》 — Code for fun&source=最近在使用React来做一个收藏夹类似的网站，同时也是为了学习一下前端技术，于是就尽可能的使用了流行的框架。
+项目链接这个项目中使用了React + Re..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2016/04/17/React的服务端渲染/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《React的服务端渲染》 — Code for fun&url=https://frezc.github.io/2016/04/17/React的服务端渲染/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2016/04/17/React的服务端渲染/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACLklEQVR42u3aS2rEQAxF0d7/ph3IKBBc3Cd1h1i6NTLuYNdxQJQ+rxde1/f6fX3+9fqxznfunvbmJUOGjMcyruO6+5vzi9M7/L13e5AhQ8YGBgmynEdezJ9z3psMGTJk8MMfIZHDnwwZMmR8jnF3h4dmGTJkyDgzSNDkr0mR/Mj4hlxchgwZD2R0GgOfvv6j/oYMGTL+MeMKV+0Jtc8U7EqGDBmjGZ2ifKdJiZJSfNyUIUPGbAZpMdbCbmfkIt2bDBkyNjA62SIPl7yQFw+oyZAhYzSDl/L5Ya62lVrQlyFDxgZGpzTWCoilJkQwZiFDhoxxjDRc8tLbudzGP0GcxMqQIWMco5Oa1loIvJyHgq8MGTLWMEgSm7YkSQL8hpKfDBkyFjB48hm0FRuhmX84GTJkbGDUCvrpNWkJtIYtZMiQMZrB25O8+MU3zVukxZkRGTJkjGOQhLbfPEifj46tMmTIWMbg6WJ6pOuE6bjcJkOGjEGM2sGOB1ByEEybl7fPlyFDxlBGrfjVuUMak/FHkSFDxhpGPIzFI3o4PME/ZTFmy5Ah41GM2qgEL66lIxfpCv4zMmTIeCzjCldauOcthE7BToYMGbMZrQiNj27pFmvtBBkyZMxmvLfoXxvO6IRvGTJk7GGkI6T967R5gGqHMmTIWM8ghbZ0UIOkuOgYKkOGDBnhyzqbK4ZdGTJkLGCkSWytoEYS3TRky5AhYwMjbQzwsn76/P7xUYYMGeMYXzDFKS4JrR54AAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

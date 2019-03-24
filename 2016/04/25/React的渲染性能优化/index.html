@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2016/04/25/React的渲染性能优化/">
+    
+    
+    <title>React的渲染性能优化 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="react,performance">
+    <meta name="description" content="都说网页的性能瓶颈在DOM操作，所以目前的主流前端框架（React、 Vue、AngularJs等）都在极力地减少DOM操作。 就React而言，使用Virtual DOM和一个diff算法（实际就是使用一个uid来判断）来尽可能的重用现有的DOM，以此来减少DOM操作（毕竟添加比更新要耗时）。 但是在一些需要高帧数刷新的组件里，即使是Virtual DOM的re-render也会显得十分耗时，那">
+<meta name="keywords" content="react,performance">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React的渲染性能优化">
+<meta property="og:url" content="https://frezc.github.io/2016/04/25/React的渲染性能优化/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="都说网页的性能瓶颈在DOM操作，所以目前的主流前端框架（React、 Vue、AngularJs等）都在极力地减少DOM操作。 就React而言，使用Virtual DOM和一个diff算法（实际就是使用一个uid来判断）来尽可能的重用现有的DOM，以此来减少DOM操作（毕竟添加比更新要耗时）。 但是在一些需要高帧数刷新的组件里，即使是Virtual DOM的re-render也会显得十分耗时，那">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://frezc.github.io/images/2016/04/4058937871.png">
+<meta property="og:image" content="https://frezc.github.io/images/2016/04/1059717184.png">
+<meta property="og:updated_time" content="2019-03-21T13:48:42.025Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React的渲染性能优化">
+<meta name="twitter:description" content="都说网页的性能瓶颈在DOM操作，所以目前的主流前端框架（React、 Vue、AngularJs等）都在极力地减少DOM操作。 就React而言，使用Virtual DOM和一个diff算法（实际就是使用一个uid来判断）来尽可能的重用现有的DOM，以此来减少DOM操作（毕竟添加比更新要耗时）。 但是在一些需要高帧数刷新的组件里，即使是Virtual DOM的re-render也会显得十分耗时，那">
+<meta name="twitter:image" content="https://frezc.github.io/images/2016/04/4058937871.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">React的渲染性能优化</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">React的渲染性能优化</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2016-04-24T17:20:00.000Z" itemprop="datePublished" class="page-time">
+  2016-04-25
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#渲染速度问题"><span class="post-toc-number">1.</span> <span class="post-toc-text">渲染速度问题</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#shouldComponentUpdate"><span class="post-toc-number">2.</span> <span class="post-toc-text">shouldComponentUpdate</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#PureRenderMixin"><span class="post-toc-number">3.</span> <span class="post-toc-text">PureRenderMixin</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-React的渲染性能优化" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">React的渲染性能优化</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2016-04-25 01:20:00" datetime="2016-04-24T17:20:00.000Z" itemprop="datePublished">2016-04-25</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>都说网页的性能瓶颈在DOM操作，所以目前的主流前端框架（React、 Vue、AngularJs等）都在极力地减少DOM操作。</p>
+<p>就React而言，使用Virtual DOM和一个diff算法（实际就是使用一个uid来判断）来尽可能的重用现有的DOM，以此来减少DOM操作（毕竟添加比更新要耗时）。</p>
+<p>但是在一些需要高帧数刷新的组件里，即使是Virtual DOM的re-render也会显得十分耗时，那么我们看看怎么进行优化。</p>
+<a id="more"></a>
+<h2 id="渲染速度问题"><a href="#渲染速度问题" class="headerlink" title="渲染速度问题"></a>渲染速度问题</h2><p>比如需要实现这么一个列表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">  &lt;Indicator</span><br><span class="line">    percent=&#123;this.state.percent&#125;</span><br><span class="line">  /&gt;</span><br><span class="line">  &#123;</span><br><span class="line">    this.state.items.map(item =&gt; </span><br><span class="line">      &lt;Item</span><br><span class="line">        item=&#123;item&#125;</span><br><span class="line">      /&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
+<p>这个组件我们需要监听<code>scroll</code>事件，在处理函数里更新state中的percent属性。<br>默认React不会进行任何优化处理，就这么写的话会发现在滚动页面时会有卡顿感，我用自己项目的一个列表项测试了一下（<a href="https://github.com/Frezc/Share-Favors-App/blob/master/src/components/RepoAbList.js" target="_blank" rel="noopener">RepoAbList.js</a>），打印了scroll开始、结束和render开始的时间，如下。<br><img src="/images/2016/04/4058937871.png" alt="scroll-update-all.png"></p>
+<p>下面是滚动时不进行render的情况<br><img src="/images/2016/04/1059717184.png" alt="scroll-no-update.png"></p>
+<p>可以发现正常情况scroll回调的间隔是16、17ms，如果render的时间超过这个值就会影响到scroll的刷新率。虽然react更新dom是异步进行的，但是对Virtual DOM的渲染时同步的。所以这里scroll也得等render结束才能继续。</p>
+<p>那么就必须去优化一下Virtual DOM的渲染速度了。这里我们可以打印一下列表项中的每个<code>Item</code>的render时间，就能发现虽然每项都只用了1、2毫秒来渲染，但是加起来就不少了。</p>
+<h2 id="shouldComponentUpdate"><a href="#shouldComponentUpdate" class="headerlink" title="shouldComponentUpdate"></a>shouldComponentUpdate</h2><p>React也有给出<a href="https://facebook.github.io/react/docs/component-specs.html#updating-shouldcomponentupdate" target="_blank" rel="noopener">解决方案</a>，<code>shouldComponentUpdate</code>在默认情况下是返回<code>true</code>的，也就是说只要<code>props</code>或<code>state</code>改变，这个组件就会更新，同样子组件由于<code>props</code>的改变也会更新，具体情况可以参考<a href="https://facebook.github.io/react/docs/advanced-performance.html#shouldcomponentupdate-in-action" target="_blank" rel="noopener">这里</a>。</p>
+<p>由于列表的Virtual DOM在每次render时都是重新生成的，所以就不要指望<code>vDOMEq</code>相同了，最简单的方法就是实现每个<code>Item</code>的<code>shouldComponentUpdate</code>方法（通过比较当前和传入的<code>props</code>来判断是否需要更新，由于属性为<code>object</code>需要判断内部的变化，或许我们需要<a href="https://facebook.github.io/immutable-js/" target="_blank" rel="noopener">immutable-js</a>）。</p>
+<h2 id="PureRenderMixin"><a href="#PureRenderMixin" class="headerlink" title="PureRenderMixin"></a>PureRenderMixin</h2><p>React提供的<code>PureRenderMixin</code>其实已经帮我们做好了上面需要做的事，按<a href="https://facebook.github.io/react/docs/pure-render-mixin.html" target="_blank" rel="noopener">文档</a>中的做法就行了。不过这个插件会比较所有的属性，在某些情况下可能会和预期相违。比如传入一个函数的情况，可以看看我提的一个<a href="https://github.com/facebook/react/issues/6601" target="_blank" rel="noopener">Issue</a>。</p>
+<p>官方要保持这个插件的单一性，所以要忽略函数的话需要我们自己实现一下。<br>我们可以使用<a href="https://facebook.github.io/react/docs/shallow-compare.html" target="_blank" rel="noopener">Shallow Compare</a>这个插件来十分简便地完成，只要筛选掉原来props对象中的类型为<code>&#39;function&#39;</code>属性，再调用<code>Shallow Compare</code>就可以了。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/performance/">performance</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2016/04/25/React的渲染性能优化/&title=《React的渲染性能优化》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2016/04/25/React的渲染性能优化/&title=《React的渲染性能优化》 — Code for fun&source=都说网页的性能瓶颈在DOM操作，所以目前的主流前端框架（React、 Vue、AngularJs等）都在极力地减少DOM操作。
+就React而言，使用Vi..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2016/04/25/React的渲染性能优化/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《React的渲染性能优化》 — Code for fun&url=https://frezc.github.io/2016/04/25/React的渲染性能优化/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2016/04/25/React的渲染性能优化/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2016/06/26/给RN的app添加widgets/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">给RN的app添加widgets</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2016/04/18/谈谈4月新番/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">谈谈4月新番</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2016/04/25/React的渲染性能优化/&title=《React的渲染性能优化》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2016/04/25/React的渲染性能优化/&title=《React的渲染性能优化》 — Code for fun&source=都说网页的性能瓶颈在DOM操作，所以目前的主流前端框架（React、 Vue、AngularJs等）都在极力地减少DOM操作。
+就React而言，使用Vi..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2016/04/25/React的渲染性能优化/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《React的渲染性能优化》 — Code for fun&url=https://frezc.github.io/2016/04/25/React的渲染性能优化/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2016/04/25/React的渲染性能优化/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACMUlEQVR42u3a0W7jMAwEwP7/T+deC/Ti7IpuAcnjp6BJZI0DsKTIr6/4ev24vv/952eS1dbeHV0YGBjbMl6XV77dfHPvXl/f693eMDAwnsNIbny9UA5bA39YAQMDA+NNCL6mtmEdAwMDY85Y+3z7SQwMDIxJEZuE13aFdrUbanEMDIwNGfmp+9+//pX+BgYGxlaM1+BKwmiS0rVB9j87wcDAOJrRBsG15mXS+JwnlxgYGGcz5pi7it429xvlsBgYGJsw2iC49u6kCVH8x8DAwDiU0ZaRbcKXj5ddh+MoNGNgYBzNmIw4JLdPVshL38UMFwMDY1tGkhrm6WOeRE6GMDAwMJ7GWDyZK4/J6lHUyeQIBgbGcYx5AyBpcLZbbEtiDAyMsxmTg/s2KWzL4Px4DgMD42xGOx6Rp2v587tt2AIDA+NQxtqoxFqymKSbo8YDBgbGgxkJ7K6HMkkiMTAwnsDIx7OSdC1JAdv1P3wLAwPjUEYtHoyI/cZh3OoPh4GBsRMjbxAmwbFtW65NhUQ9DQwMjIMYk4OztY22Be1tLQEMDIxtGWuYdlQiL2VHwRcDA+NQxqu82oIzaRvkpfWH1BADA+NQRhva1ra49jjaQhoDA+NsRju8NSlB83Zm+y0MDIwnMNqGQTtaka9/Q38DAwPjwYy/bHa2B38YGBgY16lbNLa1VBLnxTAGBsYTGHkRmyd8bUHbFtKjWhwDA2Mrxqh0LAcp5kdyN7QwMTAwdmL8A2hqHfPNL0qBAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

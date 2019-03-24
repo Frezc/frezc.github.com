@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2015/05/16/solve-preDexDebug/">
+    
+    
+    <title>Gradle的preDexDebug错误的解决办法(大概) | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="android,intellij idea,gradle">
+    <meta name="description" content="今天把项目pull下来然后用intellij执行时出现了以下的错误提示12Error:Gradle: Execution failed for task &amp;apos;:app:preDexDebug&amp;apos;.&amp;gt; com.android.ide.common.process.ProcessException: org.gradle.process.internal.ExecExceptio">
+<meta name="keywords" content="android,intellij idea,gradle">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gradle的preDexDebug错误的解决办法(大概)">
+<meta property="og:url" content="https://frezc.github.io/2015/05/16/solve-preDexDebug/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="今天把项目pull下来然后用intellij执行时出现了以下的错误提示12Error:Gradle: Execution failed for task &amp;apos;:app:preDexDebug&amp;apos;.&amp;gt; com.android.ide.common.process.ProcessException: org.gradle.process.internal.ExecExceptio">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-21T13:48:42.045Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Gradle的preDexDebug错误的解决办法(大概)">
+<meta name="twitter:description" content="今天把项目pull下来然后用intellij执行时出现了以下的错误提示12Error:Gradle: Execution failed for task &amp;apos;:app:preDexDebug&amp;apos;.&amp;gt; com.android.ide.common.process.ProcessException: org.gradle.process.internal.ExecExceptio">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Gradle的preDexDebug错误的解决办法(大概)</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Gradle的preDexDebug错误的解决办法(大概)</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-05-15T17:47:14.000Z" itemprop="datePublished" class="page-time">
+  2015-05-16
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+
+<article id="post-solve-preDexDebug" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Gradle的preDexDebug错误的解决办法(大概)</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-05-16 01:47:14" datetime="2015-05-15T17:47:14.000Z" itemprop="datePublished">2015-05-16</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>今天把项目pull下来然后用intellij执行时出现了以下的错误提示<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Error:Gradle: Execution failed for task &apos;:app:preDexDebug&apos;.</span><br><span class="line">&gt; com.android.ide.common.process.ProcessException: org.gradle.process.internal.ExecException: Process &apos;command &apos;C:\Program Files\Java\jdk1.8.0_40\bin\java.exe&apos;&apos; finished with non-zero exit value 1</span><br></pre></td></tr></table></figure></p>
+<p>因为没有错误提示，只好去网上找解决方法。这时还是不得不感叹stackoverflow这网站的强大啊。</p>
+<p>两个小时内试了n多方法都没成效，其中也试过把项目回滚，发现即使回滚也会有这个错误，很明显这不是项目本身的问题，大概是gradle哪里出现了问题。</p>
+<hr>
+<p>总之，两个小时后在一次电脑当机重启后就莫名其妙地好了，我这里就讲讲我改过什么吧，也许可以当作参考。</p>
+<ul>
+<li>升级sdk的build-tools和support library到最新(反正全部保持最新)</li>
+<li>项目里引用了一个库，是以project形式引用的，将这个库的build.gradle里的compileSdkVersion之类的改成和项目app相同。</li>
+<li>将项目和这个库的dependencies引用的库全部改成最新的，v4、v7这些intellij会出现提示，而CardView这些不会，需要手动改。</li>
+<li>点击Build-Clean Project。(这个没关机前我就试过几遍，还是有错误)</li>
+<li>终极大法，重启电脑。(我是电脑当掉了才重启，不然可能还要折腾很久)</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gradle/">gradle</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/intellij-idea/">intellij idea</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/05/16/solve-preDexDebug/&title=《Gradle的preDexDebug错误的解决办法(大概)》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/05/16/solve-preDexDebug/&title=《Gradle的preDexDebug错误的解决办法(大概)》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/05/16/solve-preDexDebug/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Gradle的preDexDebug错误的解决办法(大概)》 — Code for fun&url=https://frezc.github.io/2015/05/16/solve-preDexDebug/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/05/16/solve-preDexDebug/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2015/05/19/japan-anime-reflections/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">对于日本动漫的一些感想</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2015/05/03/use-Volley-and-Gson/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">如何结合Volley和Gson的使用</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/05/16/solve-preDexDebug/&title=《Gradle的preDexDebug错误的解决办法(大概)》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/05/16/solve-preDexDebug/&title=《Gradle的preDexDebug错误的解决办法(大概)》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/05/16/solve-preDexDebug/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Gradle的preDexDebug错误的解决办法(大概)》 — Code for fun&url=https://frezc.github.io/2015/05/16/solve-preDexDebug/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/05/16/solve-preDexDebug/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACNElEQVR42u3a0WrDMBBEUf//T7uQp0KwcmdXCXh99VSSNNZRYStp9jjwOF+DvH7+G++feX/36jPHN4YMGTJuyziXYz1dziZTv3ruem4yZMh4DmM9lbQIBo8vPVeGDBky+JaOv0vAMmTIkLG34JKNHfn+9WLJkCFDRnqI5Zja4fZHZ3EZMmTckJEGA7/8+Yv5hgwZMm7COEuDl9fOU4L5yJAhYzQjnVAaN/JDb9q0ge7tZMiQMYKRltS9TV3rqQdHYhkyZIxm1B7Ar89IIU6pwWLJkCFjBGNdavmGr7PtI1vAD4soQ4aMhzH4ZX3/ur+2iEEGK0OGjBGMtKTyYCD9ts4SyJAhYzajFkPyhrB+wUX/HmTIkPEARif/TOMEvtUj3xncDsqQIWMQI23I4MU6PRgHrR4yZMgYzUibHtKQII0q0yu/Yu+GDBkybsjg5bU2ufT1WiGWIUPGVEbaYJFe5ZNQIW28uAwGZMiQMZqxN5jk5bW2KfyQwcqQIWMco9YYcYaDH0d5YID+JjJkyBjHSA+lHM9bwWpPlCFDxnMYtW0ivyYjh2TeAnLZciFDhoyhjE6S0JloGj8EvyVDhoxBjM5xtF9kt8USMmTIGM3oF9Zdpbn/SRkyZMxmdK71a41f/XgA7RxlyJAxjlE7oKIr+01Vv5hvyJAh45GMXXvPzqZQhgwZMnhIyTd56RKkbbIyZMh4AoOHAf2QshY5bDuLy5Ah44aM/rU+Dx1TJFluGTJkjGb8ATlMnTt8Rwl3AAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

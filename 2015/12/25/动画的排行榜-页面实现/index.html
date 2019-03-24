@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2015/12/25/动画的排行榜-页面实现/">
+    
+    
+    <title>动画的排行榜 - 页面实现 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="动漫,排行,anime,rank">
+    <meta name="description" content="离上篇文章都已经一个多月了啊，最近都在玩mho，也没什么时间来做这个。不过目前还是把基本的功能都给实现了，做了一个展示页面。 和以前说的一样，后端是使用Laravel框架实现的api服务器，前端是用vue.js和semantic-ui实现的页面。点此访问">
+<meta name="keywords" content="动漫,排行,anime,rank">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动画的排行榜 - 页面实现">
+<meta property="og:url" content="https://frezc.github.io/2015/12/25/动画的排行榜-页面实现/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="离上篇文章都已经一个多月了啊，最近都在玩mho，也没什么时间来做这个。不过目前还是把基本的功能都给实现了，做了一个展示页面。 和以前说的一样，后端是使用Laravel框架实现的api服务器，前端是用vue.js和semantic-ui实现的页面。点此访问">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-21T13:48:42.048Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="动画的排行榜 - 页面实现">
+<meta name="twitter:description" content="离上篇文章都已经一个多月了啊，最近都在玩mho，也没什么时间来做这个。不过目前还是把基本的功能都给实现了，做了一个展示页面。 和以前说的一样，后端是使用Laravel框架实现的api服务器，前端是用vue.js和semantic-ui实现的页面。点此访问">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">动画的排行榜 - 页面实现</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">动画的排行榜 - 页面实现</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-12-25T04:18:00.000Z" itemprop="datePublished" class="page-time">
+  2015-12-25
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#后端"><span class="post-toc-number">1.</span> <span class="post-toc-text">后端</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前端"><span class="post-toc-number">2.</span> <span class="post-toc-text">前端</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">3.</span> <span class="post-toc-text">其他</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-动画的排行榜-页面实现" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">动画的排行榜 - 页面实现</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-12-25 12:18:00" datetime="2015-12-25T04:18:00.000Z" itemprop="datePublished">2015-12-25</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>离上篇文章都已经一个多月了啊，最近都在玩mho，也没什么时间来做这个。不过目前还是把基本的功能都给实现了，做了一个展示页面。</p>
+<p>和以前说的一样，后端是使用<a href="https://laravel.com/" target="_blank" rel="noopener">Laravel</a>框架实现的api服务器，前端是用<a href="http://cn.vuejs.org/" target="_blank" rel="noopener">vue.js</a>和<a href="http://semantic-ui.com/" target="_blank" rel="noopener">semantic-ui</a>实现的页面。<br><a href="http://statistics.frezc.com/anime-rank.html" target="_blank" rel="noopener">点此访问</a></p>
+<a id="more"></a>
+<h2 id="后端"><a href="#后端" class="headerlink" title="后端"></a>后端</h2><p>Laravel也不是第一次用了，还是挺熟悉的，不过也碰到过一些问题，这里记录一下。</p>
+<ul>
+<li>数据库配置：api返回错误信息<code>The Response content must be a string or object implementing __toString()</code>时，首先还是要检查一下数据库的配置是否正确。我这里将动漫排行的数据放在了一个独立的数据库中管理，所以要在laravel里额外配置不同的数据库连接，这里会十分容易出错。</li>
+<li>跨域请求：使用ajax请求不同域名的api时需要注意下跨域请求的问题，为了能进行跨域请求，返回的header里需要有<code>Access-Control-Allow-Origin</code>这一项来确定允许跨域请求的域名。我这里为了方便，让所有api能让所有域名访问（方便本地测试），直接修改nginx的配置文件，在<code>location</code>中添加一条<code>add_header Access-Control-Allow-Origin *;</code>就ok了。</li>
+</ul>
+<h2 id="前端"><a href="#前端" class="headerlink" title="前端"></a>前端</h2><p>前端的css库使用了某人推荐的semantic-ui，我也没用过bootstrap，所以用什么都无所谓，不过semantic比起bootstrap的资料真是少。<br>然后是vue.js，数据的双向绑定和定义组件都是非常好用的，我没有用过其他类似的库，所以也不好比较。</p>
+<p>虽然没有必要，但还是试着用了webpack管理项目，这个库简单来说就是将一堆js和css文件打包的一个js文件中，在发布时你的页面中只要引用一个打包后的js文件就行了，对于非常复杂的单页应用来说，这是个能减少项目复杂度的工具。</p>
+<p>然后讲讲问题</p>
+<ul>
+<li>渲染速度：原本我想把1000多项数据直接展示的，不过渲染速度还是有限，vue.js渲染1000项的列表也得要接近2秒的时间，于是想想还是分页了。</li>
+<li>提示框：在页面中使用了semantic的提示框组件，不过使用的时候仅仅在html中添加<code>data-title</code>和<code>data-content</code>并没有什么用，还要调用这些节点的<code>popup()</code>函数。但是节点都是通过vue.js之后动态生成的，那要怎么在渲染完成后调用呢？<br>这里可以使用vue.js提供的自定义指令实现，注册一个指令，在<code>bind</code>接口中调用就ok了。</li>
+</ul>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>本来想借用下Bangumi的图片的，不过没法跨域请求，那就没办法了，之后有空就去爬取一遍吧。</p>
+<p>剩下还有个留言评论的模块，没时间就用多说来做了。</p>
+<p>PS: 最近一直在玩mho 华东一 隐士之森 id: 心悦会员 欢迎找我玩<br>PS2: steam也开始打折了，不过启示录2怎么就第一章打折啊，卡表还是坑。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/anime/">anime</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rank/">rank</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动漫/">动漫</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/排行/">排行</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/12/25/动画的排行榜-页面实现/&title=《动画的排行榜 - 页面实现》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/12/25/动画的排行榜-页面实现/&title=《动画的排行榜 - 页面实现》 — Code for fun&source=离上篇文章都已经一个多月了啊，最近都在玩mho，也没什么时间来做这个。不过目前还是把基本的功能都给实现了，做了一个展示页面。
+和以前说的一样，后端是使用L..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/12/25/动画的排行榜-页面实现/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《动画的排行榜 - 页面实现》 — Code for fun&url=https://frezc.github.io/2015/12/25/动画的排行榜-页面实现/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/12/25/动画的排行榜-页面实现/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2015/12/31/用SVG画一个笑脸男图标/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">用SVG画一个笑脸男图标</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2015/11/22/做个动画排行榜 - 标题匹配/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">做个动画排行榜 - 标题匹配</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/12/25/动画的排行榜-页面实现/&title=《动画的排行榜 - 页面实现》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/12/25/动画的排行榜-页面实现/&title=《动画的排行榜 - 页面实现》 — Code for fun&source=离上篇文章都已经一个多月了啊，最近都在玩mho，也没什么时间来做这个。不过目前还是把基本的功能都给实现了，做了一个展示页面。
+和以前说的一样，后端是使用L..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/12/25/动画的排行榜-页面实现/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《动画的排行榜 - 页面实现》 — Code for fun&url=https://frezc.github.io/2015/12/25/动画的排行榜-页面实现/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/12/25/动画的排行榜-页面实现/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACsElEQVR42u3aQXLjMAwEQP//0841W4nkAUA43qrmKeXIkpoHEh7w8YjH89v4/kn+3atv/bxz8vTDAw8PD2/w6j/HPe/qwdXv5u+QvzMeHh7eNq+3oOdbSP6UZPNI7oaHh4f3ObxkOe4Vyvf3wcPDw/t/edUCt4dPphgPDw/vb3m9IKAX41ajjTdlLXh4eHgxb9LE+qu/V/p7eHh4eOOuejUISO5cjRhGbTM8PDy8Bd7kdXsHquaFePVwGB4eHt4Gb1Lg5nFAdTOobicvJhEPDw/vKC+PQSfU3oGqQqOruqfh4eHhtXjVZfr+AflxgWRZ7xXol1sCHh4e3hovDwgmBfFkQ8o/wcPDw3snr9f66l1ZLfELpTweHh7eAi9vIJ3aQnpTmbe+XlyPh4eHt8bLSaemI3l6dYLw8PDw9ni9dn6+lFevzAvoaNvAw8PDW+BV49e8aG6+ykLIi4eHh7fBq0YDe8eqqu+Ql+x4eHh4p3jVQCFv//ei2LOHDPDw8PDO8qrl7/0D8s8LuXIrpPjnZAQeHh7eUV6vtV8NeXvHCKp3PnDcCg8PDy/g9ZbyyXSs/Ca4ugMeHh7eAq+6KPfaTvly32uDNUtqPDw8vAGv15qalMh5K6469Xh4eHjv5+WNqzx6qL7QMx7RFoKHh4f3Rl4vTs2PHeTFdzWYGCUreHh4eDGv2mTq9dl6/60ePvhlY8DDw8Nb450qo5PWWl6IP+JRyKfx8PDwWrxncSSBRT5NkxA5mlA8PDy8BV51wc3b//PmWW8i7u+Gh4eHd4qXRwx5w2wSRswPgeHh4eG9h5cvytUrT20hzTYYHh4e3gfwqg2z3kT0SJeJCx4eHt4H8Hqhbc7Im3Avtgc8PDy8NV7vuFUPnITF8zgDDw8Pb483+cHfa1+dDXwPDDw8PLyU9wV8FX2Cz0d3kgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

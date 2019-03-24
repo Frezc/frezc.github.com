@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2016/03/06/标准化React-Redux-纯函数式编程？/">
+    
+    
+    <title>标准化React + Redux = 纯函数式编程？ | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="react,redux,fp">
+    <meta name="description" content="最近看到github上一个Airbnb公司的js风格指导手册，感觉里面讲的都挺有道理的，里面的风格都是趋向使用es6来取代之前的各个api。其中有关React有一条提到了在没有state和ref时，推荐使用单纯的绘制函数代替类，看到后翻了下官方文档，发现propTypes和defaultProps还是能用的。 想起之前用的Redux框架，其核心不就是将所有组件无状态化吗，配合它岂不是就能做到完全的">
+<meta name="keywords" content="react,redux,fp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="标准化React + Redux = 纯函数式编程？">
+<meta property="og:url" content="https://frezc.github.io/2016/03/06/标准化React-Redux-纯函数式编程？/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="最近看到github上一个Airbnb公司的js风格指导手册，感觉里面讲的都挺有道理的，里面的风格都是趋向使用es6来取代之前的各个api。其中有关React有一条提到了在没有state和ref时，推荐使用单纯的绘制函数代替类，看到后翻了下官方文档，发现propTypes和defaultProps还是能用的。 想起之前用的Redux框架，其核心不就是将所有组件无状态化吗，配合它岂不是就能做到完全的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-21T13:48:42.049Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="标准化React + Redux = 纯函数式编程？">
+<meta name="twitter:description" content="最近看到github上一个Airbnb公司的js风格指导手册，感觉里面讲的都挺有道理的，里面的风格都是趋向使用es6来取代之前的各个api。其中有关React有一条提到了在没有state和ref时，推荐使用单纯的绘制函数代替类，看到后翻了下官方文档，发现propTypes和defaultProps还是能用的。 想起之前用的Redux框架，其核心不就是将所有组件无状态化吗，配合它岂不是就能做到完全的">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">标准化React + Redux = 纯函数式编程？</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">标准化React + Redux = 纯函数式编程？</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2016-03-05T18:35:00.000Z" itemprop="datePublished" class="page-time">
+  2016-03-06
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+
+<article id="post-标准化React-Redux-纯函数式编程？" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">标准化React + Redux = 纯函数式编程？</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2016-03-06 02:35:00" datetime="2016-03-05T18:35:00.000Z" itemprop="datePublished">2016-03-06</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>最近看到github上一个Airbnb公司的js风格<a href="https://github.com/airbnb/javascript" target="_blank" rel="noopener">指导手册</a>，感觉里面讲的都挺有道理的，里面的风格都是趋向使用es6来取代之前的各个api。<br>其中有关React有一条提到了<em>在没有state和ref时，推荐使用单纯的绘制函数代替类</em>，看到后翻了下官方文档，发现<code>propTypes</code>和<code>defaultProps</code>还是能用的。</p>
+<p>想起之前用的Redux框架，其核心不就是将所有组件无状态化吗，配合它岂不是就能做到完全的函数式编程？<br>于是马上去改写了下之前写的<a href="https://github.com/Frezc/AnimeList-in-React-Redux" target="_blank" rel="noopener">小例子</a>。</p>
+<a id="more"></a>
+<p>改写需要做的也就是把类中的所有函数拿出来，将<code>render</code>名字改为类名，传入参数<code>props</code>，删掉<code>this</code>，将其他函数的参数进行相应的修改，最后别忘了<code>export default XXX;</code>。<br><a href="https://github.com/Frezc/AnimeList-in-React-Redux/blob/3078681dc70e6a5b55fa2739314ac9c2d07eecc3/src/components/AnimeDayList.js" target="_blank" rel="noopener">AnimeDayList.js</a> –改写前 <a href="https://github.com/Frezc/AnimeList-in-React-Redux/blob/master/src/components/AnimeDayList.js" target="_blank" rel="noopener">AnimeDayList.js</a> –改写后</p>
+<p>由于基于flux思想进行的设计，所有组件都可以改为纯函数。由于在根组件<strong>App</strong>里定义了<code>componentWillMount</code>生命周期方法，所以就没改了，当然根组件作为有状态组件在flux思想里也是完全合理的。</p>
+<p>整个例子的6个组件只定义了一个类，其他全部都是纯函数，使得整个项目清爽了很多啊。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fp/">fp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/redux/">redux</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2016/03/06/标准化React-Redux-纯函数式编程？/&title=《标准化React + Redux = 纯函数式编程？》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2016/03/06/标准化React-Redux-纯函数式编程？/&title=《标准化React + Redux = 纯函数式编程？》 — Code for fun&source=最近看到github上一个Airbnb公司的js风格指导手册，感觉里面讲的都挺有道理的，里面的风格都是趋向使用es6来取代之前的各个api。其中有关Rea..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2016/03/06/标准化React-Redux-纯函数式编程？/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《标准化React + Redux = 纯函数式编程？》 — Code for fun&url=https://frezc.github.io/2016/03/06/标准化React-Redux-纯函数式编程？/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2016/03/06/标准化React-Redux-纯函数式编程？/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2016/04/17/React的服务端渲染/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">React的服务端渲染</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2016/03/02/开始使用Redux/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">开始使用Redux</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2016/03/06/标准化React-Redux-纯函数式编程？/&title=《标准化React + Redux = 纯函数式编程？》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2016/03/06/标准化React-Redux-纯函数式编程？/&title=《标准化React + Redux = 纯函数式编程？》 — Code for fun&source=最近看到github上一个Airbnb公司的js风格指导手册，感觉里面讲的都挺有道理的，里面的风格都是趋向使用es6来取代之前的各个api。其中有关Rea..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2016/03/06/标准化React-Redux-纯函数式编程？/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《标准化React + Redux = 纯函数式编程？》 — Code for fun&url=https://frezc.github.io/2016/03/06/标准化React-Redux-纯函数式编程？/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2016/03/06/标准化React-Redux-纯函数式编程？/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACtElEQVR42u3aQYrjQAwF0L7/pWdgtkPi/6WqdDc8rwK243pliBRJX1/x8eff8erzq7P/X/Pq+vauwwceHh7eaOnJIs7emzPeb8rDFuDh4eFd4yXBIHnw+6UnwaYNTg8WPDw8vG/l5fgkCZ6l43h4eHi/i9emvDeoeHh4eD+Hlxdb21S4Tdbz5x6uteDh4eHFvH0D7POfP9rfw8PDw4tDwqah1Z59n0APV4uHh4d3gZd/dVtW2JQP2pT6YVvx8PDwLvBmGempBv8sABxIvvHw8PBGvLzln/80zwYC2jVE9+Lh4eFd5m2KEXnwyCNVDn75GvDw8PAu8JKBqjww7FPnvPhblB7w8PDwjvJmj0/S6KT4O/ue4iXh4eHhXeC1P7X5A2Z9qDwk5Ok4Hh4e3lleUkRICqZ58GgT5XzTi5kyPDw8vAVvNq7UNsPyQa52i6Mwg4eHh3eUlxcR2hGBus2/3r5hto6Hh4d3iDcbe2oHDjbl46J0i4eHh3eUly99Uz7YjEzNRhMe3iQeHh7egpcXXtuzbWt/P4D1UGXBw8PDO8prW1l5ijwbw8qLGodjHR4eHt6Cl/8E5639facuLyjj4eHh3ePli5gNB+RLSRbaXoOHh4d3g9c2wNoGVRt+8vQ9OouHh4f3EV5bom1Lvcn1m3uHWTkeHh5eyWsZybEqv8ajCQ+lZDw8PLwLvCRFzosI+TbNntJuIh4eHt4N3r4YsU/N29GEYlgBDw8P7zJvlgS3rbJNo6tdDx4eHt4NXltcaEsP+QDB2c94eHh4t3mzYusmHc+/ZxYw8PDw8D7DS/7kt+XUs+MIq5IEHh4e3jfx2lR71vRKsv4iIOHh4eH9GN6sDbZJrPPtPhAY8PDw8ALerImVLHqTprdJNh4eHt5neJsGWFuASJph+dm2YIGHh4e35v0Fd75BBf2NJwgAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

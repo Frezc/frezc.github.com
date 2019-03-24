@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2016/02/21/react-native对md风格中StatusBar的处理方式/">
+    
+    
+    <title>react-native对md风格中StatusBar的处理方式 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="android,react native">
+    <meta name="description" content="自从rn支持android以后，出现了不少的material design的库。用了下一个叫react-native-material-design的库，先不谈性能方面的缺陷，这个库完全忽视了StatusBar的处理，使得其Drawer弹出时会很难看。至少目前还没有看到哪个库对StatusBar进行了特殊处理，官方倒是有一个StatusBar的组件可以用来控制应用中StatusBar的表现，不过这">
+<meta name="keywords" content="android,react native">
+<meta property="og:type" content="article">
+<meta property="og:title" content="react-native对md风格中StatusBar的处理方式">
+<meta property="og:url" content="https://frezc.github.io/2016/02/21/react-native对md风格中StatusBar的处理方式/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="自从rn支持android以后，出现了不少的material design的库。用了下一个叫react-native-material-design的库，先不谈性能方面的缺陷，这个库完全忽视了StatusBar的处理，使得其Drawer弹出时会很难看。至少目前还没有看到哪个库对StatusBar进行了特殊处理，官方倒是有一个StatusBar的组件可以用来控制应用中StatusBar的表现，不过这">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://frezc.github.io/images/2016/02/1657079296.png">
+<meta property="og:image" content="https://frezc.github.io/images/2016/02/2531076439.png">
+<meta property="og:image" content="https://frezc.github.io/images/2016/02/1361499160.png">
+<meta property="og:image" content="https://frezc.github.io/images/2016/02/925583762.png">
+<meta property="og:updated_time" content="2019-03-21T13:48:42.045Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="react-native对md风格中StatusBar的处理方式">
+<meta name="twitter:description" content="自从rn支持android以后，出现了不少的material design的库。用了下一个叫react-native-material-design的库，先不谈性能方面的缺陷，这个库完全忽视了StatusBar的处理，使得其Drawer弹出时会很难看。至少目前还没有看到哪个库对StatusBar进行了特殊处理，官方倒是有一个StatusBar的组件可以用来控制应用中StatusBar的表现，不过这">
+<meta name="twitter:image" content="https://frezc.github.io/images/2016/02/1657079296.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">react-native对md风格中StatusBar的处理方式</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">react-native对md风格中StatusBar的处理方式</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2016-02-20T20:09:00.000Z" itemprop="datePublished" class="page-time">
+  2016-02-21
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#RN中的实现"><span class="post-toc-number">1.</span> <span class="post-toc-text">RN中的实现</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-react-native对md风格中StatusBar的处理方式" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">react-native对md风格中StatusBar的处理方式</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2016-02-21 04:09:00" datetime="2016-02-20T20:09:00.000Z" itemprop="datePublished">2016-02-21</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>自从rn支持android以后，出现了不少的material design的库。<br>用了下一个叫<a href="https://github.com/react-native-material-design/react-native-material-design" target="_blank" rel="noopener">react-native-material-design</a>的库，先不谈性能方面的缺陷，这个库完全忽视了<strong>StatusBar</strong>的处理，使得其Drawer弹出时会很难看。<br>至少目前还没有看到哪个库对<strong>StatusBar</strong>进行了特殊处理，官方倒是有一个StatusBar的组件可以用来控制应用中<strong>StatusBar</strong>的表现，不过这个组件在android里是调用5.0加入api来实现的，也就是说只对5.0以上的系统有效。而且这个组件在实现Drawer占满屏幕的效果时，<strong>StatusBar</strong>要设为translucent，此时和在theme中设置<strong>windowTranslucentStatus</strong>没有什么区别，依然要考虑<strong>StatusBar</strong>空出来的地方。所以这个组件还不如设置theme呢，起码后者能兼容到4.4。</p>
+<p>下面就谈谈比较合适的方法。</p>
+<a id="more"></a>
+<p><img src="/images/2016/02/1657079296.png" alt="bilibili_md.png"></p>
+<p>拿b站的app来看看要实现的效果。</p>
+<h2 id="RN中的实现"><a href="#RN中的实现" class="headerlink" title="RN中的实现"></a>RN中的实现</h2><p>这个效果基本上都是设置translucent后，在Statusbar的位置画一个相同大小的<strong>View</strong>来实现的。rn里虽然没有现成的库，但是实现起来也是非常简单的。</p>
+<p>首先在android项目里的控制app theme的style项里添加</p>
+<pre><code>&lt;item name=&quot;android:windowTranslucentStatus&quot;&gt;true&lt;/item&gt;
+</code></pre><p>然后在<strong>Navigator</strong>上添加View<br><img src="/images/2016/02/2531076439.png" alt="statusbar_add.png"></p>
+<p>这里的style为<br><code>`</code>javascript<br>statusbar: {<br>  backgroundColor: COLOR.googleBlue700.color, // Statusbar的颜色<br>  height: 24                   // Statusbar的高度，android上为24dp<br>}</p>
+<p>实现的效果<br><img src="/images/2016/02/1361499160.png" alt="my_statusbar.png"></p>
+<p><img src="/images/2016/02/925583762.png" alt="my_statusbar_drawer.png"></p>
+<p>这样做还是有些不足的，比如<strong>Statusbar</strong>在未来的android版本中出现变动的话就得修改代码了，当然为了避免这点我们可以写个原生模块动态获取<strong>Statusbar</strong>的高度。</p>
+<p>还有个办法就是在原生的android的项目中自定义View，不过这种方法麻烦而且扩展性不好，就不去实现了。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-native/">react native</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2016/02/21/react-native对md风格中StatusBar的处理方式/&title=《react-native对md风格中StatusBar的处理方式》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2016/02/21/react-native对md风格中StatusBar的处理方式/&title=《react-native对md风格中StatusBar的处理方式》 — Code for fun&source=自从rn支持android以后，出现了不少的material design的库。用了下一个叫react-native-material-design的库，..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2016/02/21/react-native对md风格中StatusBar的处理方式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《react-native对md风格中StatusBar的处理方式》 — Code for fun&url=https://frezc.github.io/2016/02/21/react-native对md风格中StatusBar的处理方式/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2016/02/21/react-native对md风格中StatusBar的处理方式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2016/03/02/开始使用Redux/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">开始使用Redux</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2016/02/19/在Android的原生模块中得到RN组件的引用/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">在Android的原生模块中得到RN组件的引用</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2016/02/21/react-native对md风格中StatusBar的处理方式/&title=《react-native对md风格中StatusBar的处理方式》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2016/02/21/react-native对md风格中StatusBar的处理方式/&title=《react-native对md风格中StatusBar的处理方式》 — Code for fun&source=自从rn支持android以后，出现了不少的material design的库。用了下一个叫react-native-material-design的库，..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2016/02/21/react-native对md风格中StatusBar的处理方式/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《react-native对md风格中StatusBar的处理方式》 — Code for fun&url=https://frezc.github.io/2016/02/21/react-native对md风格中StatusBar的处理方式/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2016/02/21/react-native对md风格中StatusBar的处理方式/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADG0lEQVR42u3ay3LaQBAFUP//TzvbVCXI93aLBIajFYVBM2dU5aYfX1/x9f3b9ef715/Pr+u1Hq346JM3XNjY2Nhvwm638uivj17ngPxbyYqPdouNjY19Kvt6W4/CxnXwuF44CYqbI/jBiI2Njf3x7GT5WZpxV/jExsbGxm7ZydY3YXKzT2xsbOxPYOdBosXPkor2zk+spWFjY2O/PDvvir7+66f0t7GxsbFfmL0fqdk3ifOWwF3jQdjY2Ngnsds0o/3R3yYebdkoTzOwsbGxT2UnwzR5AjAr4j+jPPTDA8DGxsY+jn3NmN26DW/7VkQR3rCxsbEPYrcpRxvkZi3eZADo+vHUzQNsbGzsI9ib5f9NA6BtEkRHj42Njf3m7E14yAs9bXi79+D+sjo2Njb2oex7W7OzzbWDQcOHgY2NjX00e3Yos9L8dVlqlhpF6RM2Njb2Qey2NLMJfvv04xmJCjY2NvYZ7PxnfX61wzf50exHfLCxsbHPY7eDOC0+3/SszZDfrY7b2NjY2C/PniUS+ZDNrJ2Qh9XZQA82Njb22ey7xmvy5uu+ONXuHxsbG/s8dv7ltnjUhrGkRJW/U08qYWNjY785uw1FszGdWVM5Hw+KEhhsbGzsg9j5hmahLi8kJavMVv9qzxIbGxv7rdizJmu+oU2xaRauoqQFGxsb+yD2rMCUB5W8hbAp96/KTNjY2Nhvzh6W18sgkYecTbpSFLmwsbGxD2K3S+aJStsS+C6vvEaEjY2N/WnsdlhnM6aTD/3MdvvDrrCxsbGPY+clm7Z8PytU7QtMRSzFxsbGPoLdNnc3ScjmMbTvYGNjY38Oezb4WCwTfHfTYGhDKTY2NvZ57E0S0oal/cF97S9sbGzsI9j3tldnbYZ7By7rxgA2Njb2m7Pv+p+fpC75VvJDnLV7sbGxsc9j56Tk1knQatsAm/tjY2Njfw47uXVbmUmSljZFaVvL2NjY2NizoPKMkHNXGQsbGxsb+z+M16zDGDY2NvYnsNsWbFsYyu8wAz+xloaNjY398uxNgSZPV2bHWgSk+FvY2NjYB7F/AaG3DDfDkZBeAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

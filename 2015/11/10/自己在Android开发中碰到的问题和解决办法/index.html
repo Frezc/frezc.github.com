@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2015/11/10/自己在Android开发中碰到的问题和解决办法/">
+    
+    
+    <title>自己在Android开发中碰到的问题和解决办法 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="android">
+    <meta name="description" content="说起来android我已经半年多没碰过了，这次为了让小组成员会写网络请求和用design库，我还是自己动手写了网络请求的封装类和一个design库的demo。当然，还是不免遇到了一些问题。ps: 因为是前几天的事，也没截图，就随便记录一下啦。">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自己在Android开发中碰到的问题和解决办法">
+<meta property="og:url" content="https://frezc.github.io/2015/11/10/自己在Android开发中碰到的问题和解决办法/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="说起来android我已经半年多没碰过了，这次为了让小组成员会写网络请求和用design库，我还是自己动手写了网络请求的封装类和一个design库的demo。当然，还是不免遇到了一些问题。ps: 因为是前几天的事，也没截图，就随便记录一下啦。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://frezc.github.io/images/2015/11/74545713.png">
+<meta property="og:updated_time" content="2019-03-21T13:48:42.050Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="自己在Android开发中碰到的问题和解决办法">
+<meta name="twitter:description" content="说起来android我已经半年多没碰过了，这次为了让小组成员会写网络请求和用design库，我还是自己动手写了网络请求的封装类和一个design库的demo。当然，还是不免遇到了一些问题。ps: 因为是前几天的事，也没截图，就随便记录一下啦。">
+<meta name="twitter:image" content="https://frezc.github.io/images/2015/11/74545713.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">自己在Android开发中碰到的问题和解决办法</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">自己在Android开发中碰到的问题和解决办法</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-11-09T16:51:00.000Z" itemprop="datePublished" class="page-time">
+  2015-11-10
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#项目升级"><span class="post-toc-number">1.</span> <span class="post-toc-text">项目升级</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Intellij-Idea-15"><span class="post-toc-number">2.</span> <span class="post-toc-text">Intellij Idea 15</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Context的空指针问题"><span class="post-toc-number">3.</span> <span class="post-toc-text">Context的空指针问题</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-自己在Android开发中碰到的问题和解决办法" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">自己在Android开发中碰到的问题和解决办法</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-11-10 00:51:00" datetime="2015-11-09T16:51:00.000Z" itemprop="datePublished">2015-11-10</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>说起来android我已经半年多没碰过了，这次为了让小组成员会写网络请求和用design库，我还是自己动手写了网络请求的封装类和一个design库的demo。当然，还是不免遇到了一些问题。<br>ps: 因为是前几天的事，也没截图，就随便记录一下啦。</p>
+<a id="more"></a>
+<h2 id="项目升级"><a href="#项目升级" class="headerlink" title="项目升级"></a>项目升级</h2><p>看idea总提示我项目所用的支持库需要升级，于是第一件事当然是把<code>build.gradle</code>里引用库的版本号都改到最新了，还添加了design库的引用，然后就报错了。</p>
+<p>一共有两个错误</p>
+<ol>
+<li>资源重定义：搜了下发现是库里的命名冲突了，我这个项目中是<code>com.zzt.inbox</code>这个库和<code>appcompat-v7</code>间的冲突，前者并不会使用了，于是就直接移除了。</li>
+<li>资源未找到：这个还是因为我只将支持库升级到了<code>23.1.0</code>，而sdk版本还停留在22的原因，将其改为23就ok了。</li>
+</ol>
+<h2 id="Intellij-Idea-15"><a href="#Intellij-Idea-15" class="headerlink" title="Intellij Idea 15"></a>Intellij Idea 15</h2><p>看到idea升级到15了就马上去装了15，打开后直接是一个错误：jre未找到。我顺着错误中给出的路径：<code>\jre\bin\java.exe</code>浏览了一下，发现这个路径就是错误的，实际上是<code>\jre\jre\bin\java.exe</code>。不知道我是不是个例。</p>
+<p>当然解决方法很简单，在系统中安装一个自己的java就ok了，我由于没有安装32位的java所以idea自动使用了自带的java。最后我直接使用64位的idea就完全没问题了。</p>
+<p>idea15的新特性我了解的不多，不过最直观的感受就是打开时稍微快了一点吧。</p>
+<h2 id="Context的空指针问题"><a href="#Context的空指针问题" class="headerlink" title="Context的空指针问题"></a>Context的空指针问题</h2><p>我在一个<code>Activity</code>中在某个变量初始化时调用了<code>this.getApplicationContext()</code>结果出现了空指针问题，当时我把这个函数放在<code>onCreate()</code>里后就好了。</p>
+<p>后来我看到一篇关于<code>Context</code>的<a href="http://blog.csdn.net/guolin_blog/article/details/47028975" target="_blank" rel="noopener">博客</a>，才明白是怎么回事。</p>
+<p><img src="/images/2015/11/74545713.png" alt="context.png"></p>
+<p>从上面这张图可以看出<code>Activity</code>只是一个装饰者，通过源码可以知道<code>getApplicationContext()</code>调用的还是其内部的一个<code>ContextImpl</code>对象。而这个对象是通过<code>attachBaseContext(Context)</code>这个函数传递给<code>Activity</code>的，所以在这个函数调用之前去调用<code>getApplicationContext()</code>自然会出现空指针异常了。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/11/10/自己在Android开发中碰到的问题和解决办法/&title=《自己在Android开发中碰到的问题和解决办法》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/11/10/自己在Android开发中碰到的问题和解决办法/&title=《自己在Android开发中碰到的问题和解决办法》 — Code for fun&source=说起来android我已经半年多没碰过了，这次为了让小组成员会写网络请求和用design库，我还是自己动手写了网络请求的封装类和一个design库的dem..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/11/10/自己在Android开发中碰到的问题和解决办法/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《自己在Android开发中碰到的问题和解决办法》 — Code for fun&url=https://frezc.github.io/2015/11/10/自己在Android开发中碰到的问题和解决办法/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/11/10/自己在Android开发中碰到的问题和解决办法/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2015/11/19/做一个多网站的动画排行榜吧/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">做一个多网站的动画排行榜吧</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2015/11/09/近期的一些琐事/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">近期的一些琐事</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/11/10/自己在Android开发中碰到的问题和解决办法/&title=《自己在Android开发中碰到的问题和解决办法》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/11/10/自己在Android开发中碰到的问题和解决办法/&title=《自己在Android开发中碰到的问题和解决办法》 — Code for fun&source=说起来android我已经半年多没碰过了，这次为了让小组成员会写网络请求和用design库，我还是自己动手写了网络请求的封装类和一个design库的dem..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/11/10/自己在Android开发中碰到的问题和解决办法/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《自己在Android开发中碰到的问题和解决办法》 — Code for fun&url=https://frezc.github.io/2015/11/10/自己在Android开发中碰到的问题和解决办法/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/11/10/自己在Android开发中碰到的问题和解决办法/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADKUlEQVR42u3aS24bMRAFQN3/0gqQVQBH4/eatKGhiisBljkszqLVn8cjXs+/6+vn9pvPf1a+8/PLerXb5oWNjY19E/bzcr063DVphmmv7Ppsr3bGxsbGPpWdhKLkoO1f2yC3csXY2NjY2G160IbGldeAjY2Njb3ymDZ1yY+bJzPY2NjY2G0i0V5QW/S/PnRyxdtqadjY2Nhvz15p9L7b51/qb2NjY2O/DftZrtmQzcpAz0rT4qUCGxsb+yD2rgJ9Dm4LTPm4T12uwsbGxj6CnfyIbwtJeRF/NtazoaSFjY2NfRA7Z+TtgVmKkoefWWsZGxsb+1R23i7Na+ztVa60h4ctZGxsbOzj2LOEpB2OyYNcEmJnl4KNjY19Nrs9bl7Wb9OYleQkumJsbGzsg9grD2ubsrMLrQdx4heDjY2NfRI7bwysXFAbzNo92zIWNjY29hnstkHbDvTkw5H5EE+e6rzcGRsbG/sg9npIaBOJWWLT7rmUgWFjY2PfkL2rMDQb+pkVlfLCFjY2NvYnsNsGatuabfdcGQOq4zY2Njb2QeyVTWdjN3vLSfnLw8bGxj6PnbdR2/ZtHoRmO8ySE2xsbOyT2HuPOCsM5WM67Q4vXyE2Njb2Qez2Afl31pOKNrzlJS1sbGzsT2PnDdpHvPKCVJs7FAUvbGxs7A9g539daQa37dhZ5azobGNjY2Pfip03TWc/+neVqPJwGAU8bGxs7OPYK+X+JG1YaQbvCm//CWDY2NjYR7BnZfpZ8zUvPLXtijZxwsbGxj6JnY/OrLcQfmIAKE+BvnnP2NjY2LdlJ7AkqZiFnIS00kgous3Y2NjYt2WvFHTa4Nf+70rB6JtmBjY2NvZx7HbUZlfDNcfnqUg03IONjY19HDtfecj5/ZZAUeTCxsbGPojd1mHyklPeQmhh+ZBQfinY2NjYd2e3QSt58CwtmQXOYQDDxsbGPo69gmnDTxJyNkTd62dhY2NjfyT7J9KVtgi1kmNhY2NjY+8tNs2upg2Qxf1hY2Nj35ydFHTyklNbHpo99zoEXl8cNjY29knsWaN3FhdmgXCloVsHNmxsbOw7sf8AlEG1qUrvSlMAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

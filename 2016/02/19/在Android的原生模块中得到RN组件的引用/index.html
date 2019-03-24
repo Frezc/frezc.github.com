@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2016/02/19/在Android的原生模块中得到RN组件的引用/">
+    
+    
+    <title>在Android的原生模块中得到RN组件的引用 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="android,react native">
+    <meta name="description" content="最近学习了下使用react-native(以下简称rn)来做App，这是目前唯一一个编写跨平台的本地应用的开源库，所以人气也是非常高啊。因为是新东西，所以相关的讨论、开源库之类的都很少，目前有很多东西还是得依赖原生模块来处理。好在的是rn提供了一些挺简单的交互方法，所以不至于会有无法解决的严重后果。 不过在调用原生模块时，一开始我不太清楚怎么去获得rn里组件的实例引用，在网上也没找到相关问题，后来">
+<meta name="keywords" content="android,react native">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Android的原生模块中得到RN组件的引用">
+<meta property="og:url" content="https://frezc.github.io/2016/02/19/在Android的原生模块中得到RN组件的引用/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="最近学习了下使用react-native(以下简称rn)来做App，这是目前唯一一个编写跨平台的本地应用的开源库，所以人气也是非常高啊。因为是新东西，所以相关的讨论、开源库之类的都很少，目前有很多东西还是得依赖原生模块来处理。好在的是rn提供了一些挺简单的交互方法，所以不至于会有无法解决的严重后果。 不过在调用原生模块时，一开始我不太清楚怎么去获得rn里组件的实例引用，在网上也没找到相关问题，后来">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://frezc.github.io/images/2016/02/2765341748.png">
+<meta property="og:image" content="https://frezc.github.io/images/2016/02/2125075922.png">
+<meta property="og:image" content="https://frezc.github.io/images/2016/02/422551472.png">
+<meta property="og:image" content="https://frezc.github.io/images/2016/02/1683079715.png">
+<meta property="og:updated_time" content="2019-03-21T13:48:42.048Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在Android的原生模块中得到RN组件的引用">
+<meta name="twitter:description" content="最近学习了下使用react-native(以下简称rn)来做App，这是目前唯一一个编写跨平台的本地应用的开源库，所以人气也是非常高啊。因为是新东西，所以相关的讨论、开源库之类的都很少，目前有很多东西还是得依赖原生模块来处理。好在的是rn提供了一些挺简单的交互方法，所以不至于会有无法解决的严重后果。 不过在调用原生模块时，一开始我不太清楚怎么去获得rn里组件的实例引用，在网上也没找到相关问题，后来">
+<meta name="twitter:image" content="https://frezc.github.io/images/2016/02/2765341748.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">在Android的原生模块中得到RN组件的引用</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">在Android的原生模块中得到RN组件的引用</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2016-02-19T15:23:00.000Z" itemprop="datePublished" class="page-time">
+  2016-02-19
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#分析"><span class="post-toc-number">1.</span> <span class="post-toc-text">分析</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#实现"><span class="post-toc-number">2.</span> <span class="post-toc-text">实现</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-在Android的原生模块中得到RN组件的引用" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">在Android的原生模块中得到RN组件的引用</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2016-02-19 23:23:00" datetime="2016-02-19T15:23:00.000Z" itemprop="datePublished">2016-02-19</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>最近学习了下使用react-native(以下简称rn)来做App，这是目前唯一一个编写<strong>跨平台</strong>的<strong>本地应用</strong>的<strong>开源</strong>库，所以人气也是非常高啊。<br>因为是新东西，所以相关的讨论、开源库之类的都很少，目前有很多东西还是得依赖原生模块来处理。好在的是rn提供了一些挺简单的交互方法，所以不至于会有无法解决的严重后果。</p>
+<p>不过在调用原生模块时，一开始我不太清楚怎么去获得rn里组件的实例引用，在网上也没找到相关问题，后来在看源代码后发现该怎么做了。</p>
+<a id="more"></a>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>一开始我是想看看<strong>DrawerLayoutAndroid</strong>组件是如何实现调用<em>openDrawer</em>和<em>closeDrawer</em>方法的，发现它是通过<strong>UIManager</strong>这个模块来分发命令，然后去看了下这个模块的源代码，发现了创建、删除、查找View等方法的装饰方法，具体是用<strong>UIImplementation</strong>这个类实现的。<br>于是找到<strong>UIImplementation</strong>中的<em>createView</em>方法</p>
+<p><img src="/images/2016/02/2765341748.png" alt="uiimplementation_createview"></p>
+<p>可见这个方法并没有创建真正的本地组件，之后通过<strong>NativeViewHierarchyOptimizer</strong>（优化UI层次）和<strong>UIViewOperationQueue</strong>（渲染的缓冲队列）两个类的处理后调用了<strong>NativeViewHierarchyManager</strong>的<em>createView</em>方法。</p>
+<p><img src="/images/2016/02/2125075922.png" alt="nativeviewhierarchymanager_createview.png"></p>
+<p>上图是这个方法中创建本地组件的关键语句。这里有三行注释，主要讲的就是把react的tag存到组件的id中，这样更容易复用组件。调用<em>setId</em>将tag保存到组件的属性当中。<br>这里我们就发现了原生组件的id其实就是对于rn组件的tag。那么最后一个问题就是怎么获得tag呢？</p>
+<p><img src="/images/2016/02/422551472.png" alt="drawerlayoutandroid_gettag.png"></p>
+<p>在<strong>DrawerLayoutAndroid.android.js</strong>文件中我们找到<em>closeDrawer</em>方法，它调用了<strong>UIManager</strong>的<em>dispatchViewManagerCommand</em>方法，这个方法是讲指令传递给目标组件管理器调用的（下篇博客会讲），在源码中就能知道第一个传入参数其实就是rn组件的tag。那么如何获取就和<em>_getDrawerLayoutHandle</em>方法写的一样了。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>自己实现原生模块时需要找到rn组件实例的话只要相应的传入tag，然后调用<em>findViewById</em>即可。</p>
+<p><img src="/images/2016/02/1683079715.png" alt="toastmodule_settext.png"></p>
+<p>这里我偷了个懒，直接把MainActivity的实例暴露了出来，最好的方法还是利用消息传递给Activity处理。（<strong>更正</strong>：最好的方法应该是注册<strong>Package</strong>时传入activity实例，然后在<em>createNativeModules</em>方法中将activity传给module对象。）<br>这里要注意的是，模块的方法是异步执行的，如果你要更新ui的话，要切到主线程执行。</p>
+<p>上面的代码还是存在挺严重的bug的，第二次调用<em>setText</em>就会时程序fc，目前还不清楚原因。<br>目前来说并不推荐利用这样的方法来更新rn的组件。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-native/">react native</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2016/02/19/在Android的原生模块中得到RN组件的引用/&title=《在Android的原生模块中得到RN组件的引用》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2016/02/19/在Android的原生模块中得到RN组件的引用/&title=《在Android的原生模块中得到RN组件的引用》 — Code for fun&source=最近学习了下使用react-native(以下简称rn)来做App，这是目前唯一一个编写跨平台的本地应用的开源库，所以人气也是非常高啊。因为是新东西，所以..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2016/02/19/在Android的原生模块中得到RN组件的引用/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《在Android的原生模块中得到RN组件的引用》 — Code for fun&url=https://frezc.github.io/2016/02/19/在Android的原生模块中得到RN组件的引用/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2016/02/19/在Android的原生模块中得到RN组件的引用/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2016/02/21/react-native对md风格中StatusBar的处理方式/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">react-native对md风格中StatusBar的处理方式</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2015/12/31/用SVG画一个笑脸男图标/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">用SVG画一个笑脸男图标</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2016/02/19/在Android的原生模块中得到RN组件的引用/&title=《在Android的原生模块中得到RN组件的引用》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2016/02/19/在Android的原生模块中得到RN组件的引用/&title=《在Android的原生模块中得到RN组件的引用》 — Code for fun&source=最近学习了下使用react-native(以下简称rn)来做App，这是目前唯一一个编写跨平台的本地应用的开源库，所以人气也是非常高啊。因为是新东西，所以..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2016/02/19/在Android的原生模块中得到RN组件的引用/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《在Android的原生模块中得到RN组件的引用》 — Code for fun&url=https://frezc.github.io/2016/02/19/在Android的原生模块中得到RN组件的引用/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2016/02/19/在Android的原生模块中得到RN组件的引用/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADJklEQVR42u3aQXLjMAwEwPz/094HZC3PAEpVxLROLsUR0fQBAsCvr/h6fbu+3393Z3Ylz7xrLWxsbOyns1+XV8JOgrj+r++f879ex/k2KmxsbOzj2G2geRCbpDX7ea6fjI2NjY39iq/r5Jdv1n6jsbGxsbGvi4S8xdOWK3nixMbGxsZuX/GTINrgNiXKD/bSsLGxsX89e7Pwb/v8I/NtbGxs7F/MfpVXmyTyFLJv/RcKbGxs7IPYeQJImkF5AdA2jGaHhD7Ej42NjX0Eu23Hbxo0eVFRJKFZ8sPGxsY+jp18dfi6X6aituRokx82Njb2qey7hrL5cZxZGqsP5bzbLGxsbOzj2HmxMSsDZuG2G1ckM2xsbOyD2MnCs6HvdaLabPcmTRb7jY2Njf0Q9r2N+OuCYd8MmrW9ivEANjY29gPZbbtnP9BtU10ST74iNjY29nnsWUmQN3faoGdPyI8fYWNjY5/NnhUGs83KW0t5w6v4DjY2NvZB7Hbgmixw1/3ZdtfJEhsbG/sIdlt4zEK/N4G17afiyA42Njb2o9j75tF+DDArXfLR8n/uYGNjYx/Kbh+dL9M+s10xb28VvxI2Njb2Q9jtP7cL54mqCLfcjhsO7mBjY2M/it2mtDax5Rs3K07ydbGxsbFPZc8GvW0KbJPWXcXJh7yNjY2NfRA7H9Pmh2zuSkt56v0wisDGxsY+iL1JUflzZpu1T3v1nAQbGxv7Uex9qdC2kzZXO7d9GyE2Njb2QexNS2hWtCTbkffwN80mbGxs7PPY7eNmY9d2K5PNmpVS2NjY2H+HXTTZ4w5WXgK1xUkeJzY2Nvap7Hyg2ya/dkzbpqg8fmxsbOxT2W1TKXnp37eEioTUDg+wsbGxj2DPXv1nTajZeKAdQkSRYGNjYx/EniWAfGva0cK+RdUWTtjY2NhnsNuktSkPZmOGWYH0oSGFjY2NfRw7TwxtybFPddcJbDjAxsbGxsaO2zrtwZ3kWM+sIMHGxsbGngWXf2czAGgPBmFjY2Ofx94s/OGlv0xa+6NCUXGCjY2NfRB736C5q0mU37n+kdpxMjY2NvZj2f8Adwdy3kSU2dEAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

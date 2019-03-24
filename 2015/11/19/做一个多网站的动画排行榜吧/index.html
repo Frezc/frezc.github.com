@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2015/11/19/做一个多网站的动画排行榜吧/">
+    
+    
+    <title>做一个多网站的动画排行榜吧 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="动漫,排行,anime,rank">
+    <meta name="description" content="起源是以前看过的一个B站视频。视频里统计了中国的Bangumi,日本的Sati和欧美的Ann的评分，并取三者平均分进行排名。 总的来说，这个排名还是挺靠谱的，所以我也想做一个这样的排名，利用网页的形式展示并能够定时地更新。">
+<meta name="keywords" content="动漫,排行,anime,rank">
+<meta property="og:type" content="article">
+<meta property="og:title" content="做一个多网站的动画排行榜吧">
+<meta property="og:url" content="https://frezc.github.io/2015/11/19/做一个多网站的动画排行榜吧/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="起源是以前看过的一个B站视频。视频里统计了中国的Bangumi,日本的Sati和欧美的Ann的评分，并取三者平均分进行排名。 总的来说，这个排名还是挺靠谱的，所以我也想做一个这样的排名，利用网页的形式展示并能够定时地更新。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://frezc.github.io/images/2015/11/3870579292.png">
+<meta property="og:updated_time" content="2019-03-21T13:48:42.047Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="做一个多网站的动画排行榜吧">
+<meta name="twitter:description" content="起源是以前看过的一个B站视频。视频里统计了中国的Bangumi,日本的Sati和欧美的Ann的评分，并取三者平均分进行排名。 总的来说，这个排名还是挺靠谱的，所以我也想做一个这样的排名，利用网页的形式展示并能够定时地更新。">
+<meta name="twitter:image" content="https://frezc.github.io/images/2015/11/3870579292.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">做一个多网站的动画排行榜吧</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">做一个多网站的动画排行榜吧</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-11-19T15:55:00.000Z" itemprop="datePublished" class="page-time">
+  2015-11-19
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#利用爬虫抓信息"><span class="post-toc-number">1.</span> <span class="post-toc-text">利用爬虫抓信息</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#统一信息"><span class="post-toc-number">2.</span> <span class="post-toc-text">统一信息</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#目前的进度"><span class="post-toc-number">3.</span> <span class="post-toc-text">目前的进度</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-做一个多网站的动画排行榜吧" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">做一个多网站的动画排行榜吧</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-11-19 23:55:00" datetime="2015-11-19T15:55:00.000Z" itemprop="datePublished">2015-11-19</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>起源是以前看过的一个<a href="http://www.bilibili.com/video/av1184434/" target="_blank" rel="noopener">B站视频</a>。<br>视频里统计了中国的<a href="http://bgm.tv" target="_blank" rel="noopener">Bangumi</a>,日本的<a href="http://www.animesachi.com/" target="_blank" rel="noopener">Sati</a>和欧美的<a href="http://www.animenewsnetwork.com/" target="_blank" rel="noopener">Ann</a>的评分，并取三者平均分进行排名。</p>
+<p>总的来说，这个排名还是挺靠谱的，所以我也想做一个这样的排名，利用网页的形式展示并能够定时地更新。</p>
+<a id="more"></a>
+<h2 id="利用爬虫抓信息"><a href="#利用爬虫抓信息" class="headerlink" title="利用爬虫抓信息"></a>利用爬虫抓信息</h2><p>经某人推荐用了<a href="http://www.scrapy.org" target="_blank" rel="noopener">Scrapy</a>这个库来写爬虫。<br>首先很简单通过每个网站的列表可以得到动画名和url, 由于ann上默认是英文名，所以必须去爬取每个动画的详情页来获得日文名，sati和bgm上都是能直接得到日文名的，所以并没有去爬取详情页。<br>这些存入数据库后就开始下一步</p>
+<h2 id="统一信息"><a href="#统一信息" class="headerlink" title="统一信息"></a>统一信息</h2><p>这是最麻烦的一步了，因为各个站点的命名并不统一，就算你使用了很多的规则去匹配也不可能做到100%准确的，还是需要人工检查。虽然如此，当然能用程序匹配得越多越好了。</p>
+<p>匹配当然需要通过原日文名，于是我观察了一下sati和bgm上的日文命名区别，写了一些规则：</p>
+<ul>
+<li>“ミス・モノクローム -The Animation-“ 在SATI中没有 ‘-‘ 符号</li>
+<li>‘!’ 在SATI上是 ‘！’, 在ann和bgm上不确定</li>
+<li>bgm可能会比sati多个副标题 如 ‘攻殻機動隊ARISE’系列</li>
+<li>标题间的空格可能会不相同</li>
+<li>sati会在剧场版动画名前加上 ‘劇場版’ , 而bgm不会</li>
+<li>sati可能会在标题尾加上括号并有补充内容</li>
+</ul>
+<p>当然这些并不是很全，实际在匹配时用了精确到模糊的查找。</p>
+<ul>
+<li>将原标题中的’劇場版’和前后空格去掉，将一些全角符号替换成半角的</li>
+<li>精确查找，考虑到有括号补充内容的问题，也同样将括号去掉的内容和括号内的内容进行精确的查找</li>
+<li>考虑到标题中的特殊字符存在或有其他替代的不确定性，先将它们使用’_’通配符进行匹配，匹配的符号<br><code>re.compile(ur&#39;[-+・\&#39;!-:.\(\)\s]&#39;)</code> ， 这里还少了个 ‘～’，因为使用正则表达式替换会出现替换两次的问题，我就使用replace函数进行替换了。</li>
+<li>考虑到空格的不确定性，直接使用’%’通配符替换了标题中的所有空格</li>
+<li>考虑到副标题的问题，在标题首尾加上’%’通配符</li>
+<li>最后再找不到就来一次将特殊字符全部替换成’%’的匹配</li>
+</ul>
+<p>前后最多匹配10次，如果在匹配中出现了多个结果就直接手工填充了，<a href="https://github.com/Frezc/Anime-Statistics-Crawl/blob/master/anime_statistics/db_filter/BGMNameFilter.py" target="_blank" rel="noopener">代码</a>。（注意下，最好将查找的字段添加上索引，不然可能要搜索个几分钟）</p>
+<p>除了标题其实还有一个特征值：放送时间。但是通过bgm网页上获取的放送时间是中文形式的，需要去format才能和其他网站匹配。后来一想bgm不还有api吗，看了下api的属性里果然有air_date的标准形式，也可以拿来筛选。</p>
+<h2 id="目前的进度"><a href="#目前的进度" class="headerlink" title="目前的进度"></a>目前的进度</h2><p>第一次用程序匹配完，4000多项数据填了3000多项，结果还是不够理想，毕竟剩下1000项数据也没法手工填。<br>于是我干脆就先删除无用数据吧，sati上评论数少于20的就不去考虑了，删了一圈，并用放送时间进行了一圈匹配（将时间相同的输出，手工填），剩下1000多项数据，其中85项未填，看了下未填项，还真是有很多坑啊。</p>
+<p><img src="/images/2015/11/3870579292.png" alt="bad_name.png"></p>
+<p>（第一条全角空格没考虑，第二条两个网站的字竟然不一样，第三条sati上使用了汉字而bgm上的日文名使用了平假名）</p>
+<p>目前还需要手工把剩下的数据填上了。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/anime/">anime</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rank/">rank</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动漫/">动漫</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/排行/">排行</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/11/19/做一个多网站的动画排行榜吧/&title=《做一个多网站的动画排行榜吧》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/11/19/做一个多网站的动画排行榜吧/&title=《做一个多网站的动画排行榜吧》 — Code for fun&source=起源是以前看过的一个B站视频。视频里统计了中国的Bangumi,日本的Sati和欧美的Ann的评分，并取三者平均分进行排名。
+总的来说，这个排名还是挺靠谱..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/11/19/做一个多网站的动画排行榜吧/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《做一个多网站的动画排行榜吧》 — Code for fun&url=https://frezc.github.io/2015/11/19/做一个多网站的动画排行榜吧/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/11/19/做一个多网站的动画排行榜吧/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2015/11/22/做个动画排行榜 - 标题匹配/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">做个动画排行榜 - 标题匹配</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2015/11/10/自己在Android开发中碰到的问题和解决办法/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">自己在Android开发中碰到的问题和解决办法</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/11/19/做一个多网站的动画排行榜吧/&title=《做一个多网站的动画排行榜吧》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/11/19/做一个多网站的动画排行榜吧/&title=《做一个多网站的动画排行榜吧》 — Code for fun&source=起源是以前看过的一个B站视频。视频里统计了中国的Bangumi,日本的Sati和欧美的Ann的评分，并取三者平均分进行排名。
+总的来说，这个排名还是挺靠谱..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/11/19/做一个多网站的动画排行榜吧/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《做一个多网站的动画排行榜吧》 — Code for fun&url=https://frezc.github.io/2015/11/19/做一个多网站的动画排行榜吧/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/11/19/做一个多网站的动画排行榜吧/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACvUlEQVR42u3aQXIiMRAEQP//0zjCVzxDVUsCDslpA7wzSh2kjur++Yk/j7/P8zfP3z///dX/Td51/5xtHzw8PLzR0q8+Kwta//VqK5M14+Hh4Z3mzRadLOjF60drKJ6Dh4eH91He/dF8/31boK9cIXh4eHjfw8uL3TbgaMF4eHh438BLwojk1/uCu71s2vXg4eHhvYe3coh/6t8H+3t4eHh4C131vCWWtMdmkcfKavHw8PBO8JKHto38NmiYjWQVFwYeHh7eVt4sSJ0tPV/W/TYVDTY8PDy8w7x2cbOltBFwu5X/FNN4eHh4B3gr7aW8xZWXzm0IUnT28PDw8JZ5s0N/1jCbLXq2lXh4eHjv4bUH9N4RhNk8QBQN4+Hh4W3ltS9ro4TkWG/D2WSj8fDw8M7x2kiiLXCj18eh8GweAA8PD28vry2a62q9vBiSiKEIl/Hw8PDewssP32E7qizEk1+LiwEPDw9vEy9v2K+PYSVbtu17PDw8vGO8dvQqb5XNntYOB1xuHB4eHt4x3gzTts2Skno2UnC5BXh4eHiHeSsHfb70PJLYEPvi4eHhHeO1YwErwesMMAw78PDw8A7w2uGqfOBptvR2i4uKGw8PD28Tb715nxTf61uclNSX9x4eHh7eVt4sgJgVuLPRrl0DDXh4eHgneO1g0/0jopg1KJTbCHhYcOPh4eGVz1kpZIetqVEDbBbp4uHh4Z3jtaHtLIzI/34WauDh4eGd5j3Kz+zFeagxuzaioSs8PDy8TbyVYCI/0GcB7iwm3pa74OHh4d3y2tZXchC318bK2NaLUh4PDw/vGC8PSWfjUO3VMhvYqntoeHh4eG/hrYw9zd61tDV4eHh4H+XNxrDywCK/AIpGHR4eHt4x3qzplRzQ+ahWUoLXTS88PDy8A7xZ2JoHFutldx52DJF4eHh4Ke8XSJWccV+zHywAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

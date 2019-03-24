@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/">
+    
+    
+    <title>如何修复错误的merge提交 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="git">
+    <meta name="description" content="因为最近帮别人解决了一次git merge丢代码的情况，当时处理地简单粗暴，reset到merge前一次commit后重来一遍。后来又设想了一下，如果merge后又commit很多次，这样岂不会很麻烦？如果这个分支不允许force push，那这样做也不行。于是就去查了一些资料，自己尝试并总结了一下几个方法。  用git reset重新来过这种方法很简单，就是git reset到merge之前的一">
+<meta name="keywords" content="git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何修复错误的merge提交">
+<meta property="og:url" content="https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="因为最近帮别人解决了一次git merge丢代码的情况，当时处理地简单粗暴，reset到merge前一次commit后重来一遍。后来又设想了一下，如果merge后又commit很多次，这样岂不会很麻烦？如果这个分支不允许force push，那这样做也不行。于是就去查了一些资料，自己尝试并总结了一下几个方法。  用git reset重新来过这种方法很简单，就是git reset到merge之前的一">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-22T13:56:32.906Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何修复错误的merge提交">
+<meta name="twitter:description" content="因为最近帮别人解决了一次git merge丢代码的情况，当时处理地简单粗暴，reset到merge前一次commit后重来一遍。后来又设想了一下，如果merge后又commit很多次，这样岂不会很麻烦？如果这个分支不允许force push，那这样做也不行。于是就去查了一些资料，自己尝试并总结了一下几个方法。  用git reset重新来过这种方法很简单，就是git reset到merge之前的一">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">如何修复错误的merge提交</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">如何修复错误的merge提交</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-04-30T15:39:49.000Z" itemprop="datePublished" class="page-time">
+  2018-04-30
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#用git-reset重新来过"><span class="post-toc-number">1.</span> <span class="post-toc-text">用git reset重新来过</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#更好的方法？"><span class="post-toc-number">2.</span> <span class="post-toc-text">更好的方法？</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#用上面的方法要处理的冲突太多了怎么办？"><span class="post-toc-number">3.</span> <span class="post-toc-text">用上面的方法要处理的冲突太多了怎么办？</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#git-revert可以解决问题吗？"><span class="post-toc-number">4.</span> <span class="post-toc-text">git revert可以解决问题吗？</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-how-to-fix-wrong-merge" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">如何修复错误的merge提交</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-04-30 23:39:49" datetime="2018-04-30T15:39:49.000Z" itemprop="datePublished">2018-04-30</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>因为最近帮别人解决了一次git merge丢代码的情况，当时处理地简单粗暴，reset到merge前一次commit后重来一遍。后来又设想了一下，如果merge后又commit很多次，这样岂不会很麻烦？如果这个分支不允许force push，那这样做也不行。于是就去查了一些资料，自己尝试并总结了一下几个方法。</p>
+<hr>
+<h1 id="用git-reset重新来过"><a href="#用git-reset重新来过" class="headerlink" title="用git reset重新来过"></a>用git reset重新来过</h1><p>这种方法很简单，就是<code>git reset</code>到merge之前的一次commit，然后重新merge，然后如果之前在merge之后还有commit的话利用<code>git cherry-pick &lt;commit start&gt;^...&lt;commit end&gt;</code>apply到当前分支。最后<code>git push --force</code>到远端分支（如果之前已经push了的话）</p>
+<p>这种方法适合你在push之前就发现了错误的情况，因为用了<code>git reset</code>后当前分支就必须要<strong>force push</strong>了。</p>
+<p>force push有什么问题？<br>一般来说不应该在非私人分支上force push，因为这有可能会覆盖掉其他人在该分支上的commit。而且远端的protected branch是不能直接force push的。</p>
+<h1 id="更好的方法？"><a href="#更好的方法？" class="headerlink" title="更好的方法？"></a>更好的方法？</h1><p>首先解决第一个问题，如何不用force push？</p>
+<p>如果我们不修改要push分支的历史的话是不需要force push的，那么很简单了，只要把需要修改历史的reset操作在另外一个不需要push的分支上操作就行了。</p>
+<p>实际操作就是从当前分支拉一条新分支出来，然后进行上面reset的方法，最后再rebase或merge回当前分支。</p>
+<p>既然这里也提到了rebase，其实我们还可以简化一下上面的方法。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 假设我们这里merge feature到master</span></span><br><span class="line"><span class="comment"># 使用第一种方法</span></span><br><span class="line">git checkout -b fix-merge</span><br><span class="line">git reset &lt;commit before merge&gt; --hard</span><br><span class="line">git merge feature <span class="comment"># fix conflict</span></span><br><span class="line">git cherry-pick &lt;commit start&gt;^...&lt;commit end&gt; <span class="comment"># maybe need fix conflict</span></span><br><span class="line">git checkout master</span><br><span class="line">git merge fix-merge <span class="comment"># fix conflict</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 用rebase简化一下，因为rebase也是一个会修改历史的操作，所以还是需要新开分支</span></span><br><span class="line">git checkout -b fix-merge</span><br><span class="line"><span class="comment"># 用rebase代替了reset &gt; merge &gt; cherry-pick的操作</span></span><br><span class="line">git rebase -i &lt;commit before merge&gt; <span class="comment"># fix conflict</span></span><br><span class="line">git checkout master</span><br><span class="line">git merge fix-merge <span class="comment"># fix conflict</span></span><br></pre></td></tr></table></figure>
+<p>这里在rebase时添加了<code>-i</code>的参数，可以清楚地展示和操作每次会应用的commit。如果不懂rebase可以看看<a href="https://git-scm.com/docs/git-rebase" target="_blank" rel="noopener">官方文档</a>。</p>
+<h1 id="用上面的方法要处理的冲突太多了怎么办？"><a href="#用上面的方法要处理的冲突太多了怎么办？" class="headerlink" title="用上面的方法要处理的冲突太多了怎么办？"></a>用上面的方法要处理的冲突太多了怎么办？</h1><p>无论是cherry-pick还是rebase都是将commit一次次给apply，所以merge之后的commit如果有冲突，那也得一次次解决，有时候一直要改同一个文件的话，那解决冲突就是很痛苦的一件事了。</p>
+<p>这里有两个方案可以考虑一下：</p>
+<ol>
+<li><p>其实在第一种方法中完全没必要用cherry-pick，新分支在重新merge后可以直接merge到当前分支的。当然这样还是一样要处理很多冲突，只不过可以一次处理完了。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b fix-merge</span><br><span class="line">git reset &lt;commit before merge&gt; --hard</span><br><span class="line">git merge feature <span class="comment"># fix conflict</span></span><br><span class="line">git checkout master</span><br><span class="line">git merge fix-merge <span class="comment"># fix large conflict</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果是丢了代码并知道丢的是哪次提交的代码，那么可以直接<code>git cherry-pick &lt;commit id&gt;</code>。</p>
+</li>
+<li><p>直接改代码。</p>
+</li>
+</ol>
+<h1 id="git-revert可以解决问题吗？"><a href="#git-revert可以解决问题吗？" class="headerlink" title="git revert可以解决问题吗？"></a>git revert可以解决问题吗？</h1><p>我在网上也看到很多用<code>git revert</code>来解决错误merge的方法，但是这样做只能<strong>撤销merge</strong>而无法去<strong>修复merge</strong>，而且就算提交了revert commit，当前分支也不能重新merge，因为revert只是普通的commit而不能改变已经存在的merge commit。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/&title=《如何修复错误的merge提交》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/&title=《如何修复错误的merge提交》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《如何修复错误的merge提交》 — Code for fun&url=https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/03/23/react-hooks-traps/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">react hooks踩坑记录</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/12/16/这个博客不会再更新了/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">这个博客不会再更新了</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/&title=《如何修复错误的merge提交》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/&title=《如何修复错误的merge提交》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《如何修复错误的merge提交》 — Code for fun&url=https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACJElEQVR42u3aS27DMAwFwNz/0u62QGvnkXQCWBqvisaVNFmw/Oj1ip/j1/P39/n7kzVveDAwMB7LOC6fs3d6x01WTj79Z0cMDIwNGGfbVwNrlXodcPO/wsDAwDjb7Oyd5HB5oMfAwMCoMvI0sVrEYmBgYFwzqoEvTwGToPzVWhwDA+OBjLzr/v2fPzLfwMDAeBTjKD6TRltvnehUGBgYSzPyAJcnZNVEMCpQk/NgYGAszZg30fLLGb2rG4VkEQMDYzlGLx2cYKoHjUI2BgbG0oxeoz9ftHqFopeMYmBg7MmYXxTrtd7yEFwuYjEwMJZg5O2zXqmZBNzk6LfNYDEwMB7CmBexeUi9ThAnIR4DA2NtRq/T3hteVsefvRECBgbG2oykfK2G188NSqM0EQMDYyFGdVTZQ1aL5PKdEQwMjKUZebOsGiIn6WO1hMbAwFiVUW2QVa9QTFLGcpDFwMDYhjFJB/OQ2vsKTs+GgYGxNCMPrPdeqqgG6NFIAAMDYzlGtZTtlcFJY64a0DEwMHZj5Fcl8utcE2S0LwYGxgaMeZI3GRJMumoYGBhrM47i0ytHJ1curpt3GBgYOzDmwS7fLP+CqqthYGDswEg26LX7qyvn7T8MDIw9GXkRmw8183CZ/wd4k+diYGBgtFK3+WgzymoxMDAwglKz15ibDB5GARcDA+OBjPzKRbW47QXcZE0MDIx9GNXScb5ctYitXhrDwMBYiPEDpk90cp2rAtcAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

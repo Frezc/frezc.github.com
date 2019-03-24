@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2015/11/02/my-first-blog/">
+    
+    
+    <title>typecho上的第一篇博客 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content>
+    <meta name="description" content="自己撸了个域名后就决定换个地方写博客了，以前的博客点这访问。关于为什么要换地写呢，主要还是因为电脑装win10的时候把d盘格式化掉了，原来配置了挺长时间的博客配置（改了文件能用https访问，还用七牛做了国内的cdn）都没了，我也没劲再来一遍了，于是就干脆试试typecho吧。 从上学期Hackthon比赛后我就没怎么写过Android了，一直在学cocos2d-js和unity，毕竟我对游戏开发">
+<meta name="keywords" content="frezc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="typecho上的第一篇博客">
+<meta property="og:url" content="https://frezc.github.io/2015/11/02/my-first-blog/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="自己撸了个域名后就决定换个地方写博客了，以前的博客点这访问。关于为什么要换地写呢，主要还是因为电脑装win10的时候把d盘格式化掉了，原来配置了挺长时间的博客配置（改了文件能用https访问，还用七牛做了国内的cdn）都没了，我也没劲再来一遍了，于是就干脆试试typecho吧。 从上学期Hackthon比赛后我就没怎么写过Android了，一直在学cocos2d-js和unity，毕竟我对游戏开发">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-21T13:48:42.039Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="typecho上的第一篇博客">
+<meta name="twitter:description" content="自己撸了个域名后就决定换个地方写博客了，以前的博客点这访问。关于为什么要换地写呢，主要还是因为电脑装win10的时候把d盘格式化掉了，原来配置了挺长时间的博客配置（改了文件能用https访问，还用七牛做了国内的cdn）都没了，我也没劲再来一遍了，于是就干脆试试typecho吧。 从上学期Hackthon比赛后我就没怎么写过Android了，一直在学cocos2d-js和unity，毕竟我对游戏开发">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">typecho上的第一篇博客</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">typecho上的第一篇博客</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-11-02T02:20:00.000Z" itemprop="datePublished" class="page-time">
+  2015-11-02
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/essay/">essay</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+
+<article id="post-my-first-blog" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">typecho上的第一篇博客</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-11-02 10:20:00" datetime="2015-11-02T02:20:00.000Z" itemprop="datePublished">2015-11-02</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/essay/">essay</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>自己撸了个域名后就决定换个地方写博客了，以前的博客<a href="https://frezc.github.io">点这访问</a>。<br>关于为什么要换地写呢，主要还是因为电脑装win10的时候把d盘格式化掉了，原来配置了挺长时间的博客配置（改了文件能用https访问，还用七牛做了国内的cdn）都没了，我也没劲再来一遍了，于是就干脆试试typecho吧。</p>
+<p>从上学期Hackthon比赛后我就没怎么写过Android了，一直在学cocos2d-js和unity，毕竟我对游戏开发还是比较感兴趣的。<br>现在只用Unity了，毕竟比起cocos包含了很多方便的工具，自己做做游戏的话会省事很多。<br>近期为了创新实践的项目还写了个api服务器，不得不说Laravel框架在熟悉了后还是十分简单的，对于我这种没写过php的人都能写的行云流水啊。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/11/02/my-first-blog/&title=《typecho上的第一篇博客》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/11/02/my-first-blog/&title=《typecho上的第一篇博客》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/11/02/my-first-blog/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《typecho上的第一篇博客》 — Code for fun&url=https://frezc.github.io/2015/11/02/my-first-blog/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/11/02/my-first-blog/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2015/11/09/近期的一些琐事/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">近期的一些琐事</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2015/07/20/Danmaku-code/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">关于高级弹幕的一点心得和看法</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/11/02/my-first-blog/&title=《typecho上的第一篇博客》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/11/02/my-first-blog/&title=《typecho上的第一篇博客》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/11/02/my-first-blog/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《typecho上的第一篇博客》 — Code for fun&url=https://frezc.github.io/2015/11/02/my-first-blog/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/11/02/my-first-blog/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACJklEQVR42u3aQVLkMAwFUO5/6aaK1VQNbb6khJnYz6suaOI8L4Rk6eMjXq+vtf7850/+/vn6t+tnXrYwMDAey3gt17tt1pvlr5Xsu/4OBgbGOYzeq6wDaLT9YF8MDAyMdeAbbbk8CAwMDIyrAm6CTIJvnpJiYGBg5MXkfcnfL9XiGBgYD2Rc1Ri44/M/6G9gYGD8Z4zXeFWbmncsDAyMvRl5S7IX8SatgrygxcDA2JtRDaDJo+8+jm/2wsDA2JqRJHNJG6CaGvaK53J/AwMD4wBGldRLE6tl8Nt0FgMDY1PGfGBicvV/WcjGwMDYmtFLEHNMUoImyV/0fwMDA2NrRlJYJsjqCMXksg8DA+M0Rv7Q/CIsSTon4XvUzsTAwHgUI88cqy83CcHVNicGBsYJjEmgnA9Y9NLEZr2LgYHxWEY14M55kwYDBgbGyYykvMy/0wP3DgIDA+MExn3DXnlLYNQcxcDA2JpRTQeriV3yV3lR/cNzMDAwDmBUg+YkgCZtg8KABQYGxjGMqFxsXffPx8Kiw8XAwNiaUW0x5iG7VwznRzPqlGJgYDyE0bvWr17A5bzmwBkGBsbWjEmSlzQmq0+ojlxgYGCcw+g1EZNhiIuv/vPsFQMDY1NGfllWHbZIrtt6x42BgYGRp2VJwTlPCgudWAwMjIMZ1Suw6utOBj4wMDBOYOStx+qIRq89MOqyYmBgbMfo3WVNwvF82KI5rIaBgfE8xifD+3+ti2Gl9wAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

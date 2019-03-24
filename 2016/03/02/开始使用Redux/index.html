@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2016/03/02/开始使用Redux/">
+    
+    
+    <title>开始使用Redux | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="react,redux">
+    <meta name="description" content="最近开始试着用React来写前端了，虽然感觉在构建Web上React实在是有些大材小用，但是毕竟这个库的可是打着Learn Once, Write Anywhere的口号来着，在写不同平台应用时会用React写得开心就行。 然后我发现了Redux这个东西，这是flux的一个实现，那么flux是什么玩意呢？很明显flux不是什么实际的框架，而是一种框架思想，特点就是单项数据流吧，它是将所有状态更新都">
+<meta name="keywords" content="react,redux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="开始使用Redux">
+<meta property="og:url" content="https://frezc.github.io/2016/03/02/开始使用Redux/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="最近开始试着用React来写前端了，虽然感觉在构建Web上React实在是有些大材小用，但是毕竟这个库的可是打着Learn Once, Write Anywhere的口号来着，在写不同平台应用时会用React写得开心就行。 然后我发现了Redux这个东西，这是flux的一个实现，那么flux是什么玩意呢？很明显flux不是什么实际的框架，而是一种框架思想，特点就是单项数据流吧，它是将所有状态更新都">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://frezc.github.io/images/2016/03/653251524.png">
+<meta property="og:image" content="https://frezc.github.io/images/2016/03/1929471663.png">
+<meta property="og:image" content="https://frezc.github.io/images/2016/03/4278813248.png">
+<meta property="og:image" content="https://frezc.github.io/images/2016/03/755933590.png">
+<meta property="og:image" content="https://frezc.github.io/images/2016/03/3965136547.png">
+<meta property="og:updated_time" content="2019-03-21T13:48:42.049Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="开始使用Redux">
+<meta name="twitter:description" content="最近开始试着用React来写前端了，虽然感觉在构建Web上React实在是有些大材小用，但是毕竟这个库的可是打着Learn Once, Write Anywhere的口号来着，在写不同平台应用时会用React写得开心就行。 然后我发现了Redux这个东西，这是flux的一个实现，那么flux是什么玩意呢？很明显flux不是什么实际的框架，而是一种框架思想，特点就是单项数据流吧，它是将所有状态更新都">
+<meta name="twitter:image" content="https://frezc.github.io/images/2016/03/653251524.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">开始使用Redux</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">开始使用Redux</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2016-03-01T17:29:00.000Z" itemprop="datePublished" class="page-time">
+  2016-03-02
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#View"><span class="post-toc-number">1.</span> <span class="post-toc-text">View</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Store"><span class="post-toc-number">2.</span> <span class="post-toc-text">Store</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Action-amp-Action-Creator"><span class="post-toc-number">3.</span> <span class="post-toc-text">Action &amp; Action Creator</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Reducer"><span class="post-toc-number">4.</span> <span class="post-toc-text">Reducer</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-开始使用Redux" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">开始使用Redux</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2016-03-02 01:29:00" datetime="2016-03-01T17:29:00.000Z" itemprop="datePublished">2016-03-02</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>最近开始试着用React来写前端了，虽然感觉在构建Web上React实在是有些大材小用，但是毕竟这个库的可是打着<code>Learn Once, Write Anywhere</code>的口号来着，在写不同平台应用时会用React写得开心就行。</p>
+<p>然后我发现了Redux这个东西，这是flux的一个实现，那么flux是什么玩意呢？<br>很明显flux不是什么实际的框架，而是一种框架思想，特点就是单项数据流吧，它是将所有状态更新都放到一个数据流中进行处理。相比MVC，Flux弱化了Controller的功能吧。</p>
+<p>下面讲讲具体的<a href="https://github.com/Frezc/AnimeList-in-React-Redux" target="_blank" rel="noopener">例子</a>。(请确保你对React已经十分熟悉)</p>
+<a id="more"></a>
+<p>官方的todoApp是十分简单明了的演示了，第一次照着例子打一遍可以有一个大致的理解。</p>
+<p>首先看一下应用的一个流程图<br><img src="/images/2016/03/653251524.png" alt="flux-simple-f8-diagram-with-client-action-1300w.png"></p>
+<p>这是应用内部数据流的演示，实际上Redux已经帮我们把数据流相关的函数封装好了，所以剩下的需要我们写的也就<strong>action creator</strong>和<strong>reducer</strong>了。<br>我写了一个<a href="https://github.com/Frezc/react-redux-starter" target="_blank" rel="noopener">starter</a>，可以直接拿来修改开发。</p>
+<h2 id="View"><a href="#View" class="headerlink" title="View"></a>View</h2><p>我个人习惯还是从View开始开发，View部分和原本的React开发并没有什么不同。只要注意一点，<strong>不要在组件中使用state</strong>，所有需要控制的地方都使用属性，之后你需要从父组件将属性传入。<br>页面我使用全文本表示了，并没有加多少css。</p>
+<h2 id="Store"><a href="#Store" class="headerlink" title="Store"></a>Store</h2><p>因为没有在组件里使用state，所以状态怎么保存呢？<br>Redux里将所有状态都放到了一棵状态树里，而这个状态树保存在Store实例里。那么在View如何获得这个状态树呢。</p>
+<p><img src="/images/2016/03/1929471663.png" alt="create_store.png"></p>
+<p>这里做了3件事，绑定中间件、创建store、通过Provider组件绑定View和store。这么做以后store里的状态树更新时都会传递给View。<br>然后在你需要获得状态树的组件里（官方建议只在顶层组件里获取）<br><img src="/images/2016/03/4278813248.png" alt="view_connect.png"></p>
+<p>通过connect绑定该View后，每次状态树更新时都会调用<em>select</em>函数，参数就是状态树，该函数的返回对象会传递给该View的props对象<br><img src="/images/2016/03/755933590.png" alt="state_props.png"></p>
+<p>这样之前根据之前写的通过属性控制的View就会自动更新了。</p>
+<h2 id="Action-amp-Action-Creator"><a href="#Action-amp-Action-Creator" class="headerlink" title="Action &amp; Action Creator"></a>Action &amp; Action Creator</h2><p>Action指的是更新状态的请求，其格式一般（不是一定）是这样的</p>
+<pre><code>{type: DOWHAT, params: optional}
+</code></pre><p>type是提醒Redux要做什么，Action中也能跟其他参数。当然你可以自己定义格式，只要在后面Reducer里处理时对应就好。</p>
+<p>Action Creator就是返回Action对象的纯函数，其存在的意义主要是少打代码、减少错误。<br><img src="/images/2016/03/3965136547.png" alt="action_creator.png"></p>
+<p>有了Action后只要调用<em>dispatch</em>方法（见上上图）就能通知Redux要干什么了，接下来Action会传递给Reducer处理，以更新状态树。</p>
+<p>PS: 如果需要请求API的话只要不写在Reducer里就可以了，dispatch action纯粹只是用来更新状态的，和之前setState功能相同。所以只要请求完后异步dispatch一下就可以了。不一定要使用redux-thunk之类的异步库。</p>
+<h2 id="Reducer"><a href="#Reducer" class="headerlink" title="Reducer"></a>Reducer</h2><p>Reducer有点类似于MVC中Controller的功能，其作用就是通过用户传来的Action更新状态树。<br>Reducer都是纯函数，所以这里需要注意下函数式编程（fundamental pattern）的思想。<br>怎么写见<a href="http://redux.js.org/docs/basics/Reducers.html" target="_blank" rel="noopener">官方文档</a>。</p>
+<p>写Reducer做好3点就可以了</p>
+<ol>
+<li>按照状态树的结构拆分，根Reducer最好调用<em>combineReducers</em></li>
+<li>所有Reducer函数里的state<strong>必须</strong>要有初始值，在es6中很简单，直接在参数中赋值就行了，像其他编程语言一样。</li>
+<li>为了符合fp的思想，<strong>不要</strong>在reducer中修改传入的state。如果要修改则应该返回一个全新的state。</li>
+</ol>
+<p>总的来说reducer怎么写取决于状态树的设计，所以建议在写reducer前把状态树设计好，再对应状态树写函数。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>虽然一开始搭建一个Redux的结构比普通项目要麻烦很多。但是之后再进行修改时就会发现项目结构十分的清晰，比起MVC中将管理状态、组件更新、网络请求等全部塞到Controller里，Redux把这些功能都分散到了Reducer、Store、Action Creator里，就显的很整洁了。</p>
+<p>说实话理解Redux还是花了不少时间的，尤其是要解决<em>“这比起MVC有什么优势吗”</em>这个疑问。<br>我这里还是推荐<a href="http://redux.js.org" target="_blank" rel="noopener">官方文档</a>(<a href="http://cn.redux.js.org/" target="_blank" rel="noopener">中文版</a>)。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/redux/">redux</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2016/03/02/开始使用Redux/&title=《开始使用Redux》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2016/03/02/开始使用Redux/&title=《开始使用Redux》 — Code for fun&source=最近开始试着用React来写前端了，虽然感觉在构建Web上React实在是有些大材小用，但是毕竟这个库的可是打着Learn Once, Write Any..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2016/03/02/开始使用Redux/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《开始使用Redux》 — Code for fun&url=https://frezc.github.io/2016/03/02/开始使用Redux/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2016/03/02/开始使用Redux/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2016/03/06/标准化React-Redux-纯函数式编程？/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">标准化React + Redux = 纯函数式编程？</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2016/02/21/react-native对md风格中StatusBar的处理方式/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">react-native对md风格中StatusBar的处理方式</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2016/03/02/开始使用Redux/&title=《开始使用Redux》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2016/03/02/开始使用Redux/&title=《开始使用Redux》 — Code for fun&source=最近开始试着用React来写前端了，虽然感觉在构建Web上React实在是有些大材小用，但是毕竟这个库的可是打着Learn Once, Write Any..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2016/03/02/开始使用Redux/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《开始使用Redux》 — Code for fun&url=https://frezc.github.io/2016/03/02/开始使用Redux/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2016/03/02/开始使用Redux/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACLElEQVR42u3aQXLDIBAEwPz/08rVhxjPgJwqQXNy2ZKgdVizu/z8xON6Ge++f/313fXvnjz+5raBgYHxWMY1HONrEmryhHbeP2bBwMA4gDEOhUkwXbk+ec6HezEwMDCCRefBcYzEwMDAuIsRPXohJcbAwMCYS2LbGleerI4ZN+fiGBgYD2TkIfL/P3+lv4GBgfEoxlWO9XZmkrLWq8LAwNia0SaoebqbL3cuGcbAwDiHcVfCOXfwYr3ZuXSOAwMD47GMZBErqW++0CJkY2BgHMNItoP5QYrxK0hK/MWvGBgYxzDmCmHtlOO7Jl8BBgbGAYx2QzZXYssPk9WtTQwMjCMZc6lp21rIZ//wmjAwMA5gtA3FuS3jbSlrXjXEwMDYlJFv8qKjWmWhrZ0xWgoGBsbDGe2y5hLayTBablgxMDB2ZeSFrWTb187Sluo+bA0xMDA2ZSRp5EoK2h7OKP4f8qoeBgbGFoy26NaG1+TeleQWAwPjBEabWOZTzp2IWGkhYGBg7MpYmSDZ8LXJalvaw8DAOIfRLujewtxK0Q0DA+McRl4+mwvBbbcxD/cYGBh7M65yJNO0hbbkuEb9j4GBgbERY6U/uAKbawPkYR0DA2M/RjLB3JtoU+Kl4xcYGBgHMNoDFm2rcmXjGCExMDAwysZAHprHIf6LARcDA2Nrxkpym4fpNohjYGCcwEiS2HYRcylrkjxjYGCcxmj3Xe2Rr7yU9o0jGhgYGA9n/ALl5SLgXRwphgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

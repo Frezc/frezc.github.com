@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2015/06/07/use-intellij-live-template/">
+    
+    
+    <title>使用intellij的模板（live template） | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="intellij idea,live template">
+    <meta name="description" content="intellij的live template功能十分强大，可以简化很多重复的代码，可以说是使用好intellij必会的一个东西。 ##什么是live templatelive template相当于一个代码块的缩写在编辑代码的过程中按下Ctrl+j可以查看当前上下文中可用的所有模板，下面是一些可能常用的模板（可以不用上面的快捷键，直接打出缩写会出现提示）。psvm:123public static">
+<meta name="keywords" content="intellij idea,live template">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用intellij的模板（live template）">
+<meta property="og:url" content="https://frezc.github.io/2015/06/07/use-intellij-live-template/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="intellij的live template功能十分强大，可以简化很多重复的代码，可以说是使用好intellij必会的一个东西。 ##什么是live templatelive template相当于一个代码块的缩写在编辑代码的过程中按下Ctrl+j可以查看当前上下文中可用的所有模板，下面是一些可能常用的模板（可以不用上面的快捷键，直接打出缩写会出现提示）。psvm:123public static">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://frezc.github.io/2015/06/07/use-intellij-live-template/lim.png">
+<meta property="og:updated_time" content="2019-03-21T13:48:42.046Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用intellij的模板（live template）">
+<meta name="twitter:description" content="intellij的live template功能十分强大，可以简化很多重复的代码，可以说是使用好intellij必会的一个东西。 ##什么是live templatelive template相当于一个代码块的缩写在编辑代码的过程中按下Ctrl+j可以查看当前上下文中可用的所有模板，下面是一些可能常用的模板（可以不用上面的快捷键，直接打出缩写会出现提示）。psvm:123public static">
+<meta name="twitter:image" content="https://frezc.github.io/2015/06/07/use-intellij-live-template/lim.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">使用intellij的模板（live template）</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">使用intellij的模板（live template）</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-06-07T12:42:45.000Z" itemprop="datePublished" class="page-time">
+  2015-06-07
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+
+<article id="post-use-intellij-live-template" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">使用intellij的模板（live template）</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-06-07 20:42:45" datetime="2015-06-07T12:42:45.000Z" itemprop="datePublished">2015-06-07</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>intellij的live template功能十分强大，可以简化很多重复的代码，可以说是使用好intellij必会的一个东西。</p>
+<p>##什么是live template<br>live template相当于一个代码块的缩写<br>在编辑代码的过程中按下<code>Ctrl+j</code>可以查看当前上下文中可用的所有模板，下面是一些可能常用的模板（可以不用上面的快捷键，直接打出缩写会出现提示）。<br><strong>psvm</strong>:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>psfi</strong>、<strong>psfs</strong>:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String</span><br></pre></td></tr></table></figure></p>
+<p><strong>sout</strong>、<strong>soutv</strong>:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">System.out.println($END$);</span><br><span class="line">System.out.println(<span class="string">"$EXPR_COPY$ = "</span> + $EXPR$); <span class="comment">//这里是指打印类中的一个变量</span></span><br></pre></td></tr></table></figure></p>
+<p>##live template是如何生成的<br>在<code>Settings -&gt; Editor -&gt; Code Style -&gt; Live Templates</code>里可以查看并修改所有的模板，当然也能自己创建。<br>我们先看看<strong>output</strong>下的<strong>soutm</strong>是怎么写的<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(<span class="string">"$CLASS_NAME$.$METHOD_NAME$"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>这个模板是用来生成打印当前类和方法名的，这里面有两个变量<strong>$CLASS_NAME$</strong>和<strong>$METHOD_NAME$</strong>，点击右边的<strong>Edit variables</strong>来看看它们是怎么定义的。</p>
+<hr>
+<p>在<strong>Edit Template Variables</strong>对话框中可以看到这两个变量，通过每列的标题就知道是干什么的了，这里主要注意两点：</p>
+<ol>
+<li>变量是有顺序的，idea会按顺序来生成这些变量，所以注意依赖关系。</li>
+<li>Expression栏可以填双引号包含的字符串、其他已经定义的变量和预定义的函数，从下拉列表里可以选择预定义的函数。函数说明请参考<a href="https://www.jetbrains.com/idea/help/edit-template-variables-dialog.html#functions" target="_blank" rel="noopener">官方文档</a></li>
+</ol>
+<p>在预定义函数中有个十分强大的函数<code>groovyScript(&quot;groovy code&quot;)</code>，它可以执行groovy语句。比如模板<strong>soutp</strong>:<code>System.out.println($FORMAT$);</code>这里的变量<code>$FORMAT$</code>对应的Expression是<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">groovyScript(<span class="string">"'\"' + _1.collect &#123; it + ' = [\" + ' + it + ' + \"]'&#125;.join(', ') + '\"'"</span>, methodParameters())</span><br></pre></td></tr></table></figure></p>
+<p>稍微解释下这句，方法<code>methodParameters()</code>返回了当前方法参数的数组，这个数组对应着前面groovy语句中的_1，然后遍历_1，生成类似<code>&quot;xxx = [&quot; + xxx + &quot;]...</code>的java代码，多个之间使用<code>,</code>隔开，这句实际生成的代码如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(<span class="string">"user = ["</span> + user + <span class="string">"], isSave = ["</span> + isSave + <span class="string">"]"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>##自定义live template<br>这里我自定义了一个live template<br><strong>lim</strong>:<code>Log.i(&quot;$END$&quot;,&quot;$CLASS_NAME$.$METHOD_NAME$:&quot; + $METHOD_PARAMETERS$);</code><br>这个模板是用来生成将当前方法加参数名与值打印到Log的方法。其中<br><strong>$CLASS_NAME$</strong>:<code>className()</code><br><strong>$METHOD_NAME$</strong>:<code>methodName()</code><br><strong>$METHOD_PARAMETERS$</strong>:<code>groovyScript(&quot;&#39;\&quot;&#39; + _1.collect { it + &#39; = [\&quot; + &#39; + it + &#39; + \&quot;]&#39;}.join(&#39;, &#39;) + &#39;\&quot;&#39;&quot;, methodParameters())</code><br><strong>$END$</strong>:上面的变量生成结束后光标停留位置<br>建议把<strong>Skip if defined</strong>勾选，这样就不会询问你是否要更改上面的变量了。</p>
+<p>####优化<br>上面的模板在输入完TAG后还要手动把光标移到语句尾，显得很麻烦，有没有办法再输入完TAG后回车直接进入下一行呢？ 当然是可以的，修改成如下即可：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Log.i(<span class="string">"$TAG$"</span>,<span class="string">"$CLASS_NAME$.$METHOD_NAME$:"</span> + $METHOD_PARAMETERS$);</span><br><span class="line">$END$</span><br></pre></td></tr></table></figure></p>
+<p>新增的<strong>$TAG$</strong>变量的Expression可以填你的初始值，如<code>&quot;Test&quot;</code>，如果你需要修改就不要勾选<strong>Skip if defined</strong>。这样在输入玩TAG后直接回车就能跳转到下一行了，是不是十分方便。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://frezc.github.io/2015/06/07/use-intellij-live-template/lim.png" alt="lim" title>
+                </div>
+                <div class="image-caption">lim</div>
+            </figure>
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/intellij-idea/">intellij idea</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/live-template/">live template</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/06/07/use-intellij-live-template/&title=《使用intellij的模板（live template）》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/06/07/use-intellij-live-template/&title=《使用intellij的模板（live template）》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/06/07/use-intellij-live-template/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用intellij的模板（live template）》 — Code for fun&url=https://frezc.github.io/2015/06/07/use-intellij-live-template/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/06/07/use-intellij-live-template/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2015/07/20/Danmaku-code/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">关于高级弹幕的一点心得和看法</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2015/05/27/kjframe-http-loading-bitmap/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">用KJFrame的KJHttp请求无法加载图片</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/06/07/use-intellij-live-template/&title=《使用intellij的模板（live template）》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/06/07/use-intellij-live-template/&title=《使用intellij的模板（live template）》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/06/07/use-intellij-live-template/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用intellij的模板（live template）》 — Code for fun&url=https://frezc.github.io/2015/06/07/use-intellij-live-template/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/06/07/use-intellij-live-template/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACLUlEQVR42u3aW67CMAyE4e5/0z0LgIaZcXqk2H+fEIiQjwfLt+uSn/vjefr06Z31mZ/vX288MGDAOJZxL581Y81bn6/8TcrdYMCAMYfx9PNPr9eBUg+++jk/7gwDBgwYcgK3Dp3rVBIGDBgw9jLc1M1NNGHAgAEjK2KVC9UD6+u1OAwYMA5k6F33/3/9ynwDBgwYRzFu81kXtG7TP7vDl9NgwIDRmqEHOD05y5JId9kCBgwYkxlZKVtZI3OHo0b2CgMGjEaMyoJXRspWMaRvwYABoylDaeW7MH3xy0j+stQQBgwYhzOyYaTbUHOLWHvtDAYMGAMY+nEVqnu+EaBhwIDRmpG1ybK0Lytlw5YfDBgwxjDcsjZLGXWGXlrDgAGjHyMrLPeONuvLZzBgwOjNUBK4+tgyC+7bilgYMGAczqg3yLLel/JnGY05GDBgNGW4h7rNL+WKWUC3ZxcwYMA4nJGtSijBWm/buQMGGDBgzGFkhWvWLNs1hDC6hjBgwGjHcJto2cBAWafIfgsGDBhzGPoKV3ZRt5Q1ls9gwIAxgOGWo9nYsjJgsItYGDBgtGDc5pMNGJSg6Z7wOIOFAQNGO0a2LrZrycwNxPpAAgYMGP0Y+khAyjQ3MfRUFQYMGHMYbpGpN9H0xQu3iP0xGIABA8Z4hh4o31g4M9qJMGDAGMyotNjcRFM6BwYMGAMY+upqFoLd8YA+LoUBA8YERql01Hc65EtkC7IwYMBoyvgDSEfbGWSDU7cAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

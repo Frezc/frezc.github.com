@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2015/12/31/用SVG画一个笑脸男图标/">
+    
+    
+    <title>用SVG画一个笑脸男图标 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="动漫">
+    <meta name="description" content="自从看完攻壳的第一季后就想自己做个会动的笑脸男的矢量图图标了，最近花了点时间终于搞定了。下面我会谈谈网页上矢量图该怎么写。预览（在ie和edge上文字无法滚动，在chrome上是正常的，其他浏览器不清楚）。源代码。">
+<meta name="keywords" content="动漫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用SVG画一个笑脸男图标">
+<meta property="og:url" content="https://frezc.github.io/2015/12/31/用SVG画一个笑脸男图标/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="自从看完攻壳的第一季后就想自己做个会动的笑脸男的矢量图图标了，最近花了点时间终于搞定了。下面我会谈谈网页上矢量图该怎么写。预览（在ie和edge上文字无法滚动，在chrome上是正常的，其他浏览器不清楚）。源代码。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-21T13:48:42.049Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用SVG画一个笑脸男图标">
+<meta name="twitter:description" content="自从看完攻壳的第一季后就想自己做个会动的笑脸男的矢量图图标了，最近花了点时间终于搞定了。下面我会谈谈网页上矢量图该怎么写。预览（在ie和edge上文字无法滚动，在chrome上是正常的，其他浏览器不清楚）。源代码。">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">用SVG画一个笑脸男图标</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">用SVG画一个笑脸男图标</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2015-12-30T16:23:00.000Z" itemprop="datePublished" class="page-time">
+  2015-12-31
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#制作矢量图的工具"><span class="post-toc-number">1.</span> <span class="post-toc-text">制作矢量图的工具</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#用代码画矢量图"><span class="post-toc-number">2.</span> <span class="post-toc-text">用代码画矢量图</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#转动的文字"><span class="post-toc-number">3.</span> <span class="post-toc-text">转动的文字</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#其他"><span class="post-toc-number">4.</span> <span class="post-toc-text">其他</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-用SVG画一个笑脸男图标" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">用SVG画一个笑脸男图标</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2015-12-31 00:23:00" datetime="2015-12-30T16:23:00.000Z" itemprop="datePublished">2015-12-31</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>自从看完攻壳的第一季后就想自己做个会动的笑脸男的矢量图图标了，最近花了点时间终于搞定了。<br>下面我会谈谈网页上矢量图该怎么写。<br><a href="http://frezc.github.io/NetResources/waraiotoko/">预览</a>（在ie和edge上文字无法滚动，在chrome上是正常的，其他浏览器不清楚）。<a href="https://github.com/Frezc/NetResources/blob/master/waraiotoko/main.js" target="_blank" rel="noopener">源代码</a>。</p>
+<a id="more"></a>
+<h2 id="制作矢量图的工具"><a href="#制作矢量图的工具" class="headerlink" title="制作矢量图的工具"></a>制作矢量图的工具</h2><p>虽然在网页上是用代码实现的，但是设计还是需要一个能画矢量图的工具的。<br>可以用Illustrator(Ai)或者一个在线的工具就可以了。我这里直接用了别人用ai设计的矢量图，所以对详情设计也不太了解。</p>
+<p>然后使用一个越方便越好的画svg的js库就行了。原本看网上大家都推荐使用raphael.js，但是这个库没有画路径文字的方法，于是果断找了另外一个库svg.js，这个库能解决这个问题，还比raphael.js要小。</p>
+<h2 id="用代码画矢量图"><a href="#用代码画矢量图" class="headerlink" title="用代码画矢量图"></a>用代码画矢量图</h2><p>笑脸男的图像里基本上都是使用路径画好的，所以只要使用画路径的方法就行了。关于路径，w3有一套<a href="http://www.w3.org/TR/SVG/paths.html" target="_blank" rel="noopener">规范</a>，只要能看懂这里的写法就好，这是所有库都通用的标准写法。<br>其中可能让人困惑的一点就是arc画法了（其实规范里的图已经说明的挺好了）。它是提供当前点（起始点）、x、y上的半径、旋转角度、large-arc-flag、sweep-flag和终点来确定一个弧的。其中large-arc-flag指是否画大一点的弧，sweep-flag指从起点到终点是否为顺时针画线。</p>
+<p>对路径熟悉后就可以把你设计图给搬进代码里了，如果你的编辑器能直接生成w3标准的代码的话就再好不过了。</p>
+<h2 id="转动的文字"><a href="#转动的文字" class="headerlink" title="转动的文字"></a>转动的文字</h2><p>文字的部分其实有点麻烦，麻烦在做动画上。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> t1 = paper.text(s);</span><br><span class="line">t1.fill(<span class="string">'#23498C'</span>).font(&#123;<span class="attr">size</span>: <span class="number">50</span>, <span class="string">'letter-spacing'</span>: <span class="number">2.3</span>, <span class="attr">weight</span>: <span class="number">700</span>&#125;)</span><br><span class="line">t1.path(<span class="string">'M 605,365 A 300,300 0 1,1 605,260'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>先将路径确定好，并调整文字的一些属性，使其和原图一样。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">t1.textPath().attr(<span class="string">'startOffset'</span>, <span class="string">'0'</span>).animate(&#123; <span class="attr">ease</span>: <span class="string">'-'</span>, <span class="attr">duration</span>: <span class="number">10000</span>&#125;).attr(<span class="string">'startOffset'</span>, <span class="string">'100%'</span>).loop()</span><br></pre></td></tr></table></figure></p>
+<p>然后调用动画方法就能动了。但是这样无法将文字循环，文字播放到终点就消失了。<br>一开始我想再用一个文字矢量图接着这个画的，但是svg里的<code>startOffset</code>不能使用负值（负值当然也是有效的，但是不能像0~100%这样设置）。于是想用逆时针路径然后倒过来播放，可惜这样文字就倒过来了，也不知道是否有办法设置。</p>
+<p>最后终于想到一个完美的方案<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">t1.path(<span class="string">'M 605,365 A 300,300 0 1,1 605,260 M 605,365 A 300,300 0 1,1 605,260'</span>)</span><br><span class="line">t1.textPath().attr(<span class="string">'startOffset'</span>, <span class="string">'0'</span>).animate(&#123; <span class="attr">ease</span>: <span class="string">'-'</span>, <span class="attr">duration</span>: <span class="number">10000</span>&#125;).attr(<span class="string">'startOffset'</span>, <span class="string">'50%'</span>).loop()</span><br></pre></td></tr></table></figure></p>
+<p>把路径画两遍，然后播放时<code>startOffset</code>从0~50%进行循环就行了。<br>如果你也想实现这种无限循环地旋转的话，可以试试这个方法。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>之所以做这个还是由于对笑脸男这个人物的喜爱吧，有能力的同时愿意来为真相做出贡献。有意思的是，攻壳第二季第二集的主人公和他完全就是相反的人。空想但没有勇气去做，想想自己和大概也就是这样的人了。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动漫/">动漫</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/12/31/用SVG画一个笑脸男图标/&title=《用SVG画一个笑脸男图标》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/12/31/用SVG画一个笑脸男图标/&title=《用SVG画一个笑脸男图标》 — Code for fun&source=自从看完攻壳的第一季后就想自己做个会动的笑脸男的矢量图图标了，最近花了点时间终于搞定了。下面我会谈谈网页上矢量图该怎么写。预览（在ie和edge上文字无法..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/12/31/用SVG画一个笑脸男图标/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《用SVG画一个笑脸男图标》 — Code for fun&url=https://frezc.github.io/2015/12/31/用SVG画一个笑脸男图标/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/12/31/用SVG画一个笑脸男图标/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2016/02/19/在Android的原生模块中得到RN组件的引用/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">在Android的原生模块中得到RN组件的引用</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2015/12/25/动画的排行榜-页面实现/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">动画的排行榜 - 页面实现</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2015/12/31/用SVG画一个笑脸男图标/&title=《用SVG画一个笑脸男图标》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2015/12/31/用SVG画一个笑脸男图标/&title=《用SVG画一个笑脸男图标》 — Code for fun&source=自从看完攻壳的第一季后就想自己做个会动的笑脸男的矢量图图标了，最近花了点时间终于搞定了。下面我会谈谈网页上矢量图该怎么写。预览（在ie和edge上文字无法..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2015/12/31/用SVG画一个笑脸男图标/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《用SVG画一个笑脸男图标》 — Code for fun&url=https://frezc.github.io/2015/12/31/用SVG画一个笑脸男图标/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2015/12/31/用SVG画一个笑脸男图标/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACxUlEQVR42u3a0W7bQAwEwPz/T7dAnwo0kndJnZ0CoycjkaWbC3BkSH59xdevP9e/n69++/d19a2rt2yeMLzw8PDwRkvPH33Fa++fsfM14+Hh4Z3m5cEg3472iL//+fAJeHh4eB/lJQHg/qC/v+f+aXh4eHj/I69NixPwZivx8PDwPsvLU+T7pd+XKvItS777cK0FDw8PL+ZtGmCf+vym/h4eHh5e2VVPjt2k9NCm6ffvKtaJh4eHd4DXlgzadHY2PpUPdUUBAw8PD+8Ab3ZMJ+DZ1rQjC8NaNR4eHt6Il5RHNwn0ZlygLftGyTQeHh7empcsJR+xyptnG1j+x8DDw8M7wZslrG0hY5ZGzwYLvol7eHh4eI/yZqlwm3Y/O91QrwoPDw/vAK/9Vz9JnTcl3adCER4eHt47eW1ZoW2h5SXdNsnGw8PDO81r09+2HNBuxKxYfPk0PDw8vGO8PAy0RdjNWEA7fPDNk/Hw8PCO8Z4qzraHexsw6vvx8PDwDvBmLaV8KKpdyixlf/F2PDw8vAO85NjNC7jJK/MNakcN8kYaHh4e3oY3K0BsChazANM+GQ8PD+8EbzNr0A5IJWWOWRi4/IyHh4d3mLcZC8jDRhJs8qLtUI+Hh4e35t1fSepcHNYPbXQUePDw8PAO8Gan6GZBbal3xnvR5cPDw8N7iJe3tfIH5SFnlkbXSTYeHh7eQ7y2xJA3wGbl3TwsRY06PDw8vGO82QBB0hiblXFXMa39C+Dh4eE92iFqR6OS8NAe9PkW11VqPDw8vPl6HihM5Id7ni4njLbAgYeHh7fnzYqtbckg2YLkzjyE4OHh4Z3mtZ2j9qDPm1ht1HpROMbDw8P7Ybw2IU6Wnnyr2Eo8PDy8j/I2Zdm2kbYpYeDh4eG9h7cZhNqEjbzxlrfK8PDw8E7z2gZYDs5bVrPyRN6Kw8PDw3uI9xtcFyvwojiY0wAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
