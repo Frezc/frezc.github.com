@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+<!-- Baidu Push -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<!-- End Baidu Push -->
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <meta name="baidu-site-verification" content="bmvYqUCgMu">
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/">
+    
+    
+    <title>使用typescript实现依赖注入框架 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="typescript,web service">
+    <meta name="description" content="首先思考一个问题：我们为什么需要依赖注入(Dependency injection下面简称DI)？ 之前用java的spring、php的laravel和angular时发现它们的模式非常相似，框架会把请求处理、线程管理、错误处理等都封装好，你只需要实现对应的横向和纵向切面，然后让框架来管理和调用你的代码，这就是设计模式中有名的控制反转(简称IOC)。 而DI是IOC的一种比较通用的实现方式，举个">
+<meta name="keywords" content="typescript,web service">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用typescript实现依赖注入框架">
+<meta property="og:url" content="https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="首先思考一个问题：我们为什么需要依赖注入(Dependency injection下面简称DI)？ 之前用java的spring、php的laravel和angular时发现它们的模式非常相似，框架会把请求处理、线程管理、错误处理等都封装好，你只需要实现对应的横向和纵向切面，然后让框架来管理和调用你的代码，这就是设计模式中有名的控制反转(简称IOC)。 而DI是IOC的一种比较通用的实现方式，举个">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-04-05T07:46:16.931Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用typescript实现依赖注入框架">
+<meta name="twitter:description" content="首先思考一个问题：我们为什么需要依赖注入(Dependency injection下面简称DI)？ 之前用java的spring、php的laravel和angular时发现它们的模式非常相似，框架会把请求处理、线程管理、错误处理等都封装好，你只需要实现对应的横向和纵向切面，然后让框架来管理和调用你的代码，这就是设计模式中有名的控制反转(简称IOC)。 而DI是IOC的一种比较通用的实现方式，举个">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">使用typescript实现依赖注入框架</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">使用typescript实现依赖注入框架</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-08-17T05:58:15.000Z" itemprop="datePublished" class="page-time">
+  2018-08-17
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#核心API"><span class="post-toc-number">1.</span> <span class="post-toc-text">核心API</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#API实现原理"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">API实现原理</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Typescript-metadata"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">Typescript metadata</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#注入"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">注入</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#路由设计"><span class="post-toc-number">2.</span> <span class="post-toc-text">路由设计</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#接口层的IO"><span class="post-toc-number">3.</span> <span class="post-toc-text">接口层的IO</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#项目结构"><span class="post-toc-number">4.</span> <span class="post-toc-text">项目结构</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#绑定Hapi-js"><span class="post-toc-number">5.</span> <span class="post-toc-text">绑定Hapi.js</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Todo"><span class="post-toc-number">6.</span> <span class="post-toc-text">Todo</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-how-to-impletement-denpendency-injection-in-typescript" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">使用typescript实现依赖注入框架</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-08-17 13:58:15" datetime="2018-08-17T05:58:15.000Z" itemprop="datePublished">2018-08-17</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/develop/">develop</a></li></ul>
+
+
+
+            
+<span style="display: none">
+    <span id="busuanzi_container_page_pv" title="文章总阅读量" style="display:none">
+        <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+    </span>
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>首先思考一个问题：我们为什么需要依赖注入(Dependency injection下面简称DI)？</p>
+<p>之前用java的spring、php的laravel和angular时发现它们的模式非常相似，框架会把请求处理、线程管理、错误处理等都封装好，你只需要实现对应的横向和纵向切面，然后让框架来管理和调用你的代码，这就是设计模式中有名的<strong>控制反转</strong>(简称IOC)。</p>
+<p>而DI是IOC的一种比较通用的实现方式，举个例子我们的web服务中有controller（接口层）和service（业务逻辑层），我们需要在controller中调用service的代码，但是service一般会有<strong>上下文(context)</strong>（比如使用了当前的请求对象、数据库连接、全局参数等）。如果我们每次在调用service时都要手动给它这么多参数实在太麻烦了，而且代码会很耦合。此时DI就能解决这个问题了，我们只需要声明需要的对象，框架就能自动创建好带有<strong>上下文</strong>对象。那么下面我们来看看怎么用ts实现一个简单的依赖注入框架。</p>
+<hr>
+<p><em>下文写的时候我还没有使用过nodejs写过复杂的后端服务，所以造了个简单的轮子来梳理项目代码，使用的hapijs社区也不太活跃，所以本文仅适合作为参考和学习使用。要使用nodejs开发大型应用的话建议使用<a href="https://github.com/nestjs/nest" target="_blank" rel="noopener">nest.js</a>或者<a href="https://github.com/eggjs/egg/" target="_blank" rel="noopener">eggjs</a>。</em></p>
+<h1 id="核心API"><a href="#核心API" class="headerlink" title="核心API"></a>核心API</h1><p>先看看实现的API长什么样<br><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> Knex <span class="keyword">from</span> <span class="string">'knex'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; autowired, impl, context &#125; <span class="keyword">from</span> <span class="string">'../injection'</span>;</span><br><span class="line">  </span><br><span class="line"><span class="keyword">class</span> MyController &#123;</span><br><span class="line">  <span class="meta">@autowired</span> userRepository: IUserRepository;</span><br><span class="line">  </span><br><span class="line">  getUsers() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.userRepository.getAllExistUsers();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line"><span class="comment">// 这里用抽象类来表示接口（下面会通称为“接口”）</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> IUserRepository &#123;</span><br><span class="line">  <span class="keyword">abstract</span> getAllExistUsers(): PromiseLike&lt;IUser[]&gt;;</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line"><span class="meta">@impl</span>(IUserRepository)</span><br><span class="line"><span class="keyword">class</span> UserRepositoryImpl <span class="keyword">extends</span> IUserRepository &#123;</span><br><span class="line">  <span class="meta">@context</span>(<span class="string">'knex'</span>) knex: Knex;</span><br><span class="line">  </span><br><span class="line">  getAllExistUsers() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.knex(<span class="string">'users'</span>).select().where(<span class="string">'deleted'</span>, <span class="literal">false</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里的API设计稍微参考了下spring，还有一些妥协设计（比如为什么要用<code>abstract class</code>而不用<code>interface</code>、为什么 <code>@impl</code> 需要传入对应接口），这些下面会解释。</p>
+<h2 id="API实现原理"><a href="#API实现原理" class="headerlink" title="API实现原理"></a>API实现原理</h2><p>这里虽然实现了3个<a href="https://www.typescriptlang.org/docs/handbook/decorators.html" target="_blank" rel="noopener"><code>decorator</code></a>，但是这些<code>decorator</code>的作用其实和java里的<code>annotation</code>一样 —— 定义metadata，所以实现上很简单，基本上都是一句话就能讲清楚里面的逻辑：</p>
+<ul>
+<li><code>@autowired</code> (需要自动注入的变量)：把当前的property key（<code>&#39;userRepository&#39;</code>）以及对应的type（<code>IUserRepository</code>）存到当前类的<code>metadata</code>中，方便后面注入的时候传入。</li>
+<li><code>@impl</code> (实现某个接口的类)：将当前的接口和类保存到一个全局Map&lt;接口, 实现&gt;。</li>
+<li><code>@context</code>（需要注入当前应用上下文的变量）：将当前key（<code>&#39;knex&#39;</code>）与需要注入的context key（<code>&#39;knex&#39;</code>）保存到当前类的<code>metadata</code></li>
+</ul>
+<p>下面是autowired的实现</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> metaKey = Symbol(<span class="string">'autowiredKeys'</span>);</span><br><span class="line"> </span><br><span class="line"><span class="keyword">interface</span> IAutowiredKey &#123;</span><br><span class="line">  <span class="comment">// 字段名</span></span><br><span class="line">  key: <span class="built_in">string</span>;</span><br><span class="line">  <span class="comment">// 对应类型，通过metadata返回的类型必定是Object与其子类</span></span><br><span class="line">  <span class="keyword">type</span>: <span class="built_in">Function</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">autowired</span>(<span class="params">target: <span class="built_in">any</span>, propertyKey: <span class="built_in">string</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> autowiredKeys = getAutowiredKeys(target);</span><br><span class="line">  <span class="comment">// 得到当前装饰成员变量的类型</span></span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">type</span> = Reflect.getMetadata(<span class="string">'design:type'</span>, target, propertyKey);</span><br><span class="line">  autowiredKeys.push(&#123; key: propertyKey, <span class="keyword">type</span> &#125;);</span><br><span class="line">  <span class="comment">// 将变量保存到当前类的metadata里</span></span><br><span class="line">  Reflect.defineMetadata(metaKey, autowiredKeys, target);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 拿到在当前类上定义的需要自动注入的key和type</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">getAutowiredKeys</span>(<span class="params">target: <span class="built_in">any</span></span>): <span class="title">IAutowiredKey</span>[] </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> Reflect.getMetadata(metaKey, target) || [];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Typescript-metadata"><a href="#Typescript-metadata" class="headerlink" title="Typescript metadata"></a>Typescript metadata</h2><p>typescript可以通过<code>metadata</code>拿到3种类型信息</p>
+<ul>
+<li>对象上的成员变量类型</li>
+<li>函数的参数类型</li>
+<li>函数的返回类型</li>
+</ul>
+<p>但是又有非常大的限制，可以看一下<a href="http://blog.wolksoftware.com/decorators-metadata-reflection-in-typescript-from-novice-to-expert-part-4#3-basic-type-serialization_1" target="_blank" rel="noopener">这一节文章</a>，简单来说就是拿不到 <code>interface</code> 的类型，而 <code>abstract class</code> 可以，所以使用中需要用 <code>abstract class</code> 来代替 <code>interface</code> 。</p>
+<p>另外关于 <code>@impl</code> 为什么要传入对应接口，主要是因为如果不传入接口的话，在注入<code>@autowired</code>变量时，我必须要遍历被<code>@impl</code>装饰的类来判断其是否是该变量类型的本身或者子类。</p>
+<p>这里可能会出现一个问题，如果<code>@autowired</code>的变量类型是<code>interface</code>啥的话，由于上面提到的限制我只能拿到 <code>Object</code> 这个类型，由于所有类都是其子类，所以就会注入错误的类型了。</p>
+<h2 id="注入"><a href="#注入" class="headerlink" title="注入"></a>注入</h2><p>关于<code>@autowired</code>字段的注入实现非常简单，实现以下几步就行了：</p>
+<ol>
+<li>拿到对象需要注入的字段及其类型</li>
+<li>根据类型判断并创建需要注入的对象</li>
+<li>递归注入上一步生成的对象，并注入上下文</li>
+<li>将生成的对象传给成员变量</li>
+</ol>
+<h1 id="路由设计"><a href="#路由设计" class="headerlink" title="路由设计"></a>路由设计</h1><p>路由层参考<a href="https://laravel.com/docs/5.6/routing" target="_blank" rel="noopener">laravel</a>框架，因为我个人认为将路由放在一个地方同一管理比spring那种分散到<code>Controller</code>上定义要方便索引（<code>api -&gt; controller</code>）。</p>
+<p>提供的API如下</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Route &#125; <span class="keyword">from</span> <span class="string">'../injection'</span>;</span><br><span class="line"><span class="keyword">const</span> route = <span class="keyword">new</span> Route();</span><br><span class="line">  </span><br><span class="line"><span class="comment">// 设置放置controllers的目录，默认是 $&#123;work directory&#125;/controllers</span></span><br><span class="line">route.setControllersRoot(<span class="string">'server/controllers'</span>);</span><br><span class="line">  </span><br><span class="line"><span class="comment">// 指定Controller的method作为handler</span></span><br><span class="line">route.post(<span class="string">'/apples/&#123;id&#125;'</span>, <span class="string">'SampleController@updateApple'</span>);</span><br><span class="line">route.get(<span class="string">'/users'</span>, <span class="string">'SampleController@getUsers'</span>);</span><br><span class="line">  </span><br><span class="line"><span class="comment">// 直接传入函数作为hanlder</span></span><br><span class="line">route.match([<span class="string">'get'</span>, <span class="string">'post'</span>], <span class="string">'/healthz'</span>, <span class="function"><span class="params">()</span> =&gt;</span> <span class="string">'ok'</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">// prefix</span></span><br><span class="line">route.prefix(<span class="string">'admin'</span>).group(<span class="function">(<span class="params">r</span>) =&gt;</span> &#123;</span><br><span class="line">  r.post(<span class="string">'users/&#123;id&#125;/ban'</span>, <span class="string">'AdminController@banUser'</span>);</span><br><span class="line">&#125;)</span><br><span class="line">  </span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> route;</span><br></pre></td></tr></table></figure>
+<p>这里除了将 <code>Controller</code> 引入并绑定到对应的 <code>path</code> 上外，还要检测对应的方法是否<strong>存在</strong>，这样就能将错误放在程序<strong>启动</strong>时而不是<strong>运行</strong>时抛出了。</p>
+<h1 id="接口层的IO"><a href="#接口层的IO" class="headerlink" title="接口层的IO"></a>接口层的IO</h1><p>目前设计的API如下</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// controller内</span></span><br><span class="line"><span class="keyword">class</span> MyController &#123;</span><br><span class="line">  getUsers(<span class="meta">@param</span> id: <span class="built_in">number</span>, <span class="meta">@query</span> detail: <span class="built_in">boolean</span> = <span class="literal">false</span>, <span class="meta">@payload</span> body: <span class="built_in">Object</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      users: []</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  getUser(<span class="meta">@query</span>(<span class="string">'name'</span>) userName: <span class="built_in">string</span>, request: Hapi.Request, h: Hapi.ResponseToolkit) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      users: []</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line"><span class="comment">// 直接传入路由的函数</span></span><br><span class="line">route.get(<span class="string">'welcome/&#123;name&#125;'</span>, <span class="function">(<span class="params">name: <span class="built_in">string</span></span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    name,</span><br><span class="line">    message: <span class="string">`welcome <span class="subst">$&#123;name&#125;</span>`</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>这里有3个<code>decorator</code>，分别代表 路径参数（<code>@param</code>）、查询参数（<code>@query</code>）、和请求体（<code>@payload</code>），作用同样是设置<code>metadata</code>。另外有一些框架特定类型的参数（<code>Hapi.Request</code>和<code>Hapi.ResponseToolkit</code>），是为了支持更加特殊的需求。</p>
+<p>对于直接传入路由的函数，我对其的定位是“不需要复杂输入的简单逻辑”，所以只会把路径参数的指根据顺序传进去。</p>
+<p>注入数据时需要考虑参数类型，我这里定了几个规则：</p>
+<ul>
+<li>如果类型是 <code>string</code>、<code>number</code>、<code>boolean</code>，那么需要将数据转为对应的基础类型</li>
+<li>如果类型是一些特定类型，比如<code>Hapi.Request</code>，那么由对应框架的bind来判断注入</li>
+<li>如果类型是 <code>Object</code>（可能是object、interface等），那么将数据原样返回</li>
+<li>如果类型是 <code>Function</code>（class），分为以下的情况<ul>
+<li>先new对应的类，如果注入的数据不是基础类型，并且对应的class的构建函数没有参数，那么将注入数据<code>Object.assign</code>给新建对象</li>
+<li>如果对应的class的构建函数有参数，或注入的数据是基础类型，那么将注入数据传入class的构建函数</li>
+</ul>
+</li>
+</ul>
+<p>返回类型和异常处理都是目前是由<code>Hapi.js</code>自己处理的，还没研究过<code>express</code>这些库的处理方式，不过应当遵循下面的规则：</p>
+<ul>
+<li>返回类型应当支持所有能JSON序列化的值和<code>Promise</code>。</li>
+<li>抛出异常应当可以直接<code>throw</code>，并有一个统一处理方法</li>
+</ul>
+<h1 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h1><p>因为对于依赖注入的API来说<code>controllers</code>、<code>services</code>和<code>repositories</code>都是一样的，所以项目结构其实可以由自己的项目情况决定，不过建议分为以下几个层面：</p>
+<ul>
+<li><code>controllers</code>: 负责接口IO处理，表单验证，流程控制</li>
+<li><code>services</code>: 负责业务模块逻辑</li>
+<li><code>repositories</code>: DAO层，负责与数据库打交道</li>
+<li><code>models</code>: 数据模型</li>
+<li><code>routes.ts</code>: 定义路由</li>
+<li><code>app.ts</code>: 项目的启动、配置</li>
+</ul>
+<h1 id="绑定Hapi-js"><a href="#绑定Hapi-js" class="headerlink" title="绑定Hapi.js"></a>绑定Hapi.js</h1><p>目前在项目里用到的service端实现是<code>hapi.js</code>，所以讲讲injection与<code>hapi.js</code>的bind需要实现的功能：</p>
+<ul>
+<li>根据路由配置生成hapi的路由配置</li>
+<li>在handler里注入所有的接口依赖、上下文依赖以及方法的参数依赖</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; injectAutowired, injectContext, callHanlderWithInjection &#125; <span class="keyword">from</span> <span class="string">'../injection'</span>;</span><br><span class="line">  </span><br><span class="line"><span class="comment">// 生成Hapi route handler的函数</span></span><br><span class="line">createControllerHandler&lt;T <span class="keyword">extends</span> classType&gt;(Controller: T, methodName: <span class="built_in">string</span>, context: &#123; [key: <span class="built_in">string</span>]: <span class="built_in">any</span> &#125;) &#123;</span><br><span class="line">  <span class="keyword">return</span> (request: Hapi.Request, h: Hapi.ResponseToolkit, err?: <span class="built_in">Error</span>): Hapi.Lifecycle.ReturnValue =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> c: <span class="built_in">any</span> = <span class="keyword">new</span> Controller(context);</span><br><span class="line">    injectAutowired(c, context);</span><br><span class="line">    injectContext(c, context);</span><br><span class="line">    <span class="keyword">return</span> callHanlderWithInjection(c, methodName, request);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Todo"><a href="#Todo" class="headerlink" title="Todo"></a>Todo</h1><ul>
+<li>路由层的权限控制</li>
+<li>更加通用的参数验证</li>
+<li>更加通用的错误处理</li>
+<li>更加通用的Request与Resposne结构</li>
+<li>DAO层使用ORM</li>
+<li>实现Laravel里的Facades模式？</li>
+<li>利用typescript的compiler解决上面的局限问题</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/typescript/">typescript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web-service/">web service</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/&title=《使用typescript实现依赖注入框架》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/&title=《使用typescript实现依赖注入框架》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用typescript实现依赖注入框架》 — Code for fun&url=https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/03/23/react-hooks-traps/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">react hooks踩坑记录</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/04/30/how-to-fix-wrong-merge/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">如何修复错误的merge提交</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p style="display: none">
+    <span id="busuanzi_container_site_uv" style="display:none">
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style="display:none">
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/&title=《使用typescript实现依赖注入框架》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/&title=《使用typescript实现依赖注入框架》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用typescript实现依赖注入框架》 — Code for fun&url=https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAD2CAAAAADAeSUUAAADKUlEQVR42u3aQW7jQAwEQP//01pgTwEWkpukvLCY0ilwkpFqdGiTnNcrvo6/18+ff35y9jdn6/y7wvWa15+f3euGCxsbG/sh7OPyOmMcwXX9v9efJNt9/cmbrcHGxsZex05uWV669bhJiPaCExsbGxs7j6J5WVItjbCxsbGxJ8FQjbfrv69GGjY2NjZ2/qB5U/5eWB54H+mlYWNjY389uzfo/c6fPz7fxsbGxv4y9jG4JsdxeiVEHlRvnhwbGxt7ETsvCfIDN9Wt6RU5k63ExsbG3sruNZiqQ4LqhvbaTNFGYGNjY69gz8uM3jBgvgVJXJ2+GGxsbOxF7GpI9AqP5LGqMZb/V2E1bGxs7Aeyq7GUly7VNlAvRHt3xMbGxt7NzmPmOpaqwZZscTLSSFpL2NjY2PvY1SZOb5tGkTMob7CxsbF/A7t6jGZSDCQrlCfV1dEyNjY29mp2Ega9EW9exuSvpPoKsbGxsfexq2Fz7+Gbu8bJeZup/M6xsbGxH8KeHIjpPXS18VR9Mbdd2NjY2F/PrgZDdejbu+9k+6LfYmNjYy9iz3l5FPVCqNf2aoYZNjY29sPZvaZ/NVTyNXu1Q960wsbGxt7E7pUQ1SM+1ytUC4nJMSNsbGzsTezqIZhm46bY9CnnbbXEwsbGxl7Ern6tz5s7d40B8kIlHzljY2Njb2L3Gu55SZCXMdW4ykcU5f4TNjY29gPZvWDokaohVz0YVOiiYWNjY69gT47XTNr0dx3rmQybsbGxsXew58duesdl8iM4+TpJefNmKoKNjY39QHa1nTQvBvKpRX733iZiY2Nj72P3jtfkDfreRlRHvJN2FTY2NvYOdr50/nW/GkVJw6v3ApoTb2xsbOyHsJOv8tWHm2zTvKhItgMbGxv76eyjeL2KV3WF+dggennY2NjYi9iTBtP/bwNNShFsbGzs3exPFBLJ1uThlDeMCluJjY2NvY49GdP2grCXtPM7YmNjY2P3KptJNPbC8s2WYWNjY/9Kdu8RPzEY7h33aQYYNjY29kPYyUNMBrG9GJtv8enn2NjY2IvYvUHvJPDmw+P5uAIbGxt7BfsPxkpPAjv224sAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
