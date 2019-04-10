@@ -2,30 +2,205 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/</loc>
+    <loc>https://frezc.github.io/2019/04/09/touhou-luna-nights-review/</loc>
     
-    <lastmod>2019-04-05T08:05:29.824Z</lastmod>
+    <lastmod>2019-04-10T14:24:21.171Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/05/19/japan-anime-reflections/</loc>
+    
+    <lastmod>2019-04-09T15:39:54.154Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/11/02/my-first-blog/</loc>
+    
+    <lastmod>2019-04-09T15:39:54.154Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/11/09/%E8%BF%91%E6%9C%9F%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%90%E4%BA%8B/</loc>
+    
+    <lastmod>2019-04-09T15:39:54.154Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://frezc.github.io/2019/03/30/osaka-travel/</loc>
     
-    <lastmod>2019-04-02T14:50:51.749Z</lastmod>
+    <lastmod>2019-04-09T15:39:54.105Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2016/04/18/%E8%B0%88%E8%B0%884%E6%9C%88%E6%96%B0%E7%95%AA/</loc>
+    
+    <lastmod>2019-04-09T15:39:54.105Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/11/10/%E8%87%AA%E5%B7%B1%E5%9C%A8Android%E5%BC%80%E5%8F%91%E4%B8%AD%E7%A2%B0%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E5%92%8C%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.720Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2016/03/06/%E6%A0%87%E5%87%86%E5%8C%96React-Redux-%E7%BA%AF%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%EF%BC%9F/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.688Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/12/31/%E7%94%A8SVG%E7%94%BB%E4%B8%80%E4%B8%AA%E7%AC%91%E8%84%B8%E7%94%B7%E5%9B%BE%E6%A0%87/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.654Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2016/06/26/%E7%BB%99RN%E7%9A%84app%E6%B7%BB%E5%8A%A0widgets/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.622Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/12/25/%E5%8A%A8%E7%94%BB%E7%9A%84%E6%8E%92%E8%A1%8C%E6%A6%9C-%E9%A1%B5%E9%9D%A2%E5%AE%9E%E7%8E%B0/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.587Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2016/03/02/%E5%BC%80%E5%A7%8B%E4%BD%BF%E7%94%A8Redux/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.555Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2016/02/19/%E5%9C%A8Android%E7%9A%84%E5%8E%9F%E7%94%9F%E6%A8%A1%E5%9D%97%E4%B8%AD%E5%BE%97%E5%88%B0RN%E7%BB%84%E4%BB%B6%E7%9A%84%E5%BC%95%E7%94%A8/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.520Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/11/19/%E5%81%9A%E4%B8%80%E4%B8%AA%E5%A4%9A%E7%BD%91%E7%AB%99%E7%9A%84%E5%8A%A8%E7%94%BB%E6%8E%92%E8%A1%8C%E6%A6%9C%E5%90%A7/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.488Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2016/08/06/webpack%E5%92%8Cwebpack-dev-server%E7%9A%84%E9%85%8D%E7%BD%AE%E5%A4%87%E5%BF%98/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.454Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/11/22/%E5%81%9A%E4%B8%AA%E5%8A%A8%E7%94%BB%E6%8E%92%E8%A1%8C%E6%A6%9C%20-%20%E6%A0%87%E9%A2%98%E5%8C%B9%E9%85%8D/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.422Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/06/07/use-intellij-live-template/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.387Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/05/16/solve-preDexDebug/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.355Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/05/03/use-Volley-and-Gson/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.320Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/05/27/kjframe-http-loading-bitmap/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.288Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2016/04/25/React%E7%9A%84%E6%B8%B2%E6%9F%93%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.254Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2016/02/21/react-native%E5%AF%B9md%E9%A3%8E%E6%A0%BC%E4%B8%ADStatusBar%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.221Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://frezc.github.io/2019/03/23/react-hooks-traps/</loc>
     
-    <lastmod>2019-03-25T16:14:48.551Z</lastmod>
+    <lastmod>2019-04-09T15:39:43.187Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2016/04/17/React%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.132Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/</loc>
     
-    <lastmod>2019-03-22T13:56:32.906Z</lastmod>
+    <lastmod>2019-04-09T15:39:43.132Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/05/03/push-your-project-to-git/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.065Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.064Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/05/01/2015-05-01-hexo-share/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.064Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/07/20/Danmaku-code/</loc>
+    
+    <lastmod>2019-04-09T15:39:43.064Z</lastmod>
     
   </url>
   
@@ -40,174 +215,6 @@
     <loc>https://frezc.github.io/tags/index.html</loc>
     
     <lastmod>2019-03-22T13:28:23.998Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2015/05/19/japan-anime-reflections/</loc>
-    
-    <lastmod>2019-03-21T15:38:20.213Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2015/11/09/%E8%BF%91%E6%9C%9F%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%90%E4%BA%8B/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.051Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2016/04/18/%E8%B0%88%E8%B0%884%E6%9C%88%E6%96%B0%E7%95%AA/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.051Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2015/11/10/%E8%87%AA%E5%B7%B1%E5%9C%A8Android%E5%BC%80%E5%8F%91%E4%B8%AD%E7%A2%B0%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E5%92%8C%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.050Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2016/06/26/%E7%BB%99RN%E7%9A%84app%E6%B7%BB%E5%8A%A0widgets/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.050Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2016/03/02/%E5%BC%80%E5%A7%8B%E4%BD%BF%E7%94%A8Redux/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.049Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2015/12/31/%E7%94%A8SVG%E7%94%BB%E4%B8%80%E4%B8%AA%E7%AC%91%E8%84%B8%E7%94%B7%E5%9B%BE%E6%A0%87/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.049Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2016/03/06/%E6%A0%87%E5%87%86%E5%8C%96React-Redux-%E7%BA%AF%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%EF%BC%9F/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.049Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2016/02/19/%E5%9C%A8Android%E7%9A%84%E5%8E%9F%E7%94%9F%E6%A8%A1%E5%9D%97%E4%B8%AD%E5%BE%97%E5%88%B0RN%E7%BB%84%E4%BB%B6%E7%9A%84%E5%BC%95%E7%94%A8/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.048Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2015/12/25/%E5%8A%A8%E7%94%BB%E7%9A%84%E6%8E%92%E8%A1%8C%E6%A6%9C-%E9%A1%B5%E9%9D%A2%E5%AE%9E%E7%8E%B0/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.048Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2015/11/22/%E5%81%9A%E4%B8%AA%E5%8A%A8%E7%94%BB%E6%8E%92%E8%A1%8C%E6%A6%9C%20-%20%E6%A0%87%E9%A2%98%E5%8C%B9%E9%85%8D/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.048Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2016/08/06/webpack%E5%92%8Cwebpack-dev-server%E7%9A%84%E9%85%8D%E7%BD%AE%E5%A4%87%E5%BF%98/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.047Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2015/11/19/%E5%81%9A%E4%B8%80%E4%B8%AA%E5%A4%9A%E7%BD%91%E7%AB%99%E7%9A%84%E5%8A%A8%E7%94%BB%E6%8E%92%E8%A1%8C%E6%A6%9C%E5%90%A7/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.047Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2015/06/07/use-intellij-live-template/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.046Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2015/05/16/solve-preDexDebug/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.045Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2015/05/03/use-Volley-and-Gson/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.045Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2016/02/21/react-native%E5%AF%B9md%E9%A3%8E%E6%A0%BC%E4%B8%ADStatusBar%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.045Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2015/05/03/push-your-project-to-git/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.039Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2015/11/02/my-first-blog/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.039Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2015/05/27/kjframe-http-loading-bitmap/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.038Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2016/04/25/React%E7%9A%84%E6%B8%B2%E6%9F%93%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.025Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2015/07/20/Danmaku-code/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.024Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2016/04/17/React%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.024Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2015/05/01/2015-05-01-hexo-share/</loc>
-    
-    <lastmod>2019-03-21T13:48:42.023Z</lastmod>
     
   </url>
   
