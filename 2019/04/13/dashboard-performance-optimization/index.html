@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+<!-- Baidu Push -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<!-- End Baidu Push -->
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <meta name="baidu-site-verification" content="bmvYqUCgMu">
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2019/04/13/dashboard-performance-optimization/">
+    
+    
+    <title>看板性能优化实践 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="react,react-grid-layout,dashboard,frontend">
+    <meta name="description" content="最近比较有空就打算把看板的性能优化做一下，打开项目用chrome的performance记录了一下一个组件比较多的看板。这个结果还是比较让人惊讶，原本以为性能瓶颈主要在图表（G2的性能堪忧），没想到看板本身的性能也如此糟糕。">
+<meta name="keywords" content="react,react-grid-layout,dashboard,frontend">
+<meta property="og:type" content="article">
+<meta property="og:title" content="看板性能优化实践">
+<meta property="og:url" content="https://frezc.github.io/2019/04/13/dashboard-performance-optimization/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="最近比较有空就打算把看板的性能优化做一下，打开项目用chrome的performance记录了一下一个组件比较多的看板。这个结果还是比较让人惊讶，原本以为性能瓶颈主要在图表（G2的性能堪忧），没想到看板本身的性能也如此糟糕。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://frezc.github.io/2019/04/13/dashboard-performance-optimization/frame-timeline-before-optimize.png">
+<meta property="og:image" content="https://frezc.github.io/2019/04/13/dashboard-performance-optimization/dashboard1-mosaic.png">
+<meta property="og:image" content="https://frezc.github.io/2019/04/13/dashboard-performance-optimization/frame-timeline-op1.png">
+<meta property="og:image" content="https://frezc.github.io/2019/04/13/dashboard-performance-optimization/idlerendergadget.png">
+<meta property="og:image" content="https://frezc.github.io/2019/04/13/dashboard-performance-optimization/prod-before-optimization.png">
+<meta property="og:image" content="https://frezc.github.io/2019/04/13/dashboard-performance-optimization/prod-after-optimization.png">
+<meta property="og:updated_time" content="2019-04-13T14:21:13.702Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="看板性能优化实践">
+<meta name="twitter:description" content="最近比较有空就打算把看板的性能优化做一下，打开项目用chrome的performance记录了一下一个组件比较多的看板。这个结果还是比较让人惊讶，原本以为性能瓶颈主要在图表（G2的性能堪忧），没想到看板本身的性能也如此糟糕。">
+<meta name="twitter:image" content="https://frezc.github.io/2019/04/13/dashboard-performance-optimization/frame-timeline-before-optimize.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">看板性能优化实践</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">看板性能优化实践</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-04-13T06:04:47.000Z" itemprop="datePublished" class="page-time">
+  2019-04-13
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#首屏不要渲染没必要的组件"><span class="post-toc-number">1.</span> <span class="post-toc-text">首屏不要渲染没必要的组件</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#所有组件都应该在独立的帧内渲染"><span class="post-toc-number">2.</span> <span class="post-toc-text">所有组件都应该在独立的帧内渲染</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#懒加载"><span class="post-toc-number">3.</span> <span class="post-toc-text">懒加载</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#组件延迟渲染（optional）"><span class="post-toc-number">4.</span> <span class="post-toc-text">组件延迟渲染（optional）</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#结语"><span class="post-toc-number">5.</span> <span class="post-toc-text">结语</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-dashboard-performance-optimization" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">看板性能优化实践</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-04-13 14:04:47" datetime="2019-04-13T06:04:47.000Z" itemprop="datePublished">2019-04-13</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+
+
+            
+<span style="display: none">
+    <span id="busuanzi_container_page_pv" title="文章总阅读量" style="display:none">
+        <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+    </span>
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>最近比较有空就打算把看板的性能优化做一下，打开项目用chrome的performance记录了一下一个组件比较多的看板。这个结果还是比较让人惊讶，原本以为性能瓶颈主要在图表（G2的性能堪忧），没想到看板本身的性能也如此糟糕。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="frame-timeline-before-optimize.png" alt="优化前的性能" title>
+                </div>
+                <div class="image-caption">优化前的性能</div>
+            </figure>
+<p><em>本地开发环境，相比生成环境耗时多了40%，本文主要看同一环境下的对比</em></p>
+<p>接下来看看如何通过这个结果进行优化。下面的章节是按必要性进行的排序。</p>
+<h1 id="首屏不要渲染没必要的组件"><a href="#首屏不要渲染没必要的组件" class="headerlink" title="首屏不要渲染没必要的组件"></a>首屏不要渲染没必要的组件</h1><p>我先看了下耗时接近7s的那一帧里，什么组件占了大头。发现主要是两个：即席查询的编辑组件和CMDB选择器。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="dashboard1-mosaic.png" alt="测试用的看板" title>
+                </div>
+                <div class="image-caption">测试用的看板</div>
+            </figure>
+<p>即席查询的编辑组件<strong>不应该被渲染</strong>，因为图表的需要依赖编辑组件里请求的数据进行渲染，但是因此把这么多组件的编辑组件给渲染出来就非常影响性能了。</p>
+<p>这里我们把组件需要的数据移到更上一层去请求，然后除了编辑模式下不再去渲染编辑组件。</p>
+<p>关于CMDB选择器的优化见下一节</p>
+<h1 id="所有组件都应该在独立的帧内渲染"><a href="#所有组件都应该在独立的帧内渲染" class="headerlink" title="所有组件都应该在独立的帧内渲染"></a>所有组件都应该在独立的帧内渲染</h1><p>看板里的所有组件应该关心自己的性能，因为组件可能会是成倍出现的，渲染耗时会被成倍放大。如果很多组件碰巧在相近的时间（或者在比较长的一帧内）请求结束并去渲染结果的话，就会将一帧拖得很长。在这帧内页面会处于假死状态，用户<strong>无法滚动和交互</strong>。</p>
+<p>在我们的看板里就有这个问题</p>
+<ol>
+<li>看板组件的渲染，尤其是Chart和Table都需要对大量结果进行处理。</li>
+<li>CMDB选择器会将所有CMDB数据组织成树状结构。（虽然这里可以改为每次只请求一级来优化，但是这样需要的改动太多了）</li>
+</ol>
+<p>怎么优化呢？这里我们可以参考react fiber的实现方式，一个简单的方案就是使用<code>requestIdleCallback</code>这个API来将每个组件请求结束后的更新拆散到每一帧内。这样就不会出现多个组件同时更新而“撞车”的情况了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">requestIdleCallback(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// update component with response data</span></span><br><span class="line">&#125;, &#123; <span class="attr">timeout</span>: <span class="number">2000</span> &#125;);</span><br></pre></td></tr></table></figure>
+<p>我们可以同时应用到组件和CMDB选择器的上，但是我们又希望组件更新能早于CMDB选择器，因为比较重要。不过目前<code>requestIdleCallback</code><a href="https://github.com/w3c/requestidlecallback/issues/68" target="_blank" rel="noopener">没有优先级</a>的概念，不过可以自己实现一个。</p>
+<h1 id="懒加载"><a href="#懒加载" class="headerlink" title="懒加载"></a>懒加载</h1><p>经过前两步的优化后，看板加载起来已经顺畅很多了，但是看板内容（就是测试看板图上的看板组件部分）初始化时还是有1.4s的时间。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="frame-timeline-op1.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>这里其实没有哪块特别耗时了，所以需要其他方法来减少渲染耗时，那么自然就想到懒加载了。就上面展示的看板在首屏时底下有一堆是看不到的，那么我们就不需要在一开始就渲染这些组件。</p>
+<p>一个懒加载组件的简单实现</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isElementInViewport</span>(<span class="params">el: Element</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> rect = el.getBoundingClientRect();</span><br><span class="line">  <span class="comment">// 因为看板没有左右滚动所以不需要判断垂直坐标</span></span><br><span class="line">  <span class="keyword">return</span> rect.top &lt; (<span class="built_in">window</span>.innerHeight || <span class="built_in">document</span>.documentElement.clientHeight)</span><br><span class="line">    &amp;&amp; rect.bottom &gt; <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> RenderUntilInViewport: React.FC&lt;&#123;</span><br><span class="line">  wrapper: React.ReactElement&lt;<span class="built_in">any</span>&gt;;</span><br><span class="line">&#125;&gt; = <span class="function">(<span class="params">&#123; wrapper, children &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> ref = React.useRef&lt;HTMLDivElement&gt;(<span class="literal">null</span>);</span><br><span class="line">  <span class="keyword">const</span> [display, setDisplay] = React.useState(<span class="literal">false</span>);</span><br><span class="line">  React.useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">displayIfInViewport</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (!display &amp;&amp; ref.current &amp;&amp; isElementInViewport(ref.current)) &#123;</span><br><span class="line">        setDisplay(<span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (displayIfInViewport()) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">window</span>.addEventListener(<span class="string">'scroll'</span>, displayIfInViewport, &#123; capture: <span class="literal">true</span> &#125;);</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">window</span>.removeEventListener(<span class="string">'scroll'</span>, displayIfInViewport, &#123; capture: <span class="literal">true</span> &#125;);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;, []);</span><br><span class="line">  <span class="keyword">return</span> React.cloneElement(wrapper, &#123; ref &#125;, display &amp;&amp; children);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> RenderUntilInViewport;</span><br></pre></td></tr></table></figure>
+<p>如果使用的是<a href="https://github.com/STRML/react-grid-layout" target="_blank" rel="noopener">react-grid-layout</a>的话，需要把初始动画关闭，不然组件的初始坐标都是(0, 0)，会使懒加载失效。<a href="https://github.com/STRML/react-grid-layout/issues/103#issuecomment-202127519" target="_blank" rel="noopener">关闭方法</a>，不要使用<code>useCSSTransforms={false}</code>，这项会比较影响性能（测试看板+500ms的负收益）。</p>
+<p>不过懒加载在测试看板的layout性能时带来的收益不大，大概能快100ms左右，或许用好折叠条组件（可以将一些组件折叠，默认不会去渲染）的话也没必要做吧。</p>
+<h1 id="组件延迟渲染（optional）"><a href="#组件延迟渲染（optional）" class="headerlink" title="组件延迟渲染（optional）"></a>组件延迟渲染（optional）</h1><p>同样在看板初始化阶段，这段时间里有很大一部分处于<code>react-sizeme</code>计算宽高然后触发组件更新所致，如果将组件真正渲染放到布局完成的话可能可以减少几次组件更新的消耗。</p>
+<p>我们修改一下上面的懒加载组件，将第13行代码放到<code>requestIdleCallback</code>里。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ...codes</span></span><br><span class="line"><span class="built_in">window</span>.requestIdleCallback(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  setDisplay(<span class="literal">true</span>);</span><br><span class="line">&#125;, &#123; timeout: <span class="number">1000</span> &#125;);</span><br><span class="line"><span class="comment">// ...codes</span></span><br></pre></td></tr></table></figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="idlerendergadget.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>可以看到看板布局的时间1300ms+ -&gt; 800ms+，虽然看起来提升了很多，但是看板真正展现信息还是要等组件渲染完，所以看板直到可用的等待时间相比原来可能还会增加。因此这节的优化点看实际情况去做吧。</p>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>虽然上面写了一大堆，但是基本不需要改多少代码就使页面变得不卡了。</p>
+<p>看一下线上的前后对比，同样是上面的测试看板。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="prod-before-optimization.png" alt="优化前" title>
+                </div>
+                <div class="image-caption">优化前</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="prod-after-optimization.png" alt="优化后(滚动页面加载完所有组件)" title>
+                </div>
+                <div class="image-caption">优化后(滚动页面加载完所有组件)</div>
+            </figure>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dashboard/">dashboard</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/frontend/">frontend</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-grid-layout/">react-grid-layout</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2019/04/13/dashboard-performance-optimization/&title=《看板性能优化实践》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2019/04/13/dashboard-performance-optimization/&title=《看板性能优化实践》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2019/04/13/dashboard-performance-optimization/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《看板性能优化实践》 — Code for fun&url=https://frezc.github.io/2019/04/13/dashboard-performance-optimization/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2019/04/13/dashboard-performance-optimization/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/04/09/touhou-luna-nights-review/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">《Touhou Luna Nights》—— 令人惊喜的东方同人游戏</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p style="display: none">
+    <span id="busuanzi_container_site_uv" style="display:none">
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style="display:none">
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2019/04/13/dashboard-performance-optimization/&title=《看板性能优化实践》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2019/04/13/dashboard-performance-optimization/&title=《看板性能优化实践》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2019/04/13/dashboard-performance-optimization/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《看板性能优化实践》 — Code for fun&url=https://frezc.github.io/2019/04/13/dashboard-performance-optimization/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2019/04/13/dashboard-performance-optimization/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACrUlEQVR42u3aQW7DQAgF0Nz/0qnUVaXW9gdMkkrPq6h1bN4sBgLzeMTX8/v6/Tm55/nj+n3/0Z1H9z82Ljw8PLxW6EdX8uLzoJOFSEjn3zp8Lx4eHt4aLw8i39aTZNBLFUnMeHh4eJ/AS0rkpKa9q0zHw8PD+y+8XnFcbSjk5TUeHh7eu3hJM2KSJM6D+4heCx4eHl7MmwzA3vX5RfM9PDw8vOJUvZckJqO1XlSHz8fDw8Nb4PWGTOdh5WV3dT/Pv1XuIuPh4eENePlBqN5/JyOx6sEvPDw8vFfyqr/rJ83Z/P58UfDw8PD2eL3tOx/2T1rGkySBh4eH915eL5Te33NeFCEeHh7eAi9vAeShVJ8/TxsXqQIPDw9vmTc5BFAdg/VaFfkS4OHh4W3w5i+rDs/y5NFbUDw8PLxtXq90zhsHk/t7o7Xy+uHh4eEVedWxVr5N5ymnemdhyfDw8PAWeNWRWL4DbwzVkidcxI+Hh4c35t07vsq373lJXei14OHh4S3wett9Hm7eDs4L96gox8PDw1vj5SOuvB3Q66z2hmqHseHh4eGt8ZIQ7z2G1WsEN5sReHh4eC/n5Y+uFt/5UYPesTA8PDy8Pd58hD8Jq3pQoDB4w8PDw1vgzVsAVXav1dtrSeDh4eFt8PIhfbJN58cO8oFWfighGoDh4eHh3crLm63VEjlZgl5pfvFGPDw8vAVeb8w/D+U8SfSSEB4eHt5reM/i1SuXNwZg0bfw8PDwFni9JNHbrPOxWbJw+Q8APDw8vA1e9cXVIwK9crx6eOswBjw8PLw13mR8dVfDd57B/rgfDw8P7628vEmRJ4xk4XrDMzw8PLzP4VUPTlXTRu/QwEUzAg8PD2+BN2mwRk2BtRHXRTrBw8PDW+D1BmCTIwXV4HqpBQ8PD2+B9wV3vQMnD8BQbQAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

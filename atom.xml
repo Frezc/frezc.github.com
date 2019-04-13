@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://frezc.github.io/"/>
-  <updated>2019-04-10T14:24:21.171Z</updated>
+  <updated>2019-04-13T14:21:13.702Z</updated>
   <id>https://frezc.github.io/</id>
   
   <author>
@@ -15,6 +15,38 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>看板性能优化实践</title>
+    <link href="https://frezc.github.io/2019/04/13/dashboard-performance-optimization/"/>
+    <id>https://frezc.github.io/2019/04/13/dashboard-performance-optimization/</id>
+    <published>2019-04-13T06:04:47.000Z</published>
+    <updated>2019-04-13T14:21:13.702Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近比较有空就打算把看板的性能优化做一下，打开项目用chrome的performance记录了一下一个组件比较多的看板。这个结果还是比较让人惊讶，原本以为性能瓶颈主要在图表（G2的性能堪忧），没想到看板本身的性能也如此糟糕。</p><figure class="image-bubble">                <div class="img-lightbox">                    <div class="overlay"></div>                    <img src="frame-timeline-before-optimize.png" alt="优化前的性能" title>                </div>                <div class="image-caption">优化前的性能</div>            </figure><p><em>本地开发环境，相比生成环境耗时多了40%，本文主要看同一环境下的对比</em></p><p>接下来看看如何通过这个结果进行优化。下面的章节是按必要性进行的排序。</p><h1 id="首屏不要渲染没必要的组件"><a href="#首屏不要渲染没必要的组件" class="headerlink" title="首屏不要渲染没必要的组件"></a>首屏不要渲染没必要的组件</h1><p>我先看了下耗时接近7s的那一帧里，什么组件占了大头。发现主要是两个：即席查询的编辑组件和CMDB选择器。</p><figure class="image-bubble">                <div class="img-lightbox">                    <div class="overlay"></div>                    <img src="dashboard1-mosaic.png" alt="测试用的看板" title>                </div>                <div class="image-caption">测试用的看板</div>            </figure><p>即席查询的编辑组件<strong>不应该被渲染</strong>，因为图表的需要依赖编辑组件里请求的数据进行渲染，但是因此把这么多组件的编辑组件给渲染出来就非常影响性能了。</p><p>这里我们把组件需要的数据移到更上一层去请求，然后除了编辑模式下不再去渲染编辑组件。</p><p>关于CMDB选择器的优化见下一节</p><h1 id="所有组件都应该在独立的帧内渲染"><a href="#所有组件都应该在独立的帧内渲染" class="headerlink" title="所有组件都应该在独立的帧内渲染"></a>所有组件都应该在独立的帧内渲染</h1><p>看板里的所有组件应该关心自己的性能，因为组件可能会是成倍出现的，渲染耗时会被成倍放大。如果很多组件碰巧在相近的时间（或者在比较长的一帧内）请求结束并去渲染结果的话，就会将一帧拖得很长。在这帧内页面会处于假死状态，用户<strong>无法滚动和交互</strong>。</p><p>在我们的看板里就有这个问题</p><ol><li>看板组件的渲染，尤其是Chart和Table都需要对大量结果进行处理。</li><li>CMDB选择器会将所有CMDB数据组织成树状结构。（虽然这里可以改为每次只请求一级来优化，但是这样需要的改动太多了）</li></ol><p>怎么优化呢？这里我们可以参考react fiber的实现方式，一个简单的方案就是使用<code>requestIdleCallback</code>这个API来将每个组件请求结束后的更新拆散到每一帧内。这样就不会出现多个组件同时更新而“撞车”的情况了。</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">requestIdleCallback(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// update component with response data</span></span><br><span class="line">&#125;, &#123; <span class="attr">timeout</span>: <span class="number">2000</span> &#125;);</span><br></pre></td></tr></table></figure><p>我们可以同时应用到组件和CMDB选择器的上，但是我们又希望组件更新能早于CMDB选择器，因为比较重要。不过目前<code>requestIdleCallback</code><a href="https://github.com/w3c/requestidlecallback/issues/68" target="_blank" rel="noopener">没有优先级</a>的概念，不过可以自己实现一个。</p><h1 id="懒加载"><a href="#懒加载" class="headerlink" title="懒加载"></a>懒加载</h1><p>经过前两步的优化后，看板加载起来已经顺畅很多了，但是看板内容（就是测试看板图上的看板组件部分）初始化时还是有1.4s的时间。</p><figure class="image-bubble">                <div class="img-lightbox">                    <div class="overlay"></div>                    <img src="frame-timeline-op1.png" alt title>                </div>                <div class="image-caption"></div>            </figure><p>这里其实没有哪块特别耗时了，所以需要其他方法来减少渲染耗时，那么自然就想到懒加载了。就上面展示的看板在首屏时底下有一堆是看不到的，那么我们就不需要在一开始就渲染这些组件。</p><p>一个懒加载组件的简单实现</p><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isElementInViewport</span>(<span class="params">el: Element</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> rect = el.getBoundingClientRect();</span><br><span class="line">  <span class="comment">// 因为看板没有左右滚动所以不需要判断垂直坐标</span></span><br><span class="line">  <span class="keyword">return</span> rect.top &lt; (<span class="built_in">window</span>.innerHeight || <span class="built_in">document</span>.documentElement.clientHeight)</span><br><span class="line">    &amp;&amp; rect.bottom &gt; <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> RenderUntilInViewport: React.FC&lt;&#123;</span><br><span class="line">  wrapper: React.ReactElement&lt;<span class="built_in">any</span>&gt;;</span><br><span class="line">&#125;&gt; = <span class="function">(<span class="params">&#123; wrapper, children &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> ref = React.useRef&lt;HTMLDivElement&gt;(<span class="literal">null</span>);</span><br><span class="line">  <span class="keyword">const</span> [display, setDisplay] = React.useState(<span class="literal">false</span>);</span><br><span class="line">  React.useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">displayIfInViewport</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (!display &amp;&amp; ref.current &amp;&amp; isElementInViewport(ref.current)) &#123;</span><br><span class="line">        setDisplay(<span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (displayIfInViewport()) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">window</span>.addEventListener(<span class="string">'scroll'</span>, displayIfInViewport, &#123; capture: <span class="literal">true</span> &#125;);</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">window</span>.removeEventListener(<span class="string">'scroll'</span>, displayIfInViewport, &#123; capture: <span class="literal">true</span> &#125;);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;, []);</span><br><span class="line">  <span class="keyword">return</span> React.cloneElement(wrapper, &#123; ref &#125;, display &amp;&amp; children);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> RenderUntilInViewport;</span><br></pre></td></tr></table></figure><p>如果使用的是<a href="https://github.com/STRML/react-grid-layout" target="_blank" rel="noopener">react-grid-layout</a>的话，需要把初始动画关闭，不然组件的初始坐标都是(0, 0)，会使懒加载失效。<a href="https://github.com/STRML/react-grid-layout/issues/103#issuecomment-202127519" target="_blank" rel="noopener">关闭方法</a>，不要使用<code>useCSSTransforms={false}</code>，这项会比较影响性能（测试看板+500ms的负收益）。</p><p>不过懒加载在测试看板的layout性能时带来的收益不大，大概能快100ms左右，或许用好折叠条组件（可以将一些组件折叠，默认不会去渲染）的话也没必要做吧。</p><h1 id="组件延迟渲染（optional）"><a href="#组件延迟渲染（optional）" class="headerlink" title="组件延迟渲染（optional）"></a>组件延迟渲染（optional）</h1><p>同样在看板初始化阶段，这段时间里有很大一部分处于<code>react-sizeme</code>计算宽高然后触发组件更新所致，如果将组件真正渲染放到布局完成的话可能可以减少几次组件更新的消耗。</p><p>我们修改一下上面的懒加载组件，将第13行代码放到<code>requestIdleCallback</code>里。</p><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ...codes</span></span><br><span class="line"><span class="built_in">window</span>.requestIdleCallback(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  setDisplay(<span class="literal">true</span>);</span><br><span class="line">&#125;, &#123; timeout: <span class="number">1000</span> &#125;);</span><br><span class="line"><span class="comment">// ...codes</span></span><br></pre></td></tr></table></figure><figure class="image-bubble">                <div class="img-lightbox">                    <div class="overlay"></div>                    <img src="idlerendergadget.png" alt title>                </div>                <div class="image-caption"></div>            </figure><p>可以看到看板布局的时间1300ms+ -&gt; 800ms+，虽然看起来提升了很多，但是看板真正展现信息还是要等组件渲染完，所以看板直到可用的等待时间相比原来可能还会增加。因此这节的优化点看实际情况去做吧。</p><h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>虽然上面写了一大堆，但是基本不需要改多少代码就使页面变得不卡了。</p><p>看一下线上的前后对比，同样是上面的测试看板。</p><figure class="image-bubble">                <div class="img-lightbox">                    <div class="overlay"></div>                    <img src="prod-before-optimization.png" alt="优化前" title>                </div>                <div class="image-caption">优化前</div>            </figure><figure class="image-bubble">                <div class="img-lightbox">                    <div class="overlay"></div>                    <img src="prod-after-optimization.png" alt="优化后(滚动页面加载完所有组件)" title>                </div>                <div class="image-caption">优化后(滚动页面加载完所有组件)</div>            </figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;最近比较有空就打算把看板的性能优化做一下，打开项目用chrome的performance记录了一下一个组件比较多的看板。这个结果还是比较让人惊讶，原本以为性能瓶颈主要在图表（G2的性能堪忧），没想到看板本身的性能也如此糟糕。&lt;/p&gt;
+&lt;figure class=&quot;image
+      
+    
+    </summary>
+    
+      <category term="DEVELOPING" scheme="https://frezc.github.io/categories/DEVELOPING/"/>
+    
+    
+      <category term="react" scheme="https://frezc.github.io/tags/react/"/>
+    
+      <category term="react-grid-layout" scheme="https://frezc.github.io/tags/react-grid-layout/"/>
+    
+      <category term="dashboard" scheme="https://frezc.github.io/tags/dashboard/"/>
+    
+      <category term="frontend" scheme="https://frezc.github.io/tags/frontend/"/>
+    
+  </entry>
   
   <entry>
     <title>《Touhou Luna Nights》—— 令人惊喜的东方同人游戏</title>
@@ -450,13 +482,13 @@
       <category term="DEVELOPING" scheme="https://frezc.github.io/categories/DEVELOPING/"/>
     
     
-      <category term="动漫" scheme="https://frezc.github.io/tags/%E5%8A%A8%E6%BC%AB/"/>
-    
-      <category term="排行" scheme="https://frezc.github.io/tags/%E6%8E%92%E8%A1%8C/"/>
-    
       <category term="anime" scheme="https://frezc.github.io/tags/anime/"/>
     
       <category term="rank" scheme="https://frezc.github.io/tags/rank/"/>
+    
+      <category term="动漫" scheme="https://frezc.github.io/tags/%E5%8A%A8%E6%BC%AB/"/>
+    
+      <category term="排行" scheme="https://frezc.github.io/tags/%E6%8E%92%E8%A1%8C/"/>
     
   </entry>
   
@@ -504,13 +536,13 @@
       <category term="DEVELOPING" scheme="https://frezc.github.io/categories/DEVELOPING/"/>
     
     
-      <category term="动漫" scheme="https://frezc.github.io/tags/%E5%8A%A8%E6%BC%AB/"/>
-    
-      <category term="排行" scheme="https://frezc.github.io/tags/%E6%8E%92%E8%A1%8C/"/>
-    
       <category term="anime" scheme="https://frezc.github.io/tags/anime/"/>
     
       <category term="rank" scheme="https://frezc.github.io/tags/rank/"/>
+    
+      <category term="动漫" scheme="https://frezc.github.io/tags/%E5%8A%A8%E6%BC%AB/"/>
+    
+      <category term="排行" scheme="https://frezc.github.io/tags/%E6%8E%92%E8%A1%8C/"/>
     
   </entry>
   
