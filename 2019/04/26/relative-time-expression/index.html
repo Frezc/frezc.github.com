@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+<!-- Baidu Push -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<!-- End Baidu Push -->
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <meta name="baidu-site-verification" content="bmvYqUCgMu">
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2019/04/26/relative-time-expression/">
+    
+    
+    <title>相对时间表达式 —— 解决相对时间序列化的问题 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="time,moment,parser,rust">
+    <meta name="description" content="平时开发监控系统时免不了与时序数据库的查询打交道，在查时序数据库时 时间范围 是必不可少的条件，所以在查询的UI展示上通常会将时间范围作为一个独立的组件来让用户交互。 时间范围通常会展示为两种形式：相对时间和绝对时间。对于监控系统来说，日常观察指标、建立看板基本都是使用相对时间，因为使用绝对时间的话一是不能及时更新，二是容易引发慢查询。而绝对时间的使用场景一般是定位具体问题。 在我们的监控前端里主">
+<meta name="keywords" content="time,moment,parser,rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="相对时间表达式 —— 解决相对时间序列化的问题">
+<meta property="og:url" content="https://frezc.github.io/2019/04/26/relative-time-expression/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="平时开发监控系统时免不了与时序数据库的查询打交道，在查时序数据库时 时间范围 是必不可少的条件，所以在查询的UI展示上通常会将时间范围作为一个独立的组件来让用户交互。 时间范围通常会展示为两种形式：相对时间和绝对时间。对于监控系统来说，日常观察指标、建立看板基本都是使用相对时间，因为使用绝对时间的话一是不能及时更新，二是容易引发慢查询。而绝对时间的使用场景一般是定位具体问题。 在我们的监控前端里主">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://frezc.github.io/2019/04/26/relative-time-expression/quick-ranges.png">
+<meta property="og:updated_time" content="2019-04-27T16:36:08.742Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="相对时间表达式 —— 解决相对时间序列化的问题">
+<meta name="twitter:description" content="平时开发监控系统时免不了与时序数据库的查询打交道，在查时序数据库时 时间范围 是必不可少的条件，所以在查询的UI展示上通常会将时间范围作为一个独立的组件来让用户交互。 时间范围通常会展示为两种形式：相对时间和绝对时间。对于监控系统来说，日常观察指标、建立看板基本都是使用相对时间，因为使用绝对时间的话一是不能及时更新，二是容易引发慢查询。而绝对时间的使用场景一般是定位具体问题。 在我们的监控前端里主">
+<meta name="twitter:image" content="https://frezc.github.io/2019/04/26/relative-time-expression/quick-ranges.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">相对时间表达式 —— 解决相对时间序列化的问题</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">相对时间表达式 —— 解决相对时间序列化的问题</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-04-26T15:21:16.000Z" itemprop="datePublished" class="page-time">
+  2019-04-26
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#使用key来映射"><span class="post-toc-number">1.</span> <span class="post-toc-text">使用key来映射</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#使用结构化数据"><span class="post-toc-number">2.</span> <span class="post-toc-text">使用结构化数据</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#相对时间的抽象"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">相对时间的抽象</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#实现"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">实现</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#使用相对时间表达式"><span class="post-toc-number">3.</span> <span class="post-toc-text">使用相对时间表达式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#相对时间表达式"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">相对时间表达式</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#如何解决结构化数据的缺陷"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">如何解决结构化数据的缺陷</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#如何解决格式化问题"><span class="post-toc-number">3.2.1.</span> <span class="post-toc-text">如何解决格式化问题</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#解决剩下两个问题"><span class="post-toc-number">3.2.2.</span> <span class="post-toc-text">解决剩下两个问题</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#时区问题"><span class="post-toc-number">4.</span> <span class="post-toc-text">时区问题</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#结语"><span class="post-toc-number">5.</span> <span class="post-toc-text">结语</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-relative-time-expression" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">相对时间表达式 —— 解决相对时间序列化的问题</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-04-26 23:21:16" datetime="2019-04-26T15:21:16.000Z" itemprop="datePublished">2019-04-26</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+
+
+            
+<span style="display: none">
+    <span id="busuanzi_container_page_pv" title="文章总阅读量" style="display:none">
+        <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+    </span>
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>平时开发监控系统时免不了与时序数据库的查询打交道，在查时序数据库时 <em>时间范围</em> 是必不可少的条件，所以在查询的UI展示上通常会将时间范围作为一个独立的组件来让用户交互。</p>
+<p>时间范围通常会展示为两种形式：相对时间和绝对时间。对于监控系统来说，日常观察指标、建立看板基本都是使用相对时间，因为使用绝对时间的话一是不能及时更新，二是容易引发慢查询。而绝对时间的使用场景一般是定位具体问题。</p>
+<p>在我们的监控前端里主要使用相对时间的地方有两个，一是adhoc查询，另一个是看板。在这两处需求里都需要对相对时间序列化，前者用来分享查询链接，后者用来保存看板配置。下面就谈谈如何序列化相对时间。</p>
+<h1 id="使用key来映射"><a href="#使用key来映射" class="headerlink" title="使用key来映射"></a>使用key来映射</h1><p>这是一开始监控里使用的方式，就是通过一些预定义的key（<code>yesterday</code>, <code>today</code>, <code>thisweek</code>等）来保存相对时间范围，前端在展示时需要额外写死的 <code>Label Map</code> 和 <code>Duration Map</code>。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> LabelMap = &#123;</span><br><span class="line">  yesterday: <span class="string">'昨天'</span>,</span><br><span class="line">  today: <span class="string">'今天'</span>,</span><br><span class="line">  thisweek: <span class="string">'这周'</span>,</span><br><span class="line">  <span class="comment">// and so on..</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> DurationMap = &#123;</span><br><span class="line">  yesterday: <span class="function"><span class="params">()</span> =&gt;</span> [moment().subtract(<span class="number">1</span>, <span class="string">'day'</span>).startOf(<span class="string">'day'</span>), moment().subtract(<span class="number">1</span>, <span class="string">'day'</span>).endOf(<span class="string">'day'</span>)],</span><br><span class="line">  today: <span class="function"><span class="params">()</span> =&gt;</span> [moment().startOf(<span class="string">'day'</span>), moment().endOf(<span class="string">'day'</span>)],</span><br><span class="line">  thisweek: <span class="function"><span class="params">()</span> =&gt;</span> [moment().startOf(<span class="string">'week'</span>), moment().endOf(<span class="string">'week'</span>)],</span><br><span class="line">  <span class="comment">// and so on..</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这种方式很简单但不灵活，如果需要一个新的时间段就必须改这两个Map才行。而且如果用户有一些特殊的相对时间的话，这种方案就行不通了。</p>
+<h1 id="使用结构化数据"><a href="#使用结构化数据" class="headerlink" title="使用结构化数据"></a>使用结构化数据</h1><p>为了灵活性考虑，我们可以使用对象来保存相对时间，这里我们需要先理解相对时间由什么组成。</p>
+<h2 id="相对时间的抽象"><a href="#相对时间的抽象" class="headerlink" title="相对时间的抽象"></a>相对时间的抽象</h2><p>在项目里我们一般用的时间段都是由一个开始点和一个结束点构成，其中一个相对时间点是由一连串计算产生的，这里的计算我们可以分为两类：偏移和区间首尾。对应的moment方法为<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 偏移</span></span><br><span class="line">moment().add(<span class="number">1</span>, <span class="string">'hour'</span>);</span><br><span class="line">moment().subtract(<span class="number">1</span>, <span class="string">'day'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 区间首尾</span></span><br><span class="line">moment().startOf(<span class="string">'hour'</span>);</span><br><span class="line">moment().endOf(<span class="string">'day'</span>);</span><br></pre></td></tr></table></figure></p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>对应的数据结构如下</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Unit = <span class="string">'s'</span> | <span class="string">'m'</span> | <span class="string">'h'</span> | <span class="string">'d'</span> | <span class="string">'w'</span> | <span class="string">'M'</span> | <span class="string">'y'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> Offset &#123;</span><br><span class="line">  <span class="keyword">type</span>: <span class="string">'Offset'</span>;</span><br><span class="line">  <span class="comment">// 用来表示 add 或者 subtract，一般实际使用都是 subtract 所以可以省略</span></span><br><span class="line">  <span class="comment">// op: '+' | '-';</span></span><br><span class="line">  <span class="built_in">number</span>: <span class="built_in">number</span>;</span><br><span class="line">  unit: Unit;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> Period &#123;</span><br><span class="line">  <span class="keyword">type</span>: <span class="string">'Period'</span>;</span><br><span class="line">  <span class="comment">// 用来表示 startOf 或 endOf，实际使用时可以使用开始和结束点来区分，所以也可以省略</span></span><br><span class="line">  <span class="comment">// op: 'start' | 'end';</span></span><br><span class="line">  unit: Unit;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Calc = Offset | Period;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> TimeRange &#123;</span><br><span class="line">  start: <span class="built_in">Array</span>&lt;Calc&gt;;</span><br><span class="line">  end: <span class="built_in">Array</span>&lt;Calc&gt;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外只要根据这个数据结构实现一个展示Label的函数和一个计算Duration的函数就行了。</p>
+<p>结构化数据提供了很好的灵活性但暴露了几个缺点：</p>
+<ol>
+<li>展示Label的函数不好写，尤其是对于两步以上的计算就得写很多特殊判断，比如 <em>上周</em> 我们的数据长这样(对象写起来太长，用moment表示一下)<code>[moment().sutract(1, &#39;w&#39;).startOf(&#39;w&#39;), moment().sutract(1, &#39;w&#39;).endOf(&#39;w&#39;)]</code>，反过来将该对象格式化就得写很多判断代码才行。</li>
+<li>为了方便使用，肯定是需要快速筛选，无论这个列表放在前端还是后端都需要写一大堆代码（快速筛选如下）<br> <img src="quick-ranges.png" alt="Quick ranges"></li>
+<li>对象不太方便放到query里，比如在我们监控看板里有一个功能，可以让用户在query里带上时间参数来覆盖看板里的默认配置，如果这里是对象的话就不太方便了。</li>
+</ol>
+<h1 id="使用相对时间表达式"><a href="#使用相对时间表达式" class="headerlink" title="使用相对时间表达式"></a>使用相对时间表达式</h1><p>如果能用表达式来表示上面的结构化数据的话不就能解决以上几条缺点了吗？</p>
+<h2 id="相对时间表达式"><a href="#相对时间表达式" class="headerlink" title="相对时间表达式"></a>相对时间表达式</h2><p>在这点上<a href="http://play.grafana.org/" target="_blank" rel="noopener">Grafana</a>已经提供了一个可用的雏形，我在其语法基础上重写了逻辑，增加了容错性以及语法特性，独立出来了一个库（<a href="https://github.com/Frezc/relative-time-expression" target="_blank" rel="noopener">主页</a>）。这个表达式是基于上一节<a href="#使用结构化数据">结构化数据</a>实现的，但是能更简单明了。比如（取自<a href="https://github.com/Frezc/relative-time-expression#examples" target="_blank" rel="noopener">examples</a>）</p>
+<ul>
+<li><code>now - 12h</code>: 12 hours ago, same as <code>moment().subtract(12, &#39;hours&#39;)</code></li>
+<li><code>-1d</code>: 1 day ago, same as <code>moment().subtract(1, &#39;day&#39;)</code></li>
+<li><code>now / d</code>: the start of today, same as <code>moment().startOf(&#39;day&#39;)</code></li>
+<li><code>now \ w</code>: the end of this week, same as <code>moment().endOf(&#39;week&#39;)</code></li>
+<li><code>now - w / w</code>: the start of last week, same as <code>moment().subtract(1, &#39;week&#39;).startOf(&#39;week&#39;)</code></li>
+</ul>
+<h2 id="如何解决结构化数据的缺陷"><a href="#如何解决结构化数据的缺陷" class="headerlink" title="如何解决结构化数据的缺陷"></a>如何解决结构化数据的缺陷</h2><h3 id="如何解决格式化问题"><a href="#如何解决格式化问题" class="headerlink" title="如何解决格式化问题"></a>如何解决格式化问题</h3><p>将表达式格式化的话特殊区间就不需要写代码进行判断了，只需像<a href="#使用key来映射">第一种方式</a>里一样将标准格式的表达式映射到相应的文本上就行了。比如</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> LabelMap = &#123;</span><br><span class="line">  <span class="string">'now-d/d to now-d\\d'</span>: <span class="string">'昨天'</span>,</span><br><span class="line">  <span class="string">'now-w/d to now-w\\d'</span>: <span class="string">'上周的同一天'</span>,</span><br><span class="line">  <span class="comment">// so on..</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; standardize &#125; <span class="keyword">from</span> <span class="string">'relative-time-expression'</span>;</span><br><span class="line"><span class="keyword">const</span> start = standardize(<span class="string">' now   - 1   d /d'</span>); <span class="comment">// return now-d/d</span></span><br><span class="line"><span class="keyword">const</span> end = standardize(<span class="string">'-d\\d'</span>); <span class="comment">// return now-d\d</span></span><br><span class="line"><span class="keyword">const</span> label = LabelMap[<span class="string">`<span class="subst">$&#123;start&#125;</span> to <span class="subst">$&#123;end&#125;</span>`</span>] || <span class="string">`<span class="subst">$&#123;start&#125;</span> to <span class="subst">$&#123;end&#125;</span>`</span>;</span><br><span class="line">expect(label).toEqual(<span class="string">'昨天'</span>);</span><br></pre></td></tr></table></figure>
+<p>当然在处理 <em>前x小时</em>, <em>前x天</em> 这种情况还是需要写一些判断，和上节的处理差不多，如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// const start, end = ...</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; parse &#125; <span class="keyword">from</span> <span class="string">'relative-time-expression'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (end === <span class="string">'now'</span>) &#123;</span><br><span class="line">  <span class="comment">// omit error catch code</span></span><br><span class="line">  <span class="keyword">const</span> ast = parse(start);</span><br><span class="line">  <span class="keyword">if</span> (ast.body.length === <span class="number">1</span> &amp;&amp; ast.body[<span class="number">0</span>].type === <span class="string">'Offset'</span>) &#123;</span><br><span class="line">    <span class="comment">// 如果start只有一项偏移，那么就可以格式化成 `前&#123;number&#125;&#123;单位&#125;` 了</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">`前<span class="subst">$&#123;ast.body[<span class="number">0</span>].number&#125;</span><span class="subst">$&#123;ast.body[<span class="number">0</span>].unit&#125;</span>`</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="解决剩下两个问题"><a href="#解决剩下两个问题" class="headerlink" title="解决剩下两个问题"></a>解决剩下两个问题</h3><p>值一旦变成普通字符串的话这两个问题也就迎刃而解了。</p>
+<h1 id="时区问题"><a href="#时区问题" class="headerlink" title="时区问题"></a>时区问题</h1><p>区间首尾的计算是基于时区的，比如<code>now/d</code>, 用户期望的通常是他所在地区一天的开始时间（当然也不排除想通过另外时区的时间查数据的情况）。如果计算相对时间实在客户端的话，浏览器其实已经帮我们设定好了正确的时区，但是服务端就不一样了，它只能拿到服务器系统所在时区的时间。</p>
+<p>所以考虑服务端计算相对时间的需求（监控看板里就有类似需求：通过看板组件id直接调用后端接口拿到数据），客户端在调用这些接口时需要带上时区信息。服务端的处理代码如下</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> parse <span class="keyword">from</span> <span class="string">'rte-moment'</span>;</span><br><span class="line"><span class="keyword">import</span> moment <span class="keyword">from</span> <span class="string">'moment-timezone'</span>;</span><br><span class="line"><span class="keyword">const</span> m = parse(<span class="string">'now/d'</span>, &#123; base: moment().tz(clientTimezone || <span class="string">'Asia/Shanghai'</span>) &#125;);</span><br><span class="line">moment().tz(<span class="string">'Asia/Shanghai'</span>).startOf(<span class="string">'day'</span>).isSame(m); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>在监控项目里的时间组件基本参照了Grafana的时间组件，不得不说其在监控方面还有很多值得学习的地方。</p>
+<p>另外该项目除了<a href="https://github.com/Frezc/relative-time-expression" target="_blank" rel="noopener">typescript</a>外还用<a href="https://github.com/Frezc/relative-time-expression-rust" target="_blank" rel="noopener">rust</a>练手写了一遍，rust给我印象最深的一点是整套项目构建、文档生成、依赖管理的工具非常好用，上手就可以专心写代码了。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/moment/">moment</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/parser/">parser</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rust/">rust</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/time/">time</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2019/04/26/relative-time-expression/&title=《相对时间表达式 —— 解决相对时间序列化的问题》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2019/04/26/relative-time-expression/&title=《相对时间表达式 —— 解决相对时间序列化的问题》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2019/04/26/relative-time-expression/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《相对时间表达式 —— 解决相对时间序列化的问题》 — Code for fun&url=https://frezc.github.io/2019/04/26/relative-time-expression/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2019/04/26/relative-time-expression/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/04/13/dashboard-performance-optimization/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">看板性能优化实践</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p style="display: none">
+    <span id="busuanzi_container_site_uv" style="display:none">
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style="display:none">
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2019/04/26/relative-time-expression/&title=《相对时间表达式 —— 解决相对时间序列化的问题》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2019/04/26/relative-time-expression/&title=《相对时间表达式 —— 解决相对时间序列化的问题》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2019/04/26/relative-time-expression/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《相对时间表达式 —— 解决相对时间序列化的问题》 — Code for fun&url=https://frezc.github.io/2019/04/26/relative-time-expression/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2019/04/26/relative-time-expression/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACLElEQVR42u3aSZLCMAwFUO5/afoAVNxfUqDKzvOKYkj8sjCaXq94vS9W8unVdT7f/3x988LAwNiW8V6uq9usb5Yw1g8i3xsGBsZzGOut5Afi+hEk4OS3GBgYGD1GEhSuj+/8EWBgYGAk4WA1oMyPZgwMDIxJEluF5QnwT3NxDAyMDRl51f33r7/S38DAwNiK8S6u/DqTu5R3hYGBcTRj0sLsBYjV8C4v4WFgYJzN6BXx883loV7voMfAwDibkR+X1dJYvrkbynYYGBiPYeTFr/VGe1uv/if8E9tiYGAcx2jGj18Y1Ege02UPFgMD4wGMaoA4aXzmx+5tOTcGBsa2jLwQX01Wk0eTB4v50YyBgXEqo9oGyAe58q0XimtXd8TAwDiU0Ws95olrHrmNUlkMDIyjGXcNQOQH5aQw95osDAyMbRn5oZYkmdV0t/d9DAyMpzEmgGri2ivG3RACYmBgbM6oDj1UA7he8a6cQmNgYBzNyIPF3vDEvJHQ+w4GBsZ5jGpBLRnOqI5xVNPpqJGJgYFxKKN3OE5KePNrYmBgPIGRY6rpa+/TSTMVAwPjPMa7uKrJ7XxEYxTbYmBgHMG4azhsUpKrjm6Mpt4wMDC2ZeSDEdXi2jfCynI/FgMD4yBGbyuTFuYklb2MczEwMDDikn21/Zm3DQqjYBgYGBjFwll0aBbvhYGB8TRGNYldbzcvzPVqgbeV2zAwMDZhVFPHydE8aQ8k4SMGBsZxjD8ubq1jaNRI+wAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

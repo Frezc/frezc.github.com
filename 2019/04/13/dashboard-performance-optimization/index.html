@@ -66,7 +66,7 @@ ga('send', 'pageview');
 <meta property="og:image" content="https://frezc.github.io/2019/04/13/dashboard-performance-optimization/idlerendergadget.png">
 <meta property="og:image" content="https://frezc.github.io/2019/04/13/dashboard-performance-optimization/prod-before-optimization.png">
 <meta property="og:image" content="https://frezc.github.io/2019/04/13/dashboard-performance-optimization/prod-after-optimization.png">
-<meta property="og:updated_time" content="2019-04-13T14:21:13.702Z">
+<meta property="og:updated_time" content="2019-04-27T16:36:08.362Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="看板性能优化实践">
 <meta name="twitter:description" content="最近比较有空就打算把看板的性能优化做一下，打开项目用chrome的performance记录了一下一个组件比较多的看板。这个结果还是比较让人惊讶，原本以为性能瓶颈主要在图表（G2的性能堪忧），没想到看板本身的性能也如此糟糕。">
@@ -198,7 +198,7 @@ ga('send', 'pageview');
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#首屏不要渲染没必要的组件"><span class="post-toc-number">1.</span> <span class="post-toc-text">首屏不要渲染没必要的组件</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#所有组件都应该在独立的帧内渲染"><span class="post-toc-number">2.</span> <span class="post-toc-text">所有组件都应该在独立的帧内渲染</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#懒加载"><span class="post-toc-number">3.</span> <span class="post-toc-text">懒加载</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#组件延迟渲染（optional）"><span class="post-toc-number">4.</span> <span class="post-toc-text">组件延迟渲染（optional）</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#结语"><span class="post-toc-number">5.</span> <span class="post-toc-text">结语</span></a></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#首屏不要渲染没必要的组件"><span class="post-toc-number">1.</span> <span class="post-toc-text">首屏不要渲染没必要的组件</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#所有组件都应该在独立的帧内渲染"><span class="post-toc-number">2.</span> <span class="post-toc-text">所有组件都应该在独立的帧内渲染</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#React-Concurrent-Mode"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">React Concurrent Mode</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Mobx-batch-update"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">Mobx batch update</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#懒加载"><span class="post-toc-number">3.</span> <span class="post-toc-text">懒加载</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#组件延迟渲染（optional）"><span class="post-toc-number">4.</span> <span class="post-toc-text">组件延迟渲染（optional）</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#结语"><span class="post-toc-number">5.</span> <span class="post-toc-text">结语</span></a></li></ol>
         </nav>
     </aside>
 
@@ -256,6 +256,20 @@ ga('send', 'pageview');
 <p>怎么优化呢？这里我们可以参考react fiber的实现方式，一个简单的方案就是使用<code>requestIdleCallback</code>这个API来将每个组件请求结束后的更新拆散到每一帧内。这样就不会出现多个组件同时更新而“撞车”的情况了。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">requestIdleCallback(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// update component with response data</span></span><br><span class="line">&#125;, &#123; <span class="attr">timeout</span>: <span class="number">2000</span> &#125;);</span><br></pre></td></tr></table></figure>
 <p>我们可以同时应用到组件和CMDB选择器的上，但是我们又希望组件更新能早于CMDB选择器，因为比较重要。不过目前<code>requestIdleCallback</code><a href="https://github.com/w3c/requestidlecallback/issues/68" target="_blank" rel="noopener">没有优先级</a>的概念，不过可以自己实现一个。</p>
+<h2 id="React-Concurrent-Mode"><a href="#React-Concurrent-Mode" class="headerlink" title="React Concurrent Mode"></a>React Concurrent Mode</h2><p>React其实提供了一个类似的优化方案：<a href="https://reactjs.org/blog/2018/11/27/react-16-roadmap.html#react-16x-q2-2019-the-one-with-concurrent-mode" target="_blank" rel="noopener">concurrent mode</a>，了解更多可以查看<a href="https://philippspiess.com/scheduling-in-react/" target="_blank" rel="noopener">这篇文章</a>。</p>
+<p>但是我在使用<code>concurrent mode</code>时碰到一些问题所以暂时没用：</p>
+<ul>
+<li>默认使用<a href="https://reactjs.org/docs/strict-mode.html" target="_blank" rel="noopener">Strict Mode</a>，用了一些组件库会有一堆警告</li>
+<li><p>不知道是不是和旧API不兼容，用在项目里时看板组件就抛错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">app.5793fd45.js:6977 Uncaught TypeError: callback is not a function</span><br><span class="line">    at flushFirstCallback (app.5793fd45.js:6977)</span><br><span class="line">    at flushWork (app.5793fd45.js:7075)</span><br><span class="line">    at MessagePort.channel.port1.onmessage (app.5793fd45.js:6817)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>目前没有详细文档，遇到问题也不好解决</p>
+</li>
+</ul>
+<h2 id="Mobx-batch-update"><a href="#Mobx-batch-update" class="headerlink" title="Mobx batch update"></a>Mobx batch update</h2><p>因为在看板里用到了mobx所以顺便提一下，我在组件更新图表数据时使用了<code>reaction</code>函数，这个函数会自动对第二个参数里调用<code>update</code>进行batch</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">reaction(<span class="function"><span class="params">()</span> =&gt;</span> toJS(<span class="keyword">this</span>.fetchResult), () =&gt; &#123;</span><br><span class="line">  <span class="comment">// auto batch all update here</span></span><br><span class="line">  store.updateSource(<span class="keyword">this</span>.fetchResult);</span><br><span class="line">  store.updateConfig(<span class="keyword">this</span>.fetchResult);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>但是如果将更新放到<code>requestIdleCallback</code>里的话，这里就会触发两次更新了。需要手动加上<code>action</code>才能使其batch</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">reaction(<span class="function"><span class="params">()</span> =&gt;</span> toJS(<span class="keyword">this</span>.fetchResult), () =&gt; &#123;</span><br><span class="line">  <span class="comment">// you must use action to enable batch</span></span><br><span class="line">  <span class="comment">//                         ↓↓↓↓↓↓</span></span><br><span class="line">  <span class="built_in">window</span>.requestIdleCallback(action(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    store.updateSource(<span class="keyword">this</span>.fetchResult);</span><br><span class="line">    store.updateConfig(<span class="keyword">this</span>.fetchResult);</span><br><span class="line">  &#125;), &#123; <span class="attr">timeout</span>: <span class="number">3000</span> &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <h1 id="懒加载"><a href="#懒加载" class="headerlink" title="懒加载"></a>懒加载</h1><p>经过前两步的优化后，看板加载起来已经顺畅很多了，但是看板内容（就是测试看板图上的看板组件部分）初始化时还是有1.4s的时间。</p>
 <figure class="image-bubble">
                 <div class="img-lightbox">
@@ -296,6 +310,7 @@ ga('send', 'pageview');
                 </div>
                 <div class="image-caption">优化后(滚动页面加载完所有组件)</div>
             </figure>
+<p><em>这里空闲时间比较多是因为请求完成的时间差导致</em></p>
 
         </div>
 
@@ -369,7 +384,14 @@ ga('send', 'pageview');
     </div>
 
     
-<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/04/26/relative-time-expression/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">相对时间表达式 —— 解决相对时间序列化的问题</h4>
+      </a>
+    </div>
   
 
   
