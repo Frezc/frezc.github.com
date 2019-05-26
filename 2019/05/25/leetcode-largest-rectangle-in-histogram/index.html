@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+<!-- Baidu Push -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<!-- End Baidu Push -->
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <meta name="baidu-site-verification" content="bmvYqUCgMu">
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2019/05/25/leetcode-largest-rectangle-in-histogram/">
+    
+    
+    <title>leetcode #84 直方图内最大矩形解题思路 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="algorithm">
+    <meta name="description" content="题目：https://leetcode.com/problems/largest-rectangle-in-histogram/ 网上也有很多人写了解法了，但是我认为都没有把思路写清楚，需要花一些时间来理解。我写这篇文章主要也是记录一下我自己的思路，希望给人以启发。 这道题被打上了 stack 的标签，大概是因为栈的解法十分巧妙，但是解这道题栈不是重点，想清楚了我们也能用其他的解法。 拆分子问题这">
+<meta name="keywords" content="algorithm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="leetcode #84 直方图内最大矩形解题思路">
+<meta property="og:url" content="https://frezc.github.io/2019/05/25/leetcode-largest-rectangle-in-histogram/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="题目：https://leetcode.com/problems/largest-rectangle-in-histogram/ 网上也有很多人写了解法了，但是我认为都没有把思路写清楚，需要花一些时间来理解。我写这篇文章主要也是记录一下我自己的思路，希望给人以启发。 这道题被打上了 stack 的标签，大概是因为栈的解法十分巧妙，但是解这道题栈不是重点，想清楚了我们也能用其他的解法。 拆分子问题这">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://frezc.github.io/2019/05/25/leetcode-largest-rectangle-in-histogram/lowest-intervals.png">
+<meta property="og:updated_time" content="2019-05-26T16:30:34.827Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="leetcode #84 直方图内最大矩形解题思路">
+<meta name="twitter:description" content="题目：https://leetcode.com/problems/largest-rectangle-in-histogram/ 网上也有很多人写了解法了，但是我认为都没有把思路写清楚，需要花一些时间来理解。我写这篇文章主要也是记录一下我自己的思路，希望给人以启发。 这道题被打上了 stack 的标签，大概是因为栈的解法十分巧妙，但是解这道题栈不是重点，想清楚了我们也能用其他的解法。 拆分子问题这">
+<meta name="twitter:image" content="https://frezc.github.io/2019/05/25/leetcode-largest-rectangle-in-histogram/lowest-intervals.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">leetcode #84 直方图内最大矩形解题思路</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">leetcode #84 直方图内最大矩形解题思路</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-05-25T13:21:43.000Z" itemprop="datePublished" class="page-time">
+  2019-05-25
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#拆分子问题"><span class="post-toc-number">1.</span> <span class="post-toc-text">拆分子问题</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#找到每个高度对应的最大区间"><span class="post-toc-number">2.</span> <span class="post-toc-text">找到每个高度对应的最大区间</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#遍历"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">遍历</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#DP"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">DP</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Stack"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">Stack</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#其他解法"><span class="post-toc-number">3.</span> <span class="post-toc-text">其他解法</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#85-Maximal-Rectangle"><span class="post-toc-number">4.</span> <span class="post-toc-text">#85 Maximal Rectangle</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-leetcode-largest-rectangle-in-histogram" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">leetcode #84 直方图内最大矩形解题思路</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-05-25 21:21:43" datetime="2019-05-25T13:21:43.000Z" itemprop="datePublished">2019-05-25</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+
+
+            
+<span style="display: none">
+    <span id="busuanzi_container_page_pv" title="文章总阅读量" style="display:none">
+        <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+    </span>
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>题目：<a href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank" rel="noopener">https://leetcode.com/problems/largest-rectangle-in-histogram/</a></p>
+<p>网上也有很多人写了解法了，但是我认为都没有把思路写清楚，需要花一些时间来理解。我写这篇文章主要也是记录一下我自己的思路，希望给人以启发。</p>
+<p>这道题被打上了 <em>stack</em> 的标签，大概是因为栈的解法十分巧妙，但是解这道题栈不是重点，想清楚了我们也能用其他的解法。</p>
+<h1 id="拆分子问题"><a href="#拆分子问题" class="headerlink" title="拆分子问题"></a>拆分子问题</h1><p>这道题一开始我的想法是用DP来做，想通过0~i的最大值来依次推算，可是想不出递推式。后来发现是我子问题就想错了。</p>
+<p>这道题有点像木桶装水，我们可以发现一个区间内的最大矩形的高度一定是<strong>受限于这个区间内的最小高度</strong>。反过来想，对于每个高度的柱子也一定会有一个区间是以其作为最小高度的，那么我们可以得到需要的子问题，就是找出<strong>某个高度作为最小高度时所对应的最大区间</strong>，通过对每个高度的子问题求解就能推算出所有高度的最大区间，也就是该问题的解了。</p>
+<p><em>下图中我把每个高度对应的最大区间标识了出来</em></p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="lowest-intervals.png" alt="每个最小高度对应的最大区间" title>
+                </div>
+                <div class="image-caption">每个最小高度对应的最大区间</div>
+            </figure>
+<h1 id="找到每个高度对应的最大区间"><a href="#找到每个高度对应的最大区间" class="headerlink" title="找到每个高度对应的最大区间"></a>找到每个高度对应的最大区间</h1><h2 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h2><p>最直观的方法就是从当前柱子开始向两侧遍历，找到第一个<strong>小于</strong>当前高度的柱子，分别就是两侧的边界了。因为如果这个区间包含了比当前高度还小的柱子的话，当前的高度就不是最小高度了。</p>
+<p>当然这种方法会使时间复杂度为O(n²)，对于这道题来说会超时。下面是优化这个子问题解法的方案。</p>
+<h2 id="DP"><a href="#DP" class="headerlink" title="DP"></a>DP</h2><p>DP的解法比较易懂，这里拿<code>heights = [2,4,3,1]</code>来举例说明，下面用<code>i</code>来表示每项索引：</p>
+<ol>
+<li><code>i = 0</code>: 对于第一个高度的左边界设为<code>-1</code>。我们在数组里存下当前索引对应的边界索引，<code>dp = [-1]</code></li>
+<li><code>i = 1</code>: 由于第一个高度<code>2</code>小于第二个高度<code>4</code>，我们就能直接得到，第二个高度的左边界<code>0</code>。<code>dp = [-1,0]</code></li>
+<li><code>i = 2</code>: 当前高度<code>3</code>小于前一个高度<code>4</code>，所以我们继续拿前一个索引对应的左边界(<code>dp[1]</code>也就是<code>i = 0</code>)来判断，<code>3 &gt; heights[0]</code>，所以当前高度的左边界就是<code>0</code>。<code>dp = [-1,0,0]</code></li>
+<li><code>i = 3</code>: 同上，我们直接拿<code>dp[2]</code>也就是<code>i = 0</code>比较，发现<code>1</code>还是比较小。再取<code>dp[0] = -1</code>，该索引已经超出数组边界了，所以得到当前左边界 <code>dp[3] = -1</code>。</li>
+</ol>
+<p>在第4步中，我们通过DP构建的数组跳过了一次判断，在比较庞大的数据中能减少更多的判断，这也是为什么DP能将O(n²)优化至O(n)。</p>
+<p>得到左侧边界数组后我们还需要构建右侧边界数组，方法同上只不过需要倒过来生成。</p>
+<h2 id="Stack"><a href="#Stack" class="headerlink" title="Stack"></a>Stack</h2><p>还有一种通过栈的方式来快速得到左右边界的方法，这种方法需要将索引压入栈内，并使栈内的元素保持单调递增，这样就能保证栈内每个高度的前一个高度就是这个当前高度的左边界。同时如果要压入栈内的高度比栈顶高度小，那么这个高度就是栈顶高度的右边界，这样我们就将栈顶高度的左右边界算好了，将其抛弃即可，继续比较下一个栈顶高度。</p>
+<p>同样拿上面的<code>[2,4,3,1]</code>举例</p>
+<ol>
+<li><code>i = 0</code>，栈为空，压入第一个索引<code>0</code>。<code>stack = [0]</code></li>
+<li><code>i = 1</code>，<code>4 &gt; 2</code>，压入第二个索引。<code>stack = [0,1]</code></li>
+<li><code>i = 2</code>，<code>3 &lt; 4</code>，这个时候我们可以得到栈顶索引<code>1</code>对应的左右边界<code>[0,2]</code>，可以直接算出面积。弹出<code>1</code>，<code>stack = [0]</code></li>
+<li><code>i = 2</code>，继续比较栈顶元素<code>3 &gt; 2</code>，压入<code>2</code>。<code>stack = [0,2]</code></li>
+<li><code>i = 3</code>，<code>1 &lt; 3</code>，同理栈顶索引<code>2</code>的左右边界为<code>[0,3]</code>，弹出继续得到栈顶<code>0</code>的左右边界<code>[-1,3]</code>。<code>stack = []</code></li>
+<li>栈为空压入<code>3</code>。<code>stack = [3]</code></li>
+<li>遍历完后将栈顶元素依次弹出，<code>3</code>的左右边界为<code>[-1,4]</code></li>
+</ol>
+<h1 id="其他解法"><a href="#其他解法" class="headerlink" title="其他解法"></a>其他解法</h1><p>有人也提出了<a href="https://leetcode.com/problems/largest-rectangle-in-histogram/discuss/28910/Simple-Divide-and-Conquer-AC-solution-without-Segment-Tree" target="_blank" rel="noopener">分治的解法</a>，相比O(n)的解法比较直白，更像是直接遍历的优化。</p>
+<h1 id="85-Maximal-Rectangle"><a href="#85-Maximal-Rectangle" class="headerlink" title="#85 Maximal Rectangle"></a>#85 Maximal Rectangle</h1><p>由于85的解法是基于该题，所以顺便提一下。</p>
+<p>这道题的关键点也是如何拆子问题，我们可以遍历所有rows，对于每一行将其作为底边，计算上面<code>&#39;1&#39;</code>组成柱子的最大矩形，这样就可以利用前一道题的解法来解决这个子问题了，最后对所有子问题的解算出最大值即可。</p>
+<p>当然如果没有84直接做这道题应该会很难想到这种拆子问题的方法。。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2019/05/25/leetcode-largest-rectangle-in-histogram/&title=《leetcode #84 直方图内最大矩形解题思路》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2019/05/25/leetcode-largest-rectangle-in-histogram/&title=《leetcode #84 直方图内最大矩形解题思路》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2019/05/25/leetcode-largest-rectangle-in-histogram/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《leetcode #84 直方图内最大矩形解题思路》 — Code for fun&url=https://frezc.github.io/2019/05/25/leetcode-largest-rectangle-in-histogram/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2019/05/25/leetcode-largest-rectangle-in-histogram/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/04/26/relative-time-expression/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">相对时间表达式 —— 解决相对时间序列化的问题</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p style="display: none">
+    <span id="busuanzi_container_site_uv" style="display:none">
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style="display:none">
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2019/05/25/leetcode-largest-rectangle-in-histogram/&title=《leetcode #84 直方图内最大矩形解题思路》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2019/05/25/leetcode-largest-rectangle-in-histogram/&title=《leetcode #84 直方图内最大矩形解题思路》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2019/05/25/leetcode-largest-rectangle-in-histogram/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《leetcode #84 直方图内最大矩形解题思路》 — Code for fun&url=https://frezc.github.io/2019/05/25/leetcode-largest-rectangle-in-histogram/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2019/05/25/leetcode-largest-rectangle-in-histogram/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACvUlEQVR42u3aQW7jQAwEwPz/08llDwsEVro5nKwXKJ0Mx5KmFGBIkfz4iI/Pv47nb/LPr+6SXH/5wMPDwztY+vfj1c1eLev5mskd80f5fBYeHh7ebV6yTSehIgkq+XXaAIOHh4f3zrznMNCelQcYPDw8vP+X9/zNc5rbliT+WdzDw8PDe+Ql5YBk6XlxNioljK6Dh4eHd5uXd5He5/OV/h4eHh7ecVe9bYYlgaQt+M7aZn/OwsPDw7vAyzfc3UJtm/626TseHh7ePd5JKeFk089/MytA4OHh4d3jtTdONutZIt4WHYqz8PDw8FZ5sxbXVvGiDTZ5qMDDw8O7zZs13VtSHlrysFQvEQ8PD2+Jd7Id5wtqF5e32X7o7+Hh4eGt8m4n03kYyMuyebkEDw8P7x6vTWe32vz5Rr97Rzw8PLxdXtGSj8+dJeUn6fuw14eHh4cX8/LX+3YTT9LfpAk3OxcPDw/vBi9f7mx86rzAMRs+qLN1PDw8vDIvTTD5Jt4OELRhpi4i4+Hh4a3yZk2skzZ/EiracsPLB4qHh4d3gXcyIJUn1rPk+7w4goeHh/ebvLYgmz+gk1CRt9/q9h8eHh5ezGtf+8/Hp2YtsbxIUccuPDw8vBEv7xkl7bH2Om0qX/wSDw8P7wKvbUTNEuutUYN8oCEaI8DDw8M74LWYvCk1S4iXQwIeHh7eNV6eEOdJc1vaSK5W/2Pw8PDwLvPaBDovN7RLnx0/jA7g4eHhHfM+y6Nt5J8PEyRh4OVf8fDw8C7wZhtuUk5thwC2Pi/EEzw8PLyAlwSDNjAUGX1c/liYLMPDw8Nb5eWJb4vM0/SToDVsgOHh4eH9Cq9NjvNHk+OLaTI8PDy8N+DlYwRtyn7efluLe3h4eHhLdc5ks87HCJKNfi0w4OHh4a3yTl748226fWQngwt4eHh413hfXvM1yn4KE7sAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
