@@ -52,18 +52,18 @@ ga('send', 'pageview');
     
     
     <meta name="keywords" content="android,intellij idea,gradle">
-    <meta name="description" content="今天把项目pull下来然后用intellij执行时出现了以下的错误提示12Error:Gradle: Execution failed for task &amp;apos;:app:preDexDebug&amp;apos;.&amp;gt; com.android.ide.common.process.ProcessException: org.gradle.process.internal.ExecExceptio">
+    <meta name="description" content="今天把项目pull下来然后用intellij执行时出现了以下的错误提示 Error:Gradle: Execution failed for task &amp;#39;:app:preDexDebug&amp;#39;. &amp;gt; com.android.ide.common.process.ProcessException: org.gradle.process.internal.ExecException:">
 <meta name="keywords" content="android,intellij idea,gradle">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Gradle的preDexDebug错误的解决办法(大概)">
 <meta property="og:url" content="https://frezc.github.io/2015/05/16/solve-preDexDebug/index.html">
 <meta property="og:site_name" content="Code for fun">
-<meta property="og:description" content="今天把项目pull下来然后用intellij执行时出现了以下的错误提示12Error:Gradle: Execution failed for task &amp;apos;:app:preDexDebug&amp;apos;.&amp;gt; com.android.ide.common.process.ProcessException: org.gradle.process.internal.ExecExceptio">
+<meta property="og:description" content="今天把项目pull下来然后用intellij执行时出现了以下的错误提示 Error:Gradle: Execution failed for task &amp;#39;:app:preDexDebug&amp;#39;. &amp;gt; com.android.ide.common.process.ProcessException: org.gradle.process.internal.ExecException:">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2019-04-09T15:39:43.355Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Gradle的preDexDebug错误的解决办法(大概)">
-<meta name="twitter:description" content="今天把项目pull下来然后用intellij执行时出现了以下的错误提示12Error:Gradle: Execution failed for task &amp;apos;:app:preDexDebug&amp;apos;.&amp;gt; com.android.ide.common.process.ProcessException: org.gradle.process.internal.ExecExceptio">
+<meta name="twitter:description" content="今天把项目pull下来然后用intellij执行时出现了以下的错误提示 Error:Gradle: Execution failed for task &amp;#39;:app:preDexDebug&amp;#39;. &amp;gt; com.android.ide.common.process.ProcessException: org.gradle.process.internal.ExecException:">
     
         <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
     
@@ -212,8 +212,10 @@ ga('send', 'pageview');
 
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
-            <p>今天把项目pull下来然后用intellij执行时出现了以下的错误提示<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Error:Gradle: Execution failed for task &apos;:app:preDexDebug&apos;.</span><br><span class="line">&gt; com.android.ide.common.process.ProcessException: org.gradle.process.internal.ExecException: Process &apos;command &apos;C:\Program Files\Java\jdk1.8.0_40\bin\java.exe&apos;&apos; finished with non-zero exit value 1</span><br></pre></td></tr></table></figure></p>
-<p>因为没有错误提示，只好去网上找解决方法。这时还是不得不感叹stackoverflow这网站的强大啊。</p>
+            <p>今天把项目pull下来然后用intellij执行时出现了以下的错误提示</p>
+<pre><code>Error:Gradle: Execution failed for task &#39;:app:preDexDebug&#39;.
+&gt; com.android.ide.common.process.ProcessException: org.gradle.process.internal.ExecException: Process &#39;command &#39;C:\Program Files\Java\jdk1.8.0_40\bin\java.exe&#39;&#39; finished with non-zero exit value 1
+</code></pre><p>因为没有错误提示，只好去网上找解决方法。这时还是不得不感叹stackoverflow这网站的强大啊。</p>
 <p>两个小时内试了n多方法都没成效，其中也试过把项目回滚，发现即使回滚也会有这个错误，很明显这不是项目本身的问题，大概是gradle哪里出现了问题。</p>
 <hr>
 <p>总之，两个小时后在一次电脑当机重启后就莫名其妙地好了，我这里就讲讲我改过什么吧，也许可以当作参考。</p>
@@ -383,6 +385,15 @@ ga('send', 'pageview');
             </span>
         </p>
     </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
 </footer>
 
     </main>

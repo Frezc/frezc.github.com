@@ -226,8 +226,20 @@ ga('send', 'pageview');
 <p>就React而言，使用Virtual DOM和一个diff算法（实际就是使用一个uid来判断）来尽可能的重用现有的DOM，以此来减少DOM操作（毕竟添加比更新要耗时）。</p>
 <p>但是在一些需要高帧数刷新的组件里，即使是Virtual DOM的re-render也会显得十分耗时，那么我们看看怎么进行优化。</p>
 <a id="more"></a>
-<h2 id="渲染速度问题"><a href="#渲染速度问题" class="headerlink" title="渲染速度问题"></a>渲染速度问题</h2><p>比如需要实现这么一个列表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;div&gt;</span><br><span class="line">  &lt;Indicator</span><br><span class="line">    percent=&#123;this.state.percent&#125;</span><br><span class="line">  /&gt;</span><br><span class="line">  &#123;</span><br><span class="line">    this.state.items.map(item =&gt; </span><br><span class="line">      &lt;Item</span><br><span class="line">        item=&#123;item&#125;</span><br><span class="line">      /&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure></p>
-<p>这个组件我们需要监听<code>scroll</code>事件，在处理函数里更新state中的percent属性。<br>默认React不会进行任何优化处理，就这么写的话会发现在滚动页面时会有卡顿感，我用自己项目的一个列表项测试了一下（<a href="https://github.com/Frezc/Share-Favors-App/blob/master/src/components/RepoAbList.js" target="_blank" rel="noopener">RepoAbList.js</a>），打印了scroll开始、结束和render开始的时间，如下。<br><img src="/images/2016/04/4058937871.png" alt="scroll-update-all.png"></p>
+<h2 id="渲染速度问题"><a href="#渲染速度问题" class="headerlink" title="渲染速度问题"></a>渲染速度问题</h2><p>比如需要实现这么一个列表</p>
+<pre><code>&lt;div&gt;
+  &lt;Indicator
+    percent={this.state.percent}
+  /&gt;
+  {
+    this.state.items.map(item =&gt; 
+      &lt;Item
+        item={item}
+      /&gt;
+    )
+  }
+&lt;/div&gt;
+</code></pre><p>这个组件我们需要监听<code>scroll</code>事件，在处理函数里更新state中的percent属性。<br>默认React不会进行任何优化处理，就这么写的话会发现在滚动页面时会有卡顿感，我用自己项目的一个列表项测试了一下（<a href="https://github.com/Frezc/Share-Favors-App/blob/master/src/components/RepoAbList.js" target="_blank" rel="noopener">RepoAbList.js</a>），打印了scroll开始、结束和render开始的时间，如下。<br><img src="/images/2016/04/4058937871.png" alt="scroll-update-all.png"></p>
 <p>下面是滚动时不进行render的情况<br><img src="/images/2016/04/1059717184.png" alt="scroll-no-update.png"></p>
 <p>可以发现正常情况scroll回调的间隔是16、17ms，如果render的时间超过这个值就会影响到scroll的刷新率。虽然react更新dom是异步进行的，但是对Virtual DOM的渲染时同步的。所以这里scroll也得等render结束才能继续。</p>
 <p>那么就必须去优化一下Virtual DOM的渲染速度了。这里我们可以打印一下列表项中的每个<code>Item</code>的render时间，就能发现虽然每项都只用了1、2毫秒来渲染，但是加起来就不少了。</p>
@@ -395,6 +407,15 @@ ga('send', 'pageview');
             </span>
         </p>
     </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
 </footer>
 
     </main>

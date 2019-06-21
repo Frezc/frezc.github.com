@@ -236,10 +236,31 @@ ga('send', 'pageview');
 </ul>
 <p>这些按照文档里的写就可以了，不过有点需要注意的是如果你选了最小宽度为4格，minWidth会给你填上250dp，实际在android上运行的时候这个widget的最小宽度是3格。我去github上看到一个开源app里appwidiget的<a href="https://github.com/benniaobuguai/opencdk-appwidget/blob/master/app/src/main/res/xml/widget_xml_news.xml" target="_blank" rel="noopener">配置文件</a>里看到4格写的是294dp，试了下这个数值没什么问题就直接用了。</p>
 <h3 id="appwidgets里得到app的数据"><a href="#appwidgets里得到app的数据" class="headerlink" title="appwidgets里得到app的数据"></a>appwidgets里得到app的数据</h3><p>appwidgets里使用的数据最好是持久化的，如果你想让widgets自动更新的话（widgets默认会有一个更新周期）。RN里提供了持久化api-AsyncStorage，那么原生app中怎么从中得到数据呢？</p>
-<p>看看AsyncStorage的源码里的这条语句<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Use RocksDB if available, then SQLite, then file storage.</span></span><br><span class="line"><span class="keyword">var</span> RCTAsyncStorage = RCTAsyncRocksDBStorage || RCTAsyncSQLiteStorage || RCTAsyncFileStorage;</span><br></pre></td></tr></table></figure></p>
+<p>看看AsyncStorage的源码里的这条语句</p>
+<pre><code class="javascript">// Use RocksDB if available, then SQLite, then file storage.
+var RCTAsyncStorage = RCTAsyncRocksDBStorage || RCTAsyncSQLiteStorage || RCTAsyncFileStorage;
+</code></pre>
 <p>可见一般情况下在android平台上是通过SQLite进行存取的。<br>另外在源码的<code>/ReactAndroid/src/main/java/com/facebook/react/modules/storage/ReactDatabaseSupplier.java</code>中我们可以得到数据库名、表名和表中每列的名称。实际上AsyncStorage只是将k-v值直接保存在一张表里而已。<br>那么从数据库中读取数据应该是很简单了，只要在每次更新时进行读取就行了，也就是在<code>RemoteViewsFactory</code>的<code>onCreate</code>和<code>onDataSetChanged</code>中读取。（ps：你当然可以通过网络请求来获取数据，rn使用了okhttp+fresco，你可以在app中直接使用这两个库）</p>
 <p>由于我们在rn中保存时一般是转成json字符串的，所以读取后还需要解析成对象才能使用，这里用一个你会熟悉的解析库就行了。（RN自带了一个jackson-core库，不过这个用起来不是那么方便，你可以再引入jackson-databind就会好用很多了）</p>
-<p>另外有一点要注意的是，app在没有保存任何东西的情况下，AsyncStorage对应的表是不会创建的，这时候直接读取这张表肯定会报错。<br><strong>解决方案</strong>：捕获一下异常即可<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> String <span class="title">queryFromDB</span><span class="params">(SQLiteDatabase db, String key)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// try-with-resource need min-api 19</span></span><br><span class="line">    Cursor c = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        c = db.rawQuery(<span class="string">"select * from "</span> + TABLE_CATALYST + <span class="string">" where "</span> + KEY_COLUMN + <span class="string">" = ?"</span>, <span class="keyword">new</span> String[]&#123;key&#125;);</span><br><span class="line">        <span class="keyword">if</span> (c.getCount() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            c.moveToFirst();</span><br><span class="line">            String result = c.getString(c.getColumnIndex(VALUE_COLUMN));</span><br><span class="line">            c.close();</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (SQLiteException ignored) &#123;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (c != <span class="keyword">null</span>) c.close();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">""</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>另外有一点要注意的是，app在没有保存任何东西的情况下，AsyncStorage对应的表是不会创建的，这时候直接读取这张表肯定会报错。<br><strong>解决方案</strong>：捕获一下异常即可</p>
+<pre><code class="java">private String queryFromDB(SQLiteDatabase db, String key) {
+    // try-with-resource need min-api 19
+    Cursor c = null;
+    try {
+        c = db.rawQuery(&quot;select * from &quot; + TABLE_CATALYST + &quot; where &quot; + KEY_COLUMN + &quot; = ?&quot;, new String[]{key});
+        if (c.getCount() &gt; 0) {
+            c.moveToFirst();
+            String result = c.getString(c.getColumnIndex(VALUE_COLUMN));
+            c.close();
+            return result;
+        }
+    } catch (SQLiteException ignored) {
+    } finally {
+        if (c != null) c.close();
+    }
+    return &quot;&quot;;
+}
+</code></pre>
 <h3 id="app响应点击事件"><a href="#app响应点击事件" class="headerlink" title="app响应点击事件"></a>app响应点击事件</h3><p>设置点击事件的PendingIntent就按照文档的写法就可以了，如果要在rn中得到点击传递的参数的话，还要写一个原生模块来获取当前Activity的Intent对象并去除数据。</p>
 <p>这个部分可以参考<a href="https://github.com/Neson/react-native-system-notification" target="_blank" rel="noopener">react-native-system-notification</a>这个开源库里的写法，不过在点击时app是不会再前台运行的（目前来说是这样的），所以点击后只要startActivity并在Intent中带上<code>FLAG_ACTIVITY_CLEAR_TOP</code>这个flag就行了。然后在rn中通过原生模块获得Intent中带的数据。</p>
 <p>具体完成的样子就是这样了<br><img src="/images/2016/06/2195390602.png" alt="todolite_widget.png"></p>
@@ -405,6 +426,15 @@ ga('send', 'pageview');
             </span>
         </p>
     </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
 </footer>
 
     </main>

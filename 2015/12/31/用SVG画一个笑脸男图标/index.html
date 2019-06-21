@@ -225,10 +225,19 @@ ga('send', 'pageview');
 <p>然后使用一个越方便越好的画svg的js库就行了。原本看网上大家都推荐使用raphael.js，但是这个库没有画路径文字的方法，于是果断找了另外一个库svg.js，这个库能解决这个问题，还比raphael.js要小。</p>
 <h2 id="用代码画矢量图"><a href="#用代码画矢量图" class="headerlink" title="用代码画矢量图"></a>用代码画矢量图</h2><p>笑脸男的图像里基本上都是使用路径画好的，所以只要使用画路径的方法就行了。关于路径，w3有一套<a href="http://www.w3.org/TR/SVG/paths.html" target="_blank" rel="noopener">规范</a>，只要能看懂这里的写法就好，这是所有库都通用的标准写法。<br>其中可能让人困惑的一点就是arc画法了（其实规范里的图已经说明的挺好了）。它是提供当前点（起始点）、x、y上的半径、旋转角度、large-arc-flag、sweep-flag和终点来确定一个弧的。其中large-arc-flag指是否画大一点的弧，sweep-flag指从起点到终点是否为顺时针画线。</p>
 <p>对路径熟悉后就可以把你设计图给搬进代码里了，如果你的编辑器能直接生成w3标准的代码的话就再好不过了。</p>
-<h2 id="转动的文字"><a href="#转动的文字" class="headerlink" title="转动的文字"></a>转动的文字</h2><p>文字的部分其实有点麻烦，麻烦在做动画上。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> t1 = paper.text(s);</span><br><span class="line">t1.fill(<span class="string">'#23498C'</span>).font(&#123;<span class="attr">size</span>: <span class="number">50</span>, <span class="string">'letter-spacing'</span>: <span class="number">2.3</span>, <span class="attr">weight</span>: <span class="number">700</span>&#125;)</span><br><span class="line">t1.path(<span class="string">'M 605,365 A 300,300 0 1,1 605,260'</span>)</span><br></pre></td></tr></table></figure></p>
-<p>先将路径确定好，并调整文字的一些属性，使其和原图一样。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">t1.textPath().attr(<span class="string">'startOffset'</span>, <span class="string">'0'</span>).animate(&#123; <span class="attr">ease</span>: <span class="string">'-'</span>, <span class="attr">duration</span>: <span class="number">10000</span>&#125;).attr(<span class="string">'startOffset'</span>, <span class="string">'100%'</span>).loop()</span><br></pre></td></tr></table></figure></p>
+<h2 id="转动的文字"><a href="#转动的文字" class="headerlink" title="转动的文字"></a>转动的文字</h2><p>文字的部分其实有点麻烦，麻烦在做动画上。</p>
+<pre><code class="javascript">    var t1 = paper.text(s);
+    t1.fill(&#39;#23498C&#39;).font({size: 50, &#39;letter-spacing&#39;: 2.3, weight: 700})
+    t1.path(&#39;M 605,365 A 300,300 0 1,1 605,260&#39;)
+</code></pre>
+<p>先将路径确定好，并调整文字的一些属性，使其和原图一样。</p>
+<pre><code class="javascript">    t1.textPath().attr(&#39;startOffset&#39;, &#39;0&#39;).animate({ ease: &#39;-&#39;, duration: 10000}).attr(&#39;startOffset&#39;, &#39;100%&#39;).loop()
+</code></pre>
 <p>然后调用动画方法就能动了。但是这样无法将文字循环，文字播放到终点就消失了。<br>一开始我想再用一个文字矢量图接着这个画的，但是svg里的<code>startOffset</code>不能使用负值（负值当然也是有效的，但是不能像0~100%这样设置）。于是想用逆时针路径然后倒过来播放，可惜这样文字就倒过来了，也不知道是否有办法设置。</p>
-<p>最后终于想到一个完美的方案<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">t1.path(<span class="string">'M 605,365 A 300,300 0 1,1 605,260 M 605,365 A 300,300 0 1,1 605,260'</span>)</span><br><span class="line">t1.textPath().attr(<span class="string">'startOffset'</span>, <span class="string">'0'</span>).animate(&#123; <span class="attr">ease</span>: <span class="string">'-'</span>, <span class="attr">duration</span>: <span class="number">10000</span>&#125;).attr(<span class="string">'startOffset'</span>, <span class="string">'50%'</span>).loop()</span><br></pre></td></tr></table></figure></p>
+<p>最后终于想到一个完美的方案</p>
+<pre><code class="javascript">    t1.path(&#39;M 605,365 A 300,300 0 1,1 605,260 M 605,365 A 300,300 0 1,1 605,260&#39;)
+    t1.textPath().attr(&#39;startOffset&#39;, &#39;0&#39;).animate({ ease: &#39;-&#39;, duration: 10000}).attr(&#39;startOffset&#39;, &#39;50%&#39;).loop()
+</code></pre>
 <p>把路径画两遍，然后播放时<code>startOffset</code>从0~50%进行循环就行了。<br>如果你也想实现这种无限循环地旋转的话，可以试试这个方法。</p>
 <h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>之所以做这个还是由于对笑脸男这个人物的喜爱吧，有能力的同时愿意来为真相做出贡献。有意思的是，攻壳第二季第二集的主人公和他完全就是相反的人。空想但没有勇气去做，想想自己和大概也就是这样的人了。</p>
 
@@ -390,6 +399,15 @@ ga('send', 'pageview');
             </span>
         </p>
     </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
 </footer>
 
     </main>

@@ -226,13 +226,29 @@ ga('send', 'pageview');
 <li><p>devtool: 在开发中可以使用<code>&#39;eval&#39;</code>(打包速度快)、<code>&#39;inline-source-map&#39;</code>(打包速度慢，但在浏览器里能直接查看编译前的代码)等值；生成环境中不要设置或设为<code>false</code></p>
 </li>
 <li><p>entry: 结构可以是</p>
- <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">entry: &#123;</span><br><span class="line">    app: APP_DIR + <span class="string">'/app.js'</span>,</span><br><span class="line">    vendor: APP_DIR + <span class="string">'/scripts/vendor.js'</span>,</span><br><span class="line">    login: [</span><br><span class="line">        APP_DIR + <span class="string">'/login.js'</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="javascript"> entry: {
+     app: APP_DIR + &#39;/app.js&#39;,
+     vendor: APP_DIR + &#39;/scripts/vendor.js&#39;,
+     login: [
+         APP_DIR + &#39;/login.js&#39;
+     ]
+ }
+</code></pre>
 </li>
+</ul>
+<ul>
 <li><p>output: 注意下<code>publicPath</code>，要设置为打包后资源的url路径</p>
 </li>
 <li><p>module: 注意下scss的loaders的写法</p>
- <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 开发中</span></span><br><span class="line">loaders: [<span class="string">'style'</span>, <span class="string">'css'</span>, <span class="string">'postcss'</span>, <span class="string">'sass'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 生成环境 导出到一个css文件</span></span><br><span class="line">loader: ExtractTextPlugin.extract(<span class="string">'style'</span>, [<span class="string">'css'</span>, <span class="string">'postcss'</span>, <span class="string">'sass'</span>])</span><br></pre></td></tr></table></figure>
+<pre><code class="javascript"> // 开发中
+ loaders: [&#39;style&#39;, &#39;css&#39;, &#39;postcss&#39;, &#39;sass&#39;]
+
+ // 生成环境 导出到一个css文件
+ loader: ExtractTextPlugin.extract(&#39;style&#39;, [&#39;css&#39;, &#39;postcss&#39;, &#39;sass&#39;])
+</code></pre>
 </li>
+</ul>
+<ul>
 <li><p>resolve: 可以用<code>extensions</code>来指定<code>import</code>时可以省略的后缀名；可以用<code>alias</code>指定从非npm引入的库，如<code>jquery: path.resolve(__dirname, &#39;./bower_components/jquery/dist/jquery.js&#39;)</code>，这样在<code>import</code>时可以替换引用路径</p>
 </li>
 <li><p>externals: 指定从全局引入的库，如<code>jquery: &quot;jQuery&quot;</code>，这样在<code>require(&#39;jquery&#39;)</code>时会引入<code>jQuery</code>对象</p>
@@ -252,8 +268,15 @@ ga('send', 'pageview');
 <li><p>DefinePlugin: 可以定义编译时的全局变量，有很多库（React, Vue等）会根据<code>NODE_ENV</code>这个变量来判断当前环境。为了尽可能减少包大小，在生产环境中要定义其为<code>JSON.stringify(&quot;production&quot;)</code></p>
 </li>
 <li><p>optimize.UglifyJsPlugin: 配置压缩代码，如</p>
- <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">compress: &#123;</span><br><span class="line">    unused: <span class="literal">true</span>,</span><br><span class="line">    dead_code: <span class="literal">true</span>,</span><br><span class="line">    warnings: <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="javascript"> compress: {
+     unused: true,
+     dead_code: true,
+     warnings: false
+ }
+</code></pre>
 </li>
+</ul>
+<ul>
 <li><p>optimize.OccurrenceOrderPlugin: 可以减少文件大小</p>
 </li>
 <li><p>optimize.DedupePlugin: 可以减少重复文件数</p>
@@ -436,6 +459,15 @@ ga('send', 'pageview');
             </span>
         </p>
     </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
 </footer>
 
     </main>

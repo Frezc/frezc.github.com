@@ -52,19 +52,19 @@ ga('send', 'pageview');
     
     
     <meta name="keywords" content="intellij idea,live template">
-    <meta name="description" content="intellij的live template功能十分强大，可以简化很多重复的代码，可以说是使用好intellij必会的一个东西。 ##什么是live templatelive template相当于一个代码块的缩写在编辑代码的过程中按下Ctrl+j可以查看当前上下文中可用的所有模板，下面是一些可能常用的模板（可以不用上面的快捷键，直接打出缩写会出现提示）。psvm:123public static">
+    <meta name="description" content="intellij的live template功能十分强大，可以简化很多重复的代码，可以说是使用好intellij必会的一个东西。 ##什么是live templatelive template相当于一个代码块的缩写在编辑代码的过程中按下Ctrl+j可以查看当前上下文中可用的所有模板，下面是一些可能常用的模板（可以不用上面的快捷键，直接打出缩写会出现提示）。psvm: public static v">
 <meta name="keywords" content="intellij idea,live template">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用intellij的模板（live template）">
 <meta property="og:url" content="https://frezc.github.io/2015/06/07/use-intellij-live-template/index.html">
 <meta property="og:site_name" content="Code for fun">
-<meta property="og:description" content="intellij的live template功能十分强大，可以简化很多重复的代码，可以说是使用好intellij必会的一个东西。 ##什么是live templatelive template相当于一个代码块的缩写在编辑代码的过程中按下Ctrl+j可以查看当前上下文中可用的所有模板，下面是一些可能常用的模板（可以不用上面的快捷键，直接打出缩写会出现提示）。psvm:123public static">
+<meta property="og:description" content="intellij的live template功能十分强大，可以简化很多重复的代码，可以说是使用好intellij必会的一个东西。 ##什么是live templatelive template相当于一个代码块的缩写在编辑代码的过程中按下Ctrl+j可以查看当前上下文中可用的所有模板，下面是一些可能常用的模板（可以不用上面的快捷键，直接打出缩写会出现提示）。psvm: public static v">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://frezc.github.io/2015/06/07/use-intellij-live-template/lim.png">
 <meta property="og:updated_time" content="2019-04-09T15:39:43.387Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用intellij的模板（live template）">
-<meta name="twitter:description" content="intellij的live template功能十分强大，可以简化很多重复的代码，可以说是使用好intellij必会的一个东西。 ##什么是live templatelive template相当于一个代码块的缩写在编辑代码的过程中按下Ctrl+j可以查看当前上下文中可用的所有模板，下面是一些可能常用的模板（可以不用上面的快捷键，直接打出缩写会出现提示）。psvm:123public static">
+<meta name="twitter:description" content="intellij的live template功能十分强大，可以简化很多重复的代码，可以说是使用好intellij必会的一个东西。 ##什么是live templatelive template相当于一个代码块的缩写在编辑代码的过程中按下Ctrl+j可以查看当前上下文中可用的所有模板，下面是一些可能常用的模板（可以不用上面的快捷键，直接打出缩写会出现提示）。psvm: public static v">
 <meta name="twitter:image" content="https://frezc.github.io/2015/06/07/use-intellij-live-template/lim.png">
     
         <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
@@ -215,10 +215,22 @@ ga('send', 'pageview');
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
             <p>intellij的live template功能十分强大，可以简化很多重复的代码，可以说是使用好intellij必会的一个东西。</p>
-<p>##什么是live template<br>live template相当于一个代码块的缩写<br>在编辑代码的过程中按下<code>Ctrl+j</code>可以查看当前上下文中可用的所有模板，下面是一些可能常用的模板（可以不用上面的快捷键，直接打出缩写会出现提示）。<br><strong>psvm</strong>:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>psfi</strong>、<strong>psfs</strong>:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String</span><br></pre></td></tr></table></figure></p>
-<p><strong>sout</strong>、<strong>soutv</strong>:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">System.out.println($END$);</span><br><span class="line">System.out.println(<span class="string">"$EXPR_COPY$ = "</span> + $EXPR$); <span class="comment">//这里是指打印类中的一个变量</span></span><br></pre></td></tr></table></figure></p>
-<p>##live template是如何生成的<br>在<code>Settings -&gt; Editor -&gt; Code Style -&gt; Live Templates</code>里可以查看并修改所有的模板，当然也能自己创建。<br>我们先看看<strong>output</strong>下的<strong>soutm</strong>是怎么写的<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(<span class="string">"$CLASS_NAME$.$METHOD_NAME$"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>##什么是live template<br>live template相当于一个代码块的缩写<br>在编辑代码的过程中按下<code>Ctrl+j</code>可以查看当前上下文中可用的所有模板，下面是一些可能常用的模板（可以不用上面的快捷键，直接打出缩写会出现提示）。<br><strong>psvm</strong>:</p>
+<pre><code class="java">public static void main(String[] args){
+
+}
+</code></pre>
+<p><strong>psfi</strong>、<strong>psfs</strong>:</p>
+<pre><code class="java">public static final int
+public static final String
+</code></pre>
+<p><strong>sout</strong>、<strong>soutv</strong>:</p>
+<pre><code class="java">System.out.println($END$);
+System.out.println(&quot;$EXPR_COPY$ = &quot; + $EXPR$); //这里是指打印类中的一个变量
+</code></pre>
+<p>##live template是如何生成的<br>在<code>Settings -&gt; Editor -&gt; Code Style -&gt; Live Templates</code>里可以查看并修改所有的模板，当然也能自己创建。<br>我们先看看<strong>output</strong>下的<strong>soutm</strong>是怎么写的</p>
+<pre><code class="java">System.out.println(&quot;$CLASS_NAME$.$METHOD_NAME$&quot;);
+</code></pre>
 <p>这个模板是用来生成打印当前类和方法名的，这里面有两个变量<strong>$CLASS_NAME$</strong>和<strong>$METHOD_NAME$</strong>，点击右边的<strong>Edit variables</strong>来看看它们是怎么定义的。</p>
 <hr>
 <p>在<strong>Edit Template Variables</strong>对话框中可以看到这两个变量，通过每列的标题就知道是干什么的了，这里主要注意两点：</p>
@@ -226,10 +238,17 @@ ga('send', 'pageview');
 <li>变量是有顺序的，idea会按顺序来生成这些变量，所以注意依赖关系。</li>
 <li>Expression栏可以填双引号包含的字符串、其他已经定义的变量和预定义的函数，从下拉列表里可以选择预定义的函数。函数说明请参考<a href="https://www.jetbrains.com/idea/help/edit-template-variables-dialog.html#functions" target="_blank" rel="noopener">官方文档</a></li>
 </ol>
-<p>在预定义函数中有个十分强大的函数<code>groovyScript(&quot;groovy code&quot;)</code>，它可以执行groovy语句。比如模板<strong>soutp</strong>:<code>System.out.println($FORMAT$);</code>这里的变量<code>$FORMAT$</code>对应的Expression是<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">groovyScript(<span class="string">"'\"' + _1.collect &#123; it + ' = [\" + ' + it + ' + \"]'&#125;.join(', ') + '\"'"</span>, methodParameters())</span><br></pre></td></tr></table></figure></p>
-<p>稍微解释下这句，方法<code>methodParameters()</code>返回了当前方法参数的数组，这个数组对应着前面groovy语句中的_1，然后遍历_1，生成类似<code>&quot;xxx = [&quot; + xxx + &quot;]...</code>的java代码，多个之间使用<code>,</code>隔开，这句实际生成的代码如下:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(<span class="string">"user = ["</span> + user + <span class="string">"], isSave = ["</span> + isSave + <span class="string">"]"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>在预定义函数中有个十分强大的函数<code>groovyScript(&quot;groovy code&quot;)</code>，它可以执行groovy语句。比如模板<strong>soutp</strong>:<code>System.out.println($FORMAT$);</code>这里的变量<code>$FORMAT$</code>对应的Expression是</p>
+<pre><code class="groovy">groovyScript(&quot;&#39;\&quot;&#39; + _1.collect { it + &#39; = [\&quot; + &#39; + it + &#39; + \&quot;]&#39;}.join(&#39;, &#39;) + &#39;\&quot;&#39;&quot;, methodParameters())
+</code></pre>
+<p>稍微解释下这句，方法<code>methodParameters()</code>返回了当前方法参数的数组，这个数组对应着前面groovy语句中的_1，然后遍历_1，生成类似<code>&quot;xxx = [&quot; + xxx + &quot;]...</code>的java代码，多个之间使用<code>,</code>隔开，这句实际生成的代码如下:</p>
+<pre><code class="java">System.out.println(&quot;user = [&quot; + user + &quot;], isSave = [&quot; + isSave + &quot;]&quot;);
+</code></pre>
 <p>##自定义live template<br>这里我自定义了一个live template<br><strong>lim</strong>:<code>Log.i(&quot;$END$&quot;,&quot;$CLASS_NAME$.$METHOD_NAME$:&quot; + $METHOD_PARAMETERS$);</code><br>这个模板是用来生成将当前方法加参数名与值打印到Log的方法。其中<br><strong>$CLASS_NAME$</strong>:<code>className()</code><br><strong>$METHOD_NAME$</strong>:<code>methodName()</code><br><strong>$METHOD_PARAMETERS$</strong>:<code>groovyScript(&quot;&#39;\&quot;&#39; + _1.collect { it + &#39; = [\&quot; + &#39; + it + &#39; + \&quot;]&#39;}.join(&#39;, &#39;) + &#39;\&quot;&#39;&quot;, methodParameters())</code><br><strong>$END$</strong>:上面的变量生成结束后光标停留位置<br>建议把<strong>Skip if defined</strong>勾选，这样就不会询问你是否要更改上面的变量了。</p>
-<p>####优化<br>上面的模板在输入完TAG后还要手动把光标移到语句尾，显得很麻烦，有没有办法再输入完TAG后回车直接进入下一行呢？ 当然是可以的，修改成如下即可：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Log.i(<span class="string">"$TAG$"</span>,<span class="string">"$CLASS_NAME$.$METHOD_NAME$:"</span> + $METHOD_PARAMETERS$);</span><br><span class="line">$END$</span><br></pre></td></tr></table></figure></p>
+<p>####优化<br>上面的模板在输入完TAG后还要手动把光标移到语句尾，显得很麻烦，有没有办法再输入完TAG后回车直接进入下一行呢？ 当然是可以的，修改成如下即可：</p>
+<pre><code class="java">Log.i(&quot;$TAG$&quot;,&quot;$CLASS_NAME$.$METHOD_NAME$:&quot; + $METHOD_PARAMETERS$);
+$END$
+</code></pre>
 <p>新增的<strong>$TAG$</strong>变量的Expression可以填你的初始值，如<code>&quot;Test&quot;</code>，如果你需要修改就不要勾选<strong>Skip if defined</strong>。这样在输入玩TAG后直接回车就能跳转到下一行了，是不是十分方便。</p>
 <figure class="image-bubble">
                 <div class="img-lightbox">
@@ -396,6 +415,15 @@ ga('send', 'pageview');
             </span>
         </p>
     </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
 </footer>
 
     </main>

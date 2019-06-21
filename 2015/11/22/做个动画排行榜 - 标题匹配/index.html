@@ -225,8 +225,15 @@ ga('send', 'pageview');
 <h2 id="Ann的信息匹配"><a href="#Ann的信息匹配" class="headerlink" title="Ann的信息匹配"></a>Ann的信息匹配</h2><p>这次匹配的核心是ratio，jaro和jaro_winkler这3个字符串相似度算法，利用这些算法很明显可以解决之前存在的标题中有单个字符不匹配的情况。这次使用的<a href="https://github.com/Frezc/Anime-Statistics-Crawl/blob/master/name_compare_rule.md" target="_blank" rel="noopener">一些规则</a>。<br>这里原先Ann的日期获取缺失了很多，后来看了几个页面后才发现是日期会有不同的结构，重新爬取了一遍（<a href="https://github.com/Frezc/Anime-Statistics-Crawl/blob/master/anime_statistics/spiders/ANNConsSpider.py" target="_blank" rel="noopener">代码</a>），顺便做了次筛选，分辨出评价人数过少的番剧。<br>这次爬取后，日期基本就完整了，使用了日期比对后匹配率一下子就上来了，最后只剩85项未匹配。这些就直接手工解决了。</p>
 <p>最后一个问题就是有些番剧在一个网站上是合并的，而在其他两个网站上是分开的。这里我原本是直接留下第一季的信息，但是后来发现还挺多的，还是将多个url用逗号隔开保存了，到时候取分时直接计算多个url的平均分了。</p>
 <h2 id="网站计划"><a href="#网站计划" class="headerlink" title="网站计划"></a>网站计划</h2><p>网站我目前的想法是，后端api服务器Laravel，前端Semantic UI + Vue.js。<br>不过目前时间太少，这个计划会挺慢的。</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>因为python没有和c那样的for循环，所以在项目中一直使用while循环进行迭代，这次加了个continue，发现就出bug了。于是又找了下资料，才知道python中写索引迭代要这么写<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(start, end):</span><br><span class="line">    your code</span><br></pre></td></tr></table></figure></p>
-<p>相当于<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(i=start; i &lt; end; i++)&#123;</span><br><span class="line">    your code</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>因为python没有和c那样的for循环，所以在项目中一直使用while循环进行迭代，这次加了个continue，发现就出bug了。于是又找了下资料，才知道python中写索引迭代要这么写</p>
+<pre><code class="python">    for i in range(start, end):
+        your code
+</code></pre>
+<p>相当于</p>
+<pre><code class="python">    for(i=start; i &lt; end; i++){
+        your code
+    }
+</code></pre>
 
         </div>
 
@@ -387,6 +394,15 @@ ga('send', 'pageview');
             </span>
         </p>
     </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
 </footer>
 
     </main>

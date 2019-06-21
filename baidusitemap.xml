@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://frezc.github.io/2019/03/23/react-hooks-traps/</loc>
+    <lastmod>2019-06-20</lastmod>
+  </url>  <url>
+    <loc>https://frezc.github.io/2019/05/16/typescript-react-hooks-quickstart/</loc>
+    <lastmod>2019-06-06</lastmod>
+  </url>  <url>
+    <loc>https://frezc.github.io/2018/08/02/auto-decimal-of-grafana/</loc>
+    <lastmod>2019-06-03</lastmod>
+  </url>  <url>
     <loc>https://frezc.github.io/2019/05/25/leetcode-largest-rectangle-in-histogram/</loc>
     <lastmod>2019-05-26</lastmod>
   </url>  <url>
@@ -79,9 +88,6 @@
     <loc>https://frezc.github.io/2016/02/21/react-native%E5%AF%B9md%E9%A3%8E%E6%A0%BC%E4%B8%ADStatusBar%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F/</loc>
     <lastmod>2019-04-09</lastmod>
   </url>  <url>
-    <loc>https://frezc.github.io/2019/03/23/react-hooks-traps/</loc>
-    <lastmod>2019-04-09</lastmod>
-  </url>  <url>
     <loc>https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/</loc>
     <lastmod>2019-04-09</lastmod>
   </url>  <url>
@@ -91,13 +97,13 @@
     <loc>https://frezc.github.io/2015/05/03/push-your-project-to-git/</loc>
     <lastmod>2019-04-09</lastmod>
   </url>  <url>
-    <loc>https://frezc.github.io/2015/05/01/2015-05-01-hexo-share/</loc>
-    <lastmod>2019-04-09</lastmod>
-  </url>  <url>
     <loc>https://frezc.github.io/2015/07/20/Danmaku-code/</loc>
     <lastmod>2019-04-09</lastmod>
   </url>  <url>
     <loc>https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/</loc>
+    <lastmod>2019-04-09</lastmod>
+  </url>  <url>
+    <loc>https://frezc.github.io/2015/05/01/2015-05-01-hexo-share/</loc>
     <lastmod>2019-04-09</lastmod>
   </url>
 </urlset>

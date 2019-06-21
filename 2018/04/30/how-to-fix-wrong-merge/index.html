@@ -228,13 +228,33 @@ ga('send', 'pageview');
 <p>如果我们不修改要push分支的历史的话是不需要force push的，那么很简单了，只要把需要修改历史的reset操作在另外一个不需要push的分支上操作就行了。</p>
 <p>实际操作就是从当前分支拉一条新分支出来，然后进行上面reset的方法，最后再rebase或merge回当前分支。</p>
 <p>既然这里也提到了rebase，其实我们还可以简化一下上面的方法。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 假设我们这里merge feature到master</span></span><br><span class="line"><span class="comment"># 使用第一种方法</span></span><br><span class="line">git checkout -b fix-merge</span><br><span class="line">git reset &lt;commit before merge&gt; --hard</span><br><span class="line">git merge feature <span class="comment"># fix conflict</span></span><br><span class="line">git cherry-pick &lt;commit start&gt;^...&lt;commit end&gt; <span class="comment"># maybe need fix conflict</span></span><br><span class="line">git checkout master</span><br><span class="line">git merge fix-merge <span class="comment"># fix conflict</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 用rebase简化一下，因为rebase也是一个会修改历史的操作，所以还是需要新开分支</span></span><br><span class="line">git checkout -b fix-merge</span><br><span class="line"><span class="comment"># 用rebase代替了reset &gt; merge &gt; cherry-pick的操作</span></span><br><span class="line">git rebase -i &lt;commit before merge&gt; <span class="comment"># fix conflict</span></span><br><span class="line">git checkout master</span><br><span class="line">git merge fix-merge <span class="comment"># fix conflict</span></span><br></pre></td></tr></table></figure>
+<pre><code class="sh"># 假设我们这里merge feature到master
+# 使用第一种方法
+git checkout -b fix-merge
+git reset &lt;commit before merge&gt; --hard
+git merge feature # fix conflict
+git cherry-pick &lt;commit start&gt;^...&lt;commit end&gt; # maybe need fix conflict
+git checkout master
+git merge fix-merge # fix conflict
+
+# 用rebase简化一下，因为rebase也是一个会修改历史的操作，所以还是需要新开分支
+git checkout -b fix-merge
+# 用rebase代替了reset &gt; merge &gt; cherry-pick的操作
+git rebase -i &lt;commit before merge&gt; # fix conflict
+git checkout master
+git merge fix-merge # fix conflict
+</code></pre>
 <p>这里在rebase时添加了<code>-i</code>的参数，可以清楚地展示和操作每次会应用的commit。如果不懂rebase可以看看<a href="https://git-scm.com/docs/git-rebase" target="_blank" rel="noopener">官方文档</a>。</p>
 <h1 id="用上面的方法要处理的冲突太多了怎么办？"><a href="#用上面的方法要处理的冲突太多了怎么办？" class="headerlink" title="用上面的方法要处理的冲突太多了怎么办？"></a>用上面的方法要处理的冲突太多了怎么办？</h1><p>无论是cherry-pick还是rebase都是将commit一次次给apply，所以merge之后的commit如果有冲突，那也得一次次解决，有时候一直要改同一个文件的话，那解决冲突就是很痛苦的一件事了。</p>
 <p>这里有两个方案可以考虑一下：</p>
 <ol>
 <li><p>其实在第一种方法中完全没必要用cherry-pick，新分支在重新merge后可以直接merge到当前分支的。当然这样还是一样要处理很多冲突，只不过可以一次处理完了。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b fix-merge</span><br><span class="line">git reset &lt;commit before merge&gt; --hard</span><br><span class="line">git merge feature <span class="comment"># fix conflict</span></span><br><span class="line">git checkout master</span><br><span class="line">git merge fix-merge <span class="comment"># fix large conflict</span></span><br></pre></td></tr></table></figure>
+<pre><code class="sh">git checkout -b fix-merge
+git reset &lt;commit before merge&gt; --hard
+git merge feature # fix conflict
+git checkout master
+git merge fix-merge # fix large conflict
+</code></pre>
 </li>
 <li><p>如果是丢了代码并知道丢的是哪次提交的代码，那么可以直接<code>git cherry-pick &lt;commit id&gt;</code>。</p>
 </li>
@@ -318,9 +338,9 @@ ga('send', 'pageview');
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/" id="post-prev" class="post-nav-link">
+      <a href="/2018/08/02/auto-decimal-of-grafana/" id="post-prev" class="post-nav-link">
         <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
-        <h4 class="title">使用typescript实现依赖注入框架</h4>
+        <h4 class="title">Grafana的auto decimal实现以及与G2结合使用</h4>
       </a>
     </div>
   
@@ -401,6 +421,15 @@ ga('send', 'pageview');
             </span>
         </p>
     </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
 </footer>
 
     </main>

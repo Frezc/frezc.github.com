@@ -226,10 +226,20 @@ ga('send', 'pageview');
 <h2 id="主题"><a href="#主题" class="headerlink" title="主题"></a>主题</h2><p>主题可以去<a href="http://hexo.io/themes/" target="_blank" rel="noopener">官网</a>或github上搜索hexo找到<br>我使用的是<a href="https://github.com/litten/hexo-theme-yilia" target="_blank" rel="noopener">yilia</a>,毕竟简洁清晰。<br>不过这个主题也有点问题，就是没考虑好兼容https，如果使用https则需要修改掉模板中http的一些js库引用:</p>
 <ul>
 <li>首先是mathjax的库引用,因为我觉得不会用到这个功能,所以直接在_config.xml中将其设为false.</li>
-<li>然后是主题文件夹/layout/_partial/head.ejs中的<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://libs.baidu.com/jquery/1.9.0/jquery.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<li>然后是主题文件夹/layout/_partial/head.ejs中的<pre><code>&lt;script src=&quot;http:&#x2F;&#x2F;libs.baidu.com&#x2F;jquery&#x2F;1.9.0&#x2F;jquery.js&quot;&gt;&lt;&#x2F;script&gt;</code></pre>
 改为https下的jquery库引用</li>
 </ul>
-<h2 id="Deploy"><a href="#Deploy" class="headerlink" title="Deploy"></a>Deploy</h2><p>windows如果直接在目录下控制台中使用命令 <em>hexo d</em> 会出现错误he<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">INFO  Deploying: git</span><br><span class="line">INFO  Clearing .deploy folder...</span><br><span class="line">INFO  Copying files from public folder...</span><br><span class="line">events.js:85</span><br><span class="line">      throw er; // Unhandled <span class="string">'error'</span> event</span><br><span class="line">            ^</span><br><span class="line">Error: spawn git ENOENT</span><br><span class="line">    at exports._errnoException (util.js:746:11)</span><br><span class="line">    at Process.ChildProcess._handle.onexit (child_process.js:1053:32)</span><br><span class="line">    at child_process.js:1144:20</span><br><span class="line">    at process._tickCallback (node.js:355:11)</span><br></pre></td></tr></table></figure><br>解决方法是使用Git Bash, 如果出现了Not a gitreposity错误, 则需要你手动在.deploy_git文件夹下创建git库, 然后就能上传了。<br>远程git库地址在_config.yml中指定(详情见文档), 建议使用ssh地址, 这样配置好密钥后每次提交就不需要输入验证信息了。</p>
+<h2 id="Deploy"><a href="#Deploy" class="headerlink" title="Deploy"></a>Deploy</h2><p>windows如果直接在目录下控制台中使用命令 <em>hexo d</em> 会出现错误he<br><pre><code>INFO  Deploying: git
+INFO  Clearing .deploy folder...
+INFO  Copying files from public folder...
+events.js:85
+      throw er; &#x2F;&#x2F; Unhandled &#39;error&#39; event
+            ^
+Error: spawn git ENOENT
+    at exports._errnoException (util.js:746:11)
+    at Process.ChildProcess._handle.onexit (child_process.js:1053:32)
+    at child_process.js:1144:20
+    at process._tickCallback (node.js:355:11)</code></pre><br>解决方法是使用Git Bash, 如果出现了Not a gitreposity错误, 则需要你手动在.deploy_git文件夹下创建git库, 然后就能上传了。<br>远程git库地址在_config.yml中指定(详情见文档), 建议使用ssh地址, 这样配置好密钥后每次提交就不需要输入验证信息了。</p>
 <h2 id="提升访问速度"><a href="#提升访问速度" class="headerlink" title="提升访问速度"></a>提升访问速度</h2><p>hexo模板生成的文件基本是不变的, 可以将这些文件放到国内服务器上来增加访问速度。修改模板, 将引用地址改掉, 然后将生成文件放到服务器上就ok了。<br>具体是由<a href="http://loger.me" target="_blank" rel="noopener">BranchZero</a>帮忙的 ：D.</p>
 
         </div>
@@ -383,6 +393,15 @@ ga('send', 'pageview');
             </span>
         </p>
     </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
 </footer>
 
     </main>

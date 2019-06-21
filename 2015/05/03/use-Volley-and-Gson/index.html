@@ -52,18 +52,18 @@ ga('send', 'pageview');
     
     
     <meta name="keywords" content="android,Volley,Gson">
-    <meta name="description" content="Volley和Gson都是谷歌开发的java库，一个处理网络请求，一个处理json，对于网络app来说这2个经常会一起使用，但谷歌似乎不考虑开发两者结合使用的api，所以就需要我们自己来写了。 自定义Request为了使请求能设置request体的参数，然后直接返回我们需要的对象，这时候需要重写Request，谷歌给出了一个重写Request的示例：GsonRequest1234567891011">
+    <meta name="description" content="Volley和Gson都是谷歌开发的java库，一个处理网络请求，一个处理json，对于网络app来说这2个经常会一起使用，但谷歌似乎不考虑开发两者结合使用的api，所以就需要我们自己来写了。 自定义Request为了使请求能设置request体的参数，然后直接返回我们需要的对象，这时候需要重写Request，谷歌给出了一个重写Request的示例：public class GsonRequest">
 <meta name="keywords" content="android,Volley,Gson">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何结合Volley和Gson的使用">
 <meta property="og:url" content="https://frezc.github.io/2015/05/03/use-Volley-and-Gson/index.html">
 <meta property="og:site_name" content="Code for fun">
-<meta property="og:description" content="Volley和Gson都是谷歌开发的java库，一个处理网络请求，一个处理json，对于网络app来说这2个经常会一起使用，但谷歌似乎不考虑开发两者结合使用的api，所以就需要我们自己来写了。 自定义Request为了使请求能设置request体的参数，然后直接返回我们需要的对象，这时候需要重写Request，谷歌给出了一个重写Request的示例：GsonRequest1234567891011">
+<meta property="og:description" content="Volley和Gson都是谷歌开发的java库，一个处理网络请求，一个处理json，对于网络app来说这2个经常会一起使用，但谷歌似乎不考虑开发两者结合使用的api，所以就需要我们自己来写了。 自定义Request为了使请求能设置request体的参数，然后直接返回我们需要的对象，这时候需要重写Request，谷歌给出了一个重写Request的示例：public class GsonRequest">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2019-04-09T15:39:43.320Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何结合Volley和Gson的使用">
-<meta name="twitter:description" content="Volley和Gson都是谷歌开发的java库，一个处理网络请求，一个处理json，对于网络app来说这2个经常会一起使用，但谷歌似乎不考虑开发两者结合使用的api，所以就需要我们自己来写了。 自定义Request为了使请求能设置request体的参数，然后直接返回我们需要的对象，这时候需要重写Request，谷歌给出了一个重写Request的示例：GsonRequest1234567891011">
+<meta name="twitter:description" content="Volley和Gson都是谷歌开发的java库，一个处理网络请求，一个处理json，对于网络app来说这2个经常会一起使用，但谷歌似乎不考虑开发两者结合使用的api，所以就需要我们自己来写了。 自定义Request为了使请求能设置request体的参数，然后直接返回我们需要的对象，这时候需要重写Request，谷歌给出了一个重写Request的示例：public class GsonRequest">
     
         <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
     
@@ -220,22 +220,126 @@ ga('send', 'pageview');
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
             <p>Volley和Gson都是谷歌开发的java库，一个处理网络请求，一个处理json，对于网络app来说这2个经常会一起使用，但谷歌似乎不考虑开发两者结合使用的api，所以就需要我们自己来写了。</p>
-<h2 id="自定义Request"><a href="#自定义Request" class="headerlink" title="自定义Request"></a>自定义Request</h2><p>为了使请求能设置request体的参数，然后直接返回我们需要的对象，这时候需要重写Request，谷歌给出了一个重写Request的示例：<br><figure class="highlight java"><figcaption><span>GsonRequest</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GsonRequest</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">Request</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Gson gson = <span class="keyword">new</span> Gson();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Class&lt;T&gt; clazz;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, String&gt; headers;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Listener&lt;T&gt; listener;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Make a GET request and return a parsed object from JSON.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> url URL of the request to make</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> clazz Relevant class object, for Gson's reflection</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> headers Map of request headers</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GsonRequest</span><span class="params">(String url, Class&lt;T&gt; clazz, Map&lt;String, String&gt; headers,</span></span></span><br><span class="line"><span class="function"><span class="params">            Listener&lt;T&gt; listener, ErrorListener errorListener)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(Method.GET, url, errorListener);</span><br><span class="line">        <span class="keyword">this</span>.clazz = clazz;</span><br><span class="line">        <span class="keyword">this</span>.headers = headers;</span><br><span class="line">        <span class="keyword">this</span>.listener = listener;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Map&lt;String, String&gt; <span class="title">getHeaders</span><span class="params">()</span> <span class="keyword">throws</span> AuthFailureError </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> headers != <span class="keyword">null</span> ? headers : <span class="keyword">super</span>.getHeaders();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">deliverResponse</span><span class="params">(T response)</span> </span>&#123;</span><br><span class="line">        listener.onResponse(response);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Response&lt;T&gt; <span class="title">parseNetworkResponse</span><span class="params">(NetworkResponse response)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            String json = <span class="keyword">new</span> String(</span><br><span class="line">                    response.data,</span><br><span class="line">                    HttpHeaderParser.parseCharset(response.headers));</span><br><span class="line">            <span class="keyword">return</span> Response.success(</span><br><span class="line">                    gson.fromJson(json, clazz),</span><br><span class="line">                    HttpHeaderParser.parseCacheHeaders(response));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</span><br><span class="line">            <span class="keyword">return</span> Response.error(<span class="keyword">new</span> ParseError(e));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (JsonSyntaxException e) &#123;</span><br><span class="line">            <span class="keyword">return</span> Response.error(<span class="keyword">new</span> ParseError(e));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>如果需要设置参数，重写getParams()即可。</p>
+<h2 id="自定义Request"><a href="#自定义Request" class="headerlink" title="自定义Request"></a>自定义Request</h2><p>为了使请求能设置request体的参数，然后直接返回我们需要的对象，这时候需要重写Request，谷歌给出了一个重写Request的示例：<br><pre><code>public class GsonRequest&lt;T&gt; extends Request&lt;T&gt; {
+    private final Gson gson = new Gson();
+    private final Class&lt;T&gt; clazz;
+    private final Map&lt;String, String&gt; headers;
+    private final Listener&lt;T&gt; listener;
+
+    &#x2F;**
+     * Make a GET request and return a parsed object from JSON.
+     *
+     * @param url URL of the request to make
+     * @param clazz Relevant class object, for Gson&#39;s reflection
+     * @param headers Map of request headers
+     *&#x2F;
+    public GsonRequest(String url, Class&lt;T&gt; clazz, Map&lt;String, String&gt; headers,
+            Listener&lt;T&gt; listener, ErrorListener errorListener) {
+        super(Method.GET, url, errorListener);
+        this.clazz = clazz;
+        this.headers = headers;
+        this.listener = listener;
+    }
+
+    @Override
+    public Map&lt;String, String&gt; getHeaders() throws AuthFailureError {
+        return headers != null ? headers : super.getHeaders();
+    }
+
+    @Override
+    protected void deliverResponse(T response) {
+        listener.onResponse(response);
+    }
+
+    @Override
+    protected Response&lt;T&gt; parseNetworkResponse(NetworkResponse response) {
+        try {
+            String json = new String(
+                    response.data,
+                    HttpHeaderParser.parseCharset(response.headers));
+            return Response.success(
+                    gson.fromJson(json, clazz),
+                    HttpHeaderParser.parseCacheHeaders(response));
+        } catch (UnsupportedEncodingException e) {
+            return Response.error(new ParseError(e));
+        } catch (JsonSyntaxException e) {
+            return Response.error(new ParseError(e));
+        }
+    }
+}</code></pre><br>如果需要设置参数，重写getParams()即可。</p>
 <h2 id="自定义数组json-Request"><a href="#自定义数组json-Request" class="headerlink" title="自定义数组json Request"></a>自定义数组json Request</h2><p>这里如果直接用<code>List&lt;MyClass&gt;</code>来作为 T 的类型是不对的，由于java的类型擦除机制，你从<code>List&lt;MyClass&gt;</code>获得的Class类是不包含<code>MyClass</code>信息的，gson解析时会抛出错误。</p>
 <p>很明显这个GsonRequest无法处理数组形式的json，但是我又想用一个通用的类来处理数组形式的json，要怎么改呢。<br>我这里提出几个方案供参考。</p>
 <ol>
 <li><p>继承<code>Request&lt;String&gt;</code><br>在<code>parseNetworkResponse</code>里得到的response转换为字符串后放到<code>Response.success()</code>函数中返回<br>然后在<code>deliverResponse</code>函数里将字符串转换为对象然后调用接口函数。<br>不过我个人不喜欢这种做法，因为<code>deliverResponse</code>是在UI线程中处理的，解析非常大的json时可能会卡ui，我更喜欢把json的处理放在在工作线程中处理的<code>parseNetworkResponse</code>函数中。</p>
 </li>
 <li><p>分别处理<br>我是将普通json和数组json分开处理，对于数组类型我传入的参数为</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GsonRequest(Context context, <span class="keyword">int</span> method, String url, Class&lt;T&gt; clazz, Map&lt;String,String&gt; headers,</span><br><span class="line">                       OnListResponseListener&lt;T&gt; listener, Response.ErrorListener errorListener)</span><br></pre></td></tr></table></figure>
+<pre><code>GsonRequest(Context context, int method, String url, Class&lt;T&gt; clazz, Map&lt;String,String&gt; headers,
+                       OnListResponseListener&lt;T&gt; listener, Response.ErrorListener errorListener)</code></pre>
 <p>这里我自定义了一个接口<code>OnListResponseListener&lt;T&gt;</code>，用于传递解析好的数组对象，<code>Context</code>对象是为了得到<em>MainLooper</em>，而使回调函数能在ui线程中进行，方便更新ui。<br>然后设置一个数组标记<code>isArray = true</code></p>
-<figure class="highlight java"><figcaption><span>GsonRequest重写的2个方法</span><a href="https://github.com/Frezc/BangumiTimeMachine/blob/master/app/src/main/java/frezc/bangumitimemachine/app/network/http/GsonRequest.java" target="_blank" rel="noopener">GsonRequest.java</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Response&lt;T&gt; <span class="title">parseNetworkResponse</span><span class="params">(NetworkResponse networkResponse)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            String json;</span><br><span class="line">            <span class="keyword">if</span>(<span class="string">"gzip"</span>.equals(networkResponse.headers.get(<span class="string">"Content-Encoding"</span>))) &#123;</span><br><span class="line">                json = NetWorkTool.GZipDecoderToString(networkResponse.data);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                json = <span class="keyword">new</span> String(networkResponse.data,</span><br><span class="line">                        HttpHeaderParser.parseCharset(networkResponse.headers));</span><br><span class="line">            &#125;</span><br><span class="line">            Log.i(<span class="string">"GsonRequest"</span>,json);</span><br><span class="line">            <span class="keyword">if</span>(isArray)&#123;</span><br><span class="line">                <span class="keyword">final</span> List&lt;T&gt; list = <span class="keyword">new</span> ArrayList&lt;T&gt;();</span><br><span class="line">                JsonParser parser = <span class="keyword">new</span> JsonParser();</span><br><span class="line">                JsonArray jsonArray = parser.parse(json).getAsJsonArray();</span><br><span class="line">                <span class="keyword">for</span>(JsonElement obj : jsonArray)&#123;</span><br><span class="line">                    T t = gson.fromJson(obj, clazz);</span><br><span class="line">                    list.add(t);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">new</span> Handler(context.getMainLooper()).post(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        <span class="keyword">if</span> (listListener != <span class="keyword">null</span>) &#123;</span><br><span class="line">                            listListener.onResponse(list);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">                <span class="keyword">return</span> Response.success(list.get(<span class="number">0</span>), HttpHeaderParser.parseCacheHeaders(networkResponse));</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> Response.success(gson.fromJson(json, clazz),</span><br><span class="line">                        HttpHeaderParser.parseCacheHeaders(networkResponse));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</span><br><span class="line">            <span class="keyword">return</span> Response.error(<span class="keyword">new</span> ParseError(e));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (JsonSyntaxException e) &#123;</span><br><span class="line">            <span class="keyword">return</span> Response.error(<span class="keyword">new</span> ParseError(e));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">deliverResponse</span><span class="params">(T t)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(listener != <span class="keyword">null</span>) &#123;</span><br><span class="line">            listener.onResponse(t);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code>@Override
+    protected Response&lt;T&gt; parseNetworkResponse(NetworkResponse networkResponse) {
+        try {
+            String json;
+            if(&quot;gzip&quot;.equals(networkResponse.headers.get(&quot;Content-Encoding&quot;))) {
+                json = NetWorkTool.GZipDecoderToString(networkResponse.data);
+            }else {
+                json = new String(networkResponse.data,
+                        HttpHeaderParser.parseCharset(networkResponse.headers));
+            }
+            Log.i(&quot;GsonRequest&quot;,json);
+            if(isArray){
+                final List&lt;T&gt; list = new ArrayList&lt;T&gt;();
+                JsonParser parser = new JsonParser();
+                JsonArray jsonArray = parser.parse(json).getAsJsonArray();
+                for(JsonElement obj : jsonArray){
+                    T t = gson.fromJson(obj, clazz);
+                    list.add(t);
+                }
+                new Handler(context.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (listListener != null) {
+                            listListener.onResponse(list);
+                        }
+                    }
+                });
+                return Response.success(list.get(0), HttpHeaderParser.parseCacheHeaders(networkResponse));
+            }else {
+                return Response.success(gson.fromJson(json, clazz),
+                        HttpHeaderParser.parseCacheHeaders(networkResponse));
+            }
+        } catch (UnsupportedEncodingException e) {
+            return Response.error(new ParseError(e));
+        } catch (JsonSyntaxException e) {
+            return Response.error(new ParseError(e));
+        }
+    }
+
+    @Override
+    protected void deliverResponse(T t) {
+        if(listener != null) {
+            listener.onResponse(t);
+        }
+    }</code></pre>
 <p><code>parseNetworkResponse</code>里先将返回的Gzip压缩的格式解码，再生成String，然后对于数组我是用过JsonParser转换成JsonArray再进行遍历生成每一个对象，最后在<code>MainLooper</code>里调用对应回调函数。</p>
 </li>
 <li><p>通过Type接口<br>查看Gson的fromJson函数的源码</p>
-<figure class="highlight java"><figcaption><span>https://github.com/google/gson/blob/master/gson/src/main/java/com/google/gson/Gson.java Gson.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">fromJson</span><span class="params">(String json, Class&lt;T&gt; classOfT)</span> <span class="keyword">throws</span> JsonSyntaxException </span>&#123;</span><br><span class="line">  Object object = fromJson(json, (Type) classOfT);</span><br><span class="line">  <span class="keyword">return</span> Primitives.wrap(classOfT).cast(object);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">fromJson</span><span class="params">(String json, Type typeOfT)</span> <span class="keyword">throws</span> JsonSyntaxException </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (json == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  StringReader reader = <span class="keyword">new</span> StringReader(json);</span><br><span class="line">  T target = (T) fromJson(reader, typeOfT);</span><br><span class="line">  <span class="keyword">return</span> target;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>public &lt;T&gt; T fromJson(String json, Class&lt;T&gt; classOfT) throws JsonSyntaxException {
+  Object object = fromJson(json, (Type) classOfT);
+  return Primitives.wrap(classOfT).cast(object);
+}
+
+public &lt;T&gt; T fromJson(String json, Type typeOfT) throws JsonSyntaxException {
+  if (json == null) {
+    return null;
+  }
+  StringReader reader = new StringReader(json);
+  T target = (T) fromJson(reader, typeOfT);
+  return target;
+}</code></pre>
 <p>可见Gson终究是调用<code>fromJson(StringReader , Type )</code>来生成对象的，那么我们可以在创建<code>GsonRequest</code>时将传入<code>Class&lt;T&gt;</code>改为<code>Type</code>。<br>对于json对象传入<code>(Type)(MyClass.class)</code>，对于json数组传入<code>new TypeToken(ArrayList&lt;MyClass&gt;)(){}.getType()</code>。如：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">request = <span class="keyword">new</span> GsonRequest_&lt;ArrayList&lt;WeekSubjects&gt;&gt;(Request.Method.GET,</span><br><span class="line">        NetParams.CALENDAR_URL, <span class="keyword">new</span> TypeToken&lt;ArrayList&lt;WeekSubjects&gt;&gt;()&#123;&#125;.getType(),headers,<span class="keyword">this</span>,<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+<pre><code>request = new GsonRequest_&lt;ArrayList&lt;WeekSubjects&gt;&gt;(Request.Method.GET,
+        NetParams.CALENDAR_URL, new TypeToken&lt;ArrayList&lt;WeekSubjects&gt;&gt;(){}.getType(),headers,this,this);</code></pre>
 <p><code>Response.success</code>调用时将获得的Obeject对象强制转换为 <em>T</em>。<br>其他地方和原来一样即可。<br>GsonRequest具体例子看 <a href="https://github.com/Frezc/BangumiTimeMachine/blob/master/app/src/main/java/frezc/bangumitimemachine/app/network/http/GsonRequest_.java" target="_blank" rel="noopener">GsonRequest_</a></p>
 </li>
 </ol>
@@ -398,6 +502,15 @@ ga('send', 'pageview');
             </span>
         </p>
     </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
 </footer>
 
     </main>
