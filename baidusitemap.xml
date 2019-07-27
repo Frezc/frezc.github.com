@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://frezc.github.io/2019/05/16/typescript-react-hooks-quickstart/</loc>
-    <lastmod>2019-07-20</lastmod>
+    <lastmod>2019-07-27</lastmod>
   </url>  <url>
     <loc>https://frezc.github.io/2019/03/23/react-hooks-traps/</loc>
     <lastmod>2019-06-20</lastmod>
@@ -25,10 +25,10 @@
     <loc>https://frezc.github.io/2019/04/09/touhou-luna-nights-review/</loc>
     <lastmod>2019-04-10</lastmod>
   </url>  <url>
-    <loc>https://frezc.github.io/2015/11/02/my-first-blog/</loc>
+    <loc>https://frezc.github.io/2015/05/19/japan-anime-reflections/</loc>
     <lastmod>2019-04-09</lastmod>
   </url>  <url>
-    <loc>https://frezc.github.io/2015/05/19/japan-anime-reflections/</loc>
+    <loc>https://frezc.github.io/2015/11/02/my-first-blog/</loc>
     <lastmod>2019-04-09</lastmod>
   </url>  <url>
     <loc>https://frezc.github.io/2015/11/09/%E8%BF%91%E6%9C%9F%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%90%E4%BA%8B/</loc>
@@ -88,19 +88,19 @@
     <loc>https://frezc.github.io/2016/02/21/react-native%E5%AF%B9md%E9%A3%8E%E6%A0%BC%E4%B8%ADStatusBar%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F/</loc>
     <lastmod>2019-04-09</lastmod>
   </url>  <url>
-    <loc>https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/</loc>
+    <loc>https://frezc.github.io/2016/04/17/React%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93/</loc>
     <lastmod>2019-04-09</lastmod>
   </url>  <url>
-    <loc>https://frezc.github.io/2016/04/17/React%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93/</loc>
+    <loc>https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/</loc>
     <lastmod>2019-04-09</lastmod>
   </url>  <url>
     <loc>https://frezc.github.io/2015/05/03/push-your-project-to-git/</loc>
     <lastmod>2019-04-09</lastmod>
   </url>  <url>
-    <loc>https://frezc.github.io/2015/07/20/Danmaku-code/</loc>
+    <loc>https://frezc.github.io/2015/05/01/2015-05-01-hexo-share/</loc>
     <lastmod>2019-04-09</lastmod>
   </url>  <url>
-    <loc>https://frezc.github.io/2015/05/01/2015-05-01-hexo-share/</loc>
+    <loc>https://frezc.github.io/2015/07/20/Danmaku-code/</loc>
     <lastmod>2019-04-09</lastmod>
   </url>  <url>
     <loc>https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/</loc>
