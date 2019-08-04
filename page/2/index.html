@@ -183,6 +183,54 @@ ga('send', 'pageview');
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-how-to-fix-wrong-merge" class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-04-30 23:39:49" datetime="2018-04-30T15:39:49.000Z" itemprop="datePublished">2018-04-30</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/04/30/how-to-fix-wrong-merge/">如何修复错误的merge提交</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        因为最近帮别人解决了一次git merge丢代码的情况，当时处理地简单粗暴，reset到merge前一次commit后重来一遍。后来又设想了一下，如果merge后又commit很多次，这样岂不会很麻烦？如果这个分支不允许force push，那这样做也不行。于是就去查了一些资料，自己尝试并总结了一下几个方法。
+
+用git reset重新来过这种方法很简单，就是git reset到merge之...
+    
+
+        <a href="/2018/04/30/how-to-fix-wrong-merge/" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-这个博客不会再更新了" class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
@@ -587,53 +635,6 @@ ga('send', 'pageview');
     
 
         <a href="/2016/02/21/react-native对md风格中StatusBar的处理方式/" class="post-more waves-effect waves-button">
-            阅读全文…
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-native/">react native</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-在Android的原生模块中得到RN组件的引用" class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2016-02-19 23:23:00" datetime="2016-02-19T15:23:00.000Z" itemprop="datePublished">2016-02-19</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2016/02/19/在Android的原生模块中得到RN组件的引用/">在Android的原生模块中得到RN组件的引用</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        最近学习了下使用react-native(以下简称rn)来做App，这是目前唯一一个编写跨平台的本地应用的开源库，所以人气也是非常高啊。因为是新东西，所以相关的讨论、开源库之类的都很少，目前有很多东西还是得依赖原生模块来处理。好在的是rn提供了一些挺简单的交互方法，所以不至于会有无法解决的严重后果。
-不过在调用原生模块时，一开始我不太清楚怎么去获得rn里组件的实例引用，在网上也没找到相关问题，后来在看源代码后发现该怎么做了。
-    
-
-        <a href="/2016/02/19/在Android的原生模块中得到RN组件的引用/" class="post-more waves-effect waves-button">
             阅读全文…
         </a>
     </div>

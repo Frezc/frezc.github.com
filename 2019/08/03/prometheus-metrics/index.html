@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+<!-- Baidu Push -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<!-- End Baidu Push -->
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <meta name="baidu-site-verification" content="bmvYqUCgMu">
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2019/08/03/prometheus-metrics/">
+    
+    
+    <title>一篇文章带你理解和使用Prometheus的指标 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="监控,monitor,prometheus">
+    <meta name="description" content="Why prometheus实时指标是监控中最重要的一环，用来尝出实时监控图表以及触发警报。传统的指标收集方式是通过采集的日志流处理写入时序数据库（比如Druid），这样做的问题一是流程比较长，任何一环出问题就会导致监控不可用，而警报对稳定性的要求是非常高得；二是存储成本和查询速度，比如我将每次的请求耗时保存下来，那么每次请求都是一条记录，一天下来可能就有千万级别的记录，查询时对机器的性能会有一定">
+<meta name="keywords" content="监控,monitor,prometheus">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一篇文章带你理解和使用Prometheus的指标">
+<meta property="og:url" content="https://frezc.github.io/2019/08/03/prometheus-metrics/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="Why prometheus实时指标是监控中最重要的一环，用来尝出实时监控图表以及触发警报。传统的指标收集方式是通过采集的日志流处理写入时序数据库（比如Druid），这样做的问题一是流程比较长，任何一环出问题就会导致监控不可用，而警报对稳定性的要求是非常高得；二是存储成本和查询速度，比如我将每次的请求耗时保存下来，那么每次请求都是一条记录，一天下来可能就有千万级别的记录，查询时对机器的性能会有一定">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-03T16:56:30.336Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一篇文章带你理解和使用Prometheus的指标">
+<meta name="twitter:description" content="Why prometheus实时指标是监控中最重要的一环，用来尝出实时监控图表以及触发警报。传统的指标收集方式是通过采集的日志流处理写入时序数据库（比如Druid），这样做的问题一是流程比较长，任何一环出问题就会导致监控不可用，而警报对稳定性的要求是非常高得；二是存储成本和查询速度，比如我将每次的请求耗时保存下来，那么每次请求都是一条记录，一天下来可能就有千万级别的记录，查询时对机器的性能会有一定">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">一篇文章带你理解和使用Prometheus的指标</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">一篇文章带你理解和使用Prometheus的指标</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-08-03T02:57:04.000Z" itemprop="datePublished" class="page-time">
+  2019-08-03
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Why-prometheus"><span class="post-toc-number">1.</span> <span class="post-toc-text">Why prometheus</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Metric-types"><span class="post-toc-number">2.</span> <span class="post-toc-text">Metric types</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Counter"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">Counter</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#用例"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">用例</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#时间粒度"><span class="post-toc-number">2.1.1.1.</span> <span class="post-toc-text">时间粒度</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#按维度聚合"><span class="post-toc-number">2.1.1.2.</span> <span class="post-toc-text">按维度聚合</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Gauge"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">Gauge</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#用例-1"><span class="post-toc-number">2.2.1.</span> <span class="post-toc-text">用例</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#按时间聚合"><span class="post-toc-number">2.2.1.1.</span> <span class="post-toc-text">按时间聚合</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#预测磁盘空间"><span class="post-toc-number">2.2.1.2.</span> <span class="post-toc-text">预测磁盘空间</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Histogram"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">Histogram</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#用例-2"><span class="post-toc-number">2.3.1.</span> <span class="post-toc-text">用例</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Summary"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">Summary</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Reference"><span class="post-toc-number">3.</span> <span class="post-toc-text">Reference</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-prometheus-metrics" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">一篇文章带你理解和使用Prometheus的指标</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-08-03 10:57:04" datetime="2019-08-03T02:57:04.000Z" itemprop="datePublished">2019-08-03</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+
+
+            
+<span style="display: none">
+    <span id="busuanzi_container_page_pv" title="文章总阅读量" style="display:none">
+        <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+    </span>
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="Why-prometheus"><a href="#Why-prometheus" class="headerlink" title="Why prometheus"></a>Why prometheus</h1><p>实时指标是监控中最重要的一环，用来尝出实时监控图表以及触发警报。传统的指标收集方式是通过采集的日志流处理写入时序数据库（比如Druid），这样做的问题一是流程比较长，任何一环出问题就会导致监控不可用，而警报对稳定性的要求是非常高得；二是存储成本和查询速度，比如我将每次的请求耗时保存下来，那么每次请求都是一条记录，一天下来可能就有千万级别的记录，查询时对机器的性能会有一定的要求。</p>
+<p>Prometheus直接采集服务暴露的指标，少了中间流程能大大减少出问题的概率。另外通过提供client在采集端做了预聚合，虽然这样损失了精确度，但大大减少数据量以及提升查询速度。</p>
+<p>Prometheus所做的预聚合使得其和传统的时序数据库查询完全不同，所以认识和理解指标是使用Prometheus的第一步。下面我会解释各种指标类型以及如何去使用。</p>
+<h1 id="Metric-types"><a href="#Metric-types" class="headerlink" title="Metric types"></a>Metric types</h1><p>下面我主要会以Prometheus的自监控指标举例，你可以自己<a href="https://prometheus.io/docs/introduction/first_steps/" target="_blank" rel="noopener">安装</a>一个来尝试。</p>
+<h2 id="Counter"><a href="#Counter" class="headerlink" title="Counter"></a>Counter</h2><p>Counter可以简单理解为计数器，是个比较简单但又常用的类型。适用于生成请求次数、错误次数等指标。</p>
+<p>比如prometheus暴露的http请求次数指标如下（打开<code>/metrics</code>查看）</p>
+<pre><code class="shell"># HELP prometheus_http_requests_total Counter of HTTP requests.
+# TYPE prometheus_http_requests_total counter
+prometheus_http_requests_total{code=&quot;200&quot;,handler=&quot;/api/v1/label/:name/values&quot;} 7
+prometheus_http_requests_total{code=&quot;200&quot;,handler=&quot;/api/v1/query&quot;} 19
+prometheus_http_requests_total{code=&quot;200&quot;,handler=&quot;/api/v1/query_range&quot;} 27
+prometheus_http_requests_total{code=&quot;200&quot;,handler=&quot;/graph&quot;} 11
+prometheus_http_requests_total{code=&quot;200&quot;,handler=&quot;/metrics&quot;} 8929
+prometheus_http_requests_total{code=&quot;200&quot;,handler=&quot;/static/*filepath&quot;} 52
+prometheus_http_requests_total{code=&quot;302&quot;,handler=&quot;/&quot;} 1
+prometheus_http_requests_total{code=&quot;400&quot;,handler=&quot;/api/v1/query_range&quot;} 6
+</code></pre>
+<p>指标由<code>指标名</code>、花括号里的<code>labels</code>以及<code>指标值</code>组成，<code>labels</code>可以理解为<code>维度</code>，上面的数据写成表格就很好理解了。</p>
+<table>
+<thead>
+<tr>
+<th>code</th>
+<th>handler</th>
+<th>prometheus_http_requests_total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td>/api/v1/label/:name/values</td>
+<td>7</td>
+</tr>
+<tr>
+<td>200</td>
+<td>/api/v1/query_range</td>
+<td>27</td>
+</tr>
+<tr>
+<td>200</td>
+<td>/graph</td>
+<td>11</td>
+</tr>
+<tr>
+<td>200</td>
+<td>/metrics</td>
+<td>8929</td>
+</tr>
+<tr>
+<td>200</td>
+<td>/static/*filepath</td>
+<td>52</td>
+</tr>
+<tr>
+<td>302</td>
+<td>/</td>
+<td>1</td>
+</tr>
+<tr>
+<td>400</td>
+<td>/api/v1/query_range</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<p>我们可以通过<code>/graph</code>页面来查询这个指标，直接查询如下的instant query就可以看到过去一段时间每个<code>采集点</code>(默认15s)采集到的counter值。</p>
+<pre><code class="promql">prometheus_http_requests_total
+</code></pre>
+<h3 id="用例"><a href="#用例" class="headerlink" title="用例"></a>用例</h3><p>Counter类型直接查询没有什么意义，通常我们要看的是过去<strong>一段时间</strong>的统计数据，可以这么查</p>
+<pre><code class="promql">prometheus_http_requests_total - prometheus_http_requests_total offset 1h
+</code></pre>
+<p>打开<code>Console</code> Tab，就能看到过去一个小时内prometheus http请求的次数统计了。</p>
+<h4 id="时间粒度"><a href="#时间粒度" class="headerlink" title="时间粒度"></a>时间粒度</h4><p>如果熟悉传统的时序数据库查询的话，会更习惯指定<strong>时间粒度</strong>来聚合一个时间窗口内的数据。prometheus的counter指标里倒不需要做这样聚合，但为了使结果显示成每个时间粒度一个点而不是像现在的十几秒一个点，可以使用<code>step</code>来指定精度。</p>
+<p>假设我们要查过去一小时内每5分钟有多少次请求可以这么写。这里使用更常用的<code>increase</code>函数和<code>range query</code></p>
+<pre><code class="promql">increase(prometheus_http_requests_total[5m])
+</code></pre>
+<p>然后将<code>Res</code>里填上<code>300</code>就能得到想要的结果了。</p>
+<h4 id="按维度聚合"><a href="#按维度聚合" class="headerlink" title="按维度聚合"></a>按维度聚合</h4><p>除了时间粒度外还有个很常用的参数叫<code>group by</code>，用来按某些维度来分组聚合指标。在prometheus里做起来差不多，不过稍有限制。我们先看看怎么计算所有http请求的和。</p>
+<pre><code class="promql">sum(increase(prometheus_http_requests_total[5m]))
+</code></pre>
+<p>这里将上节的promql加了一层<code>sum</code>函数，可以看到结果只有一条线了，这条线上的每一个点就是当前时间上所有<code>code</code>和<code>handler</code>对应指标的总和。</p>
+<p>那么如何看每个<code>code</code>对应的请求数呢？我们可以通过<code>by</code>来实现，写法很像sql。</p>
+<pre><code class="promql">sum(increase(prometheus_http_requests_total[5m])) by (code)
+</code></pre>
+<p>要注意的是这里<code>by</code>只能跟在聚合函数后面，见<a href="https://prometheus.io/docs/prometheus/latest/querying/operators/#aggregation-operators" target="_blank" rel="noopener">文档</a>。</p>
+<h2 id="Gauge"><a href="#Gauge" class="headerlink" title="Gauge"></a>Gauge</h2><p><code>Gauge</code>是一个用来记录实时值的指标，常用于表示CPU使用率、内存使用率、线程数等指标。</p>
+<p>比如prometheus暴露的go协程数指标</p>
+<pre><code class="shell"># HELP go_goroutines Number of goroutines that currently exist.
+# TYPE go_goroutines gauge
+go_goroutines 40
+</code></pre>
+<h3 id="用例-1"><a href="#用例-1" class="headerlink" title="用例"></a>用例</h3><p><code>gauge</code>类型指标最常见的就是用来标识服务是否存活的<code>up</code>指标了，这个指标在大多的exporter上都会有，属于一个可以建通用警报规则的指标。</p>
+<p>大多数<code>gauge</code>指标用法差不多，我就拿<code>go_goroutines</code>来举例。查询<code>go_goroutines</code>我们可以看到一些自动生成的labels，主要关注<code>instance</code>，这个代表了我们的prometheus实例。假设我们有prometheus实例并且想查询所有实例的平均协程数。</p>
+<pre><code class="promql">avg(go_goroutines)
+</code></pre>
+<p><em>熟悉Prometheus后你会发现 avg 基本只对 gauge 指标有意义</em></p>
+<h4 id="按时间聚合"><a href="#按时间聚合" class="headerlink" title="按时间聚合"></a>按时间聚合</h4><p>上面的结果看起来是满足要求，但是多查几次就发现好像结果有点不太一样？（如果你看不出来可以将<code>Res</code>调大）</p>
+<p>原因是prometheus的精度问题，毕竟只有15s一个点，那么我要算某个时间点的平均值肯定是无法拿到准确值的。为了减小数据偏差，可以先横向将一段时间内的数据聚合，再纵向算平均值。比如先以1分组为粒度算出每分钟的平均数，再算出所有实例的平均数。</p>
+<pre><code class="promql">avg(avg_over_time(go_goroutines[1m]))
+</code></pre>
+<h4 id="预测磁盘空间"><a href="#预测磁盘空间" class="headerlink" title="预测磁盘空间"></a>预测磁盘空间</h4><p>这是个很有意思的使用场景，可以通过磁盘使用空间来预测。因为磁盘使用空间不像内存使用量和线程数那样变化频繁，具有一定的<strong>局部单调性</strong>，所以可以通过<strong>线性回归</strong>预测，prometheus提供了<a href="https://prometheus.io/docs/prometheus/latest/querying/functions/#predict_linear" target="_blank" rel="noopener">predict_linear</a>来帮助计算。</p>
+<pre><code class="shell"># 利用过去30分钟的数据预测1小时后的数据
+predict_linear(disk_used_bytes[30m], 3600)
+</code></pre>
+<h2 id="Histogram"><a href="#Histogram" class="headerlink" title="Histogram"></a>Histogram</h2><p>顾名思义该指标生成的是<a href="https://antv.alipay.com/zh-cn/vis/chart/histogram.html" target="_blank" rel="noopener">直方图</a>数据。</p>
+<p>prometheus暴露的请求耗时指标如下</p>
+<pre><code class="shell"># HELP prometheus_http_request_duration_seconds Histogram of latencies for HTTP requests.
+# TYPE prometheus_http_request_duration_seconds histogram
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query_range&quot;,le=&quot;0.1&quot;} 60
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query_range&quot;,le=&quot;0.2&quot;} 63
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query_range&quot;,le=&quot;0.4&quot;} 64
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query_range&quot;,le=&quot;1&quot;} 65
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query_range&quot;,le=&quot;3&quot;} 65
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query_range&quot;,le=&quot;8&quot;} 65
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query_range&quot;,le=&quot;20&quot;} 65
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query_range&quot;,le=&quot;60&quot;} 65
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query_range&quot;,le=&quot;120&quot;} 65
+prometheus_http_request_duration_seconds_bucket{handler=&quot;/api/v1/query_range&quot;,le=&quot;+Inf&quot;} 65
+prometheus_http_request_duration_seconds_sum{handler=&quot;/api/v1/query_range&quot;} 2.5237541999999995
+prometheus_http_request_duration_seconds_count{handler=&quot;/api/v1/query_range&quot;} 65
+# 其他labels下的都删掉了
+</code></pre>
+<p><code>prometheus_http_request_duration_seconds</code>使用了<code>[0.1,0.2,0.4,1,3,8,20,60,120,+Inf]</code>这几个分桶来采样数据。</p>
+<h3 id="用例-2"><a href="#用例-2" class="headerlink" title="用例"></a>用例</h3><p>通常我们会使用该数据来计算<a href="https://cloud.tencent.com/developer/article/1122377" target="_blank" rel="noopener">百分位数</a>。</p>
+<p>比如我们可以通过以下的promql查询<code>prometheus_http_request_duration_seconds</code>在过去1小时内的P95（95%的请求耗时都小于等于这个值）。</p>
+<pre><code class="promql">histogram_quantile(0.95, rate(prometheus_http_request_duration_seconds_bucket[1h]))
+</code></pre>
+<p><em>如果出现了<code>NaN</code>数据代表数据量不够，无法计算。</em></p>
+<p>如果有多个prometheus实例，同样可以聚合计算P95</p>
+<pre><code class="promql"># 注意group by le，防止把分桶信息也聚合了
+histogram_quantile(0.95, sum(rate(prometheus_http_request_duration_seconds_bucket[1h])) by (le))
+</code></pre>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p><code>Summary</code>类型是在客户端直接聚合生成的百分位数。</p>
+<p>比如Prometheus抓取间隔的百分位数指标</p>
+<pre><code class="shell"># HELP prometheus_target_interval_length_seconds Actual intervals between scrapes.
+# TYPE prometheus_target_interval_length_seconds summary
+prometheus_target_interval_length_seconds{interval=&quot;15s&quot;,quantile=&quot;0.01&quot;} 14.9986389
+prometheus_target_interval_length_seconds{interval=&quot;15s&quot;,quantile=&quot;0.05&quot;} 14.9991762
+prometheus_target_interval_length_seconds{interval=&quot;15s&quot;,quantile=&quot;0.5&quot;} 15.0000115
+prometheus_target_interval_length_seconds{interval=&quot;15s&quot;,quantile=&quot;0.9&quot;} 15.0006213
+prometheus_target_interval_length_seconds{interval=&quot;15s&quot;,quantile=&quot;0.99&quot;} 15.0010902
+prometheus_target_interval_length_seconds_sum{interval=&quot;15s&quot;} 178380.0282111002
+prometheus_target_interval_length_seconds_count{interval=&quot;15s&quot;} 11892
+</code></pre>
+<p>虽然<code>Histogram</code>也能计算百分位数但精度受分桶影响很大，分桶少的话会使百分位数计算很不准确，而分桶多的话会使数据量成倍增加。<code>Summary</code>则是依靠原始数据计算出的百分位数，是很准确的值。</p>
+<p>但是平时一般不用<code>Summary</code>，因为它<strong>无法聚合</strong>。想象一下，prometheus抓取了一个集群下多台机器的百分位数，我们怎么根据这些数据得到整个集群的百分位数呢？如果是P0（最小值）和P100（最大值）是可以计算，分别计算所有机器P0的最小值以及P100的最大值就行，但是其他百分位数就束手无策了。</p>
+<p>所以除非你真的需要精确的百分位数，否则不建议使用<code>Summary</code>。</p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li><a href="https://prometheus.io/docs/concepts/metric_types/" target="_blank" rel="noopener">https://prometheus.io/docs/concepts/metric_types/</a></li>
+<li><a href="https://prometheus.io/docs/practices/histograms/" target="_blank" rel="noopener">https://prometheus.io/docs/practices/histograms/</a></li>
+<li><a href="http://latencytipoftheday.blogspot.de/2014/06/latencytipoftheday-you-cant-average.html" target="_blank" rel="noopener">http://latencytipoftheday.blogspot.de/2014/06/latencytipoftheday-you-cant-average.html</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/monitor/">monitor</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/prometheus/">prometheus</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/监控/">监控</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2019/08/03/prometheus-metrics/&title=《一篇文章带你理解和使用Prometheus的指标》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2019/08/03/prometheus-metrics/&title=《一篇文章带你理解和使用Prometheus的指标》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2019/08/03/prometheus-metrics/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《一篇文章带你理解和使用Prometheus的指标》 — Code for fun&url=https://frezc.github.io/2019/08/03/prometheus-metrics/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2019/08/03/prometheus-metrics/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/05/25/leetcode-largest-rectangle-in-histogram/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">leetcode #84 直方图内最大矩形解题思路</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p style="display: none">
+    <span id="busuanzi_container_site_uv" style="display:none">
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style="display:none">
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2019/08/03/prometheus-metrics/&title=《一篇文章带你理解和使用Prometheus的指标》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2019/08/03/prometheus-metrics/&title=《一篇文章带你理解和使用Prometheus的指标》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2019/08/03/prometheus-metrics/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《一篇文章带你理解和使用Prometheus的指标》 — Code for fun&url=https://frezc.github.io/2019/08/03/prometheus-metrics/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2019/08/03/prometheus-metrics/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACLElEQVR42u3aS3LjMAwFwNz/0poDpKx5D2RSEdVcufyR2FrAIICvr3hd39au73//NLn+cGFgYDyWcd2u5Dv5ja945XvDwMB4D+M+FH56fb/RT+8k1HxvGBgYGEkC92nru3I5DAwMjFnAvU/gdoVmDAwMjJXAlx8vkxTzV8/iGBgYD2SsHCx/+vWP9DcwMDAexbjK1TYJkvB9LS8MDIyzGbPS2Eo4zmH1fjAwMI5mzIa62lZBcv3kGLx5lg0DA+PPM2ZHxzwFzB/NUnMCAwPjNYxZBGubB3uTUQwMjPcw8ouuFMjasFsEbgwMjKMZ7fjXrvNjfvQtBiwwMDCOZiQ3yMtheSltVmirHxwGBsZxjNnNcsD9dvNN/ycEY2BgHMRog+NsOKxtLbTFOwwMjLMZbfqVD3XtwmzIZDEwMB7OyEe+WvxSSzJ+uEUnFgMD4wjGSpmsHb+YMYb9VQwMjEMZSdBsE7vkt8N8DwMD42hGHiLzLa4ki0nDICq3YWBgHMpI0rJZQb9NPfOA+7HLgYGBcShjdqydBev1o2/xv4GBgXEcY1Zia9PBuqDWBlwMDIyDGFe58iLabFCsHekYbgUDA+NRjDbMtY2BolgWp6r5dTAwME5itC3GNk2cBd92jAwDA+MNjDbw5eC6xB+H/uj0jIGB8XrGbKhib3MUAwMDIw+ObZGubSdEh1gMDIyjGW0pbdcjaO+IgYHxTkY74rAykDErpW1rZGJgYDyP8Q+ZxtsZIZKntgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

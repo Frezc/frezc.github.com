@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://frezc.github.io/2019/08/03/prometheus-metrics/</loc>
+    
+    <lastmod>2019-08-03T16:56:30.336Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://frezc.github.io/2019/05/16/typescript-react-hooks-quickstart/</loc>
     
-    <lastmod>2019-07-27T07:26:19.960Z</lastmod>
+    <lastmod>2019-08-02T13:14:31.500Z</lastmod>
     
   </url>
   
