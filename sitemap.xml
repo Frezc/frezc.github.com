@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/</loc>
+    
+    <lastmod>2019-09-01T12:44:57.558Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://frezc.github.io/2019/08/03/prometheus-metrics/</loc>
     
     <lastmod>2019-08-03T16:56:30.336Z</lastmod>
@@ -65,13 +72,6 @@
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2015/05/19/japan-anime-reflections/</loc>
-    
-    <lastmod>2019-04-09T15:39:54.154Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://frezc.github.io/2015/11/02/my-first-blog/</loc>
     
     <lastmod>2019-04-09T15:39:54.154Z</lastmod>
@@ -86,14 +86,21 @@
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2019/03/30/osaka-travel/</loc>
+    <loc>https://frezc.github.io/2015/05/19/japan-anime-reflections/</loc>
+    
+    <lastmod>2019-04-09T15:39:54.154Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2016/04/18/%E8%B0%88%E8%B0%884%E6%9C%88%E6%96%B0%E7%95%AA/</loc>
     
     <lastmod>2019-04-09T15:39:54.105Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2016/04/18/%E8%B0%88%E8%B0%884%E6%9C%88%E6%96%B0%E7%95%AA/</loc>
+    <loc>https://frezc.github.io/2019/03/30/osaka-travel/</loc>
     
     <lastmod>2019-04-09T15:39:54.105Z</lastmod>
     
@@ -212,14 +219,14 @@
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2016/04/17/React%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93/</loc>
+    <loc>https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/</loc>
     
     <lastmod>2019-04-09T15:39:43.132Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2018/04/30/how-to-fix-wrong-merge/</loc>
+    <loc>https://frezc.github.io/2016/04/17/React%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93/</loc>
     
     <lastmod>2019-04-09T15:39:43.132Z</lastmod>
     

@@ -183,6 +183,54 @@ ga('send', 'pageview');
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-auto-decimal-of-grafana" class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-08-02 15:25:03" datetime="2018-08-02T07:25:03.000Z" itemprop="datePublished">2018-08-02</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2018/08/02/auto-decimal-of-grafana/">Grafana的auto decimal实现以及与G2结合使用</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        Why auto decimals?现在即席查询里的单位格式化用的是从grafana里copy出来的kbn，kbn里的format函数的参数除了value外通常还有decimals和scaledDecimals。
+decimals指的是传统意义上的保留小数位，如1.23对应的就是2。
+scaledDecimals指的则是单位转换过后的保留小数位，比如kbn转换时间时会默认将超过1000的时间...
+    
+
+        <a href="/2018/08/02/auto-decimal-of-grafana/" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/g2/">g2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/grafana/">grafana</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/visualization/">visualization</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-how-to-fix-wrong-merge" class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
@@ -595,53 +643,6 @@ ga('send', 'pageview');
     <div class="post-footer">
         
 	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/redux/">redux</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-react-native对md风格中StatusBar的处理方式" class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2016-02-21 04:09:00" datetime="2016-02-20T20:09:00.000Z" itemprop="datePublished">2016-02-21</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2016/02/21/react-native对md风格中StatusBar的处理方式/">react-native对md风格中StatusBar的处理方式</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        自从rn支持android以后，出现了不少的material design的库。用了下一个叫react-native-material-design的库，先不谈性能方面的缺陷，这个库完全忽视了StatusBar的处理，使得其Drawer弹出时会很难看。至少目前还没有看到哪个库对StatusBar进行了特殊处理，官方倒是有一个StatusBar的组件可以用来控制应用中StatusBar的表现，不过这个组件在android里是调用5.0加入api来实现的，也就是说只对5.0以上的系统有效。而且这个组件在实现Drawer占满屏幕的效果时，StatusBar要设为translucent，此时和在theme中设置windowTranslucentStatus没有什么区别，依然要考虑StatusBar空出来的地方。所以这个组件还不如设置theme呢，起码后者能兼容到4.4。
-下面就谈谈比较合适的方法。
-    
-
-        <a href="/2016/02/21/react-native对md风格中StatusBar的处理方式/" class="post-more waves-effect waves-button">
-            阅读全文…
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-native/">react native</a></li></ul>
 
     </div>
     

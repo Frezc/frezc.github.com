@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+<!-- Baidu Push -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<!-- End Baidu Push -->
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <meta name="baidu-site-verification" content="bmvYqUCgMu">
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/">
+    
+    
+    <title>使用Prometheus来监控前端指标 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="前端监控,monitor,prometheus">
+    <meta name="description" content="前言网上关于前端监控的文章其实已经层出不穷，这篇稍微写些不一样的。近年来prometheus打开的实时指标监控的新路子越来越被大家接受，都纷纷开始基于prometheus来搞自己的监控警报体系。我们公司也是大规模使用prometheus来搞指标监控，最近打算把前端的指标也接进来，我也趁这个机会写个简单的demo以及一些思考。 使用prometheus的优势与弊端在过去我们公司是使用elastic">
+<meta name="keywords" content="前端监控,monitor,prometheus">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Prometheus来监控前端指标">
+<meta property="og:url" content="https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="前言网上关于前端监控的文章其实已经层出不穷，这篇稍微写些不一样的。近年来prometheus打开的实时指标监控的新路子越来越被大家接受，都纷纷开始基于prometheus来搞自己的监控警报体系。我们公司也是大规模使用prometheus来搞指标监控，最近打算把前端的指标也接进来，我也趁这个机会写个简单的demo以及一些思考。 使用prometheus的优势与弊端在过去我们公司是使用elastic">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/frontendmetricinfra.png">
+<meta property="og:image" content="https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/resource_loading.png">
+<meta property="og:image" content="https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/metricdef.png">
+<meta property="og:image" content="https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/queryp95.png">
+<meta property="og:image" content="https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/highcardinalityname.png">
+<meta property="og:updated_time" content="2019-09-01T12:44:57.558Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Prometheus来监控前端指标">
+<meta name="twitter:description" content="前言网上关于前端监控的文章其实已经层出不穷，这篇稍微写些不一样的。近年来prometheus打开的实时指标监控的新路子越来越被大家接受，都纷纷开始基于prometheus来搞自己的监控警报体系。我们公司也是大规模使用prometheus来搞指标监控，最近打算把前端的指标也接进来，我也趁这个机会写个简单的demo以及一些思考。 使用prometheus的优势与弊端在过去我们公司是使用elastic">
+<meta name="twitter:image" content="https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/frontendmetricinfra.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">使用Prometheus来监控前端指标</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">使用Prometheus来监控前端指标</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-08-31T13:16:13.000Z" itemprop="datePublished" class="page-time">
+  2019-08-31
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#使用prometheus的优势与弊端"><span class="post-toc-number">2.</span> <span class="post-toc-text">使用prometheus的优势与弊端</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#整体架构"><span class="post-toc-number">3.</span> <span class="post-toc-text">整体架构</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#前端采集"><span class="post-toc-number">4.</span> <span class="post-toc-text">前端采集</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#资源和页面性能指标"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">资源和页面性能指标</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#监听PerformanceEntry变化"><span class="post-toc-number">4.1.1.</span> <span class="post-toc-text">监听PerformanceEntry变化</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#AJAX指标"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">AJAX指标</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#错误指标"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">错误指标</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#自定义指标"><span class="post-toc-number">4.4.</span> <span class="post-toc-text">自定义指标</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Example"><span class="post-toc-number">4.5.</span> <span class="post-toc-text">Example</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#指标聚合服务"><span class="post-toc-number">5.</span> <span class="post-toc-text">指标聚合服务</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#资源聚合接口"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">资源聚合接口</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#自定义指标聚合接口"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">自定义指标聚合接口</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Example-1"><span class="post-toc-number">5.3.</span> <span class="post-toc-text">Example</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一个完整的demo"><span class="post-toc-number">6.</span> <span class="post-toc-text">一个完整的demo</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一些问题"><span class="post-toc-number">7.</span> <span class="post-toc-text">一些问题</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-frontend-metrics-to-prometheus" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">使用Prometheus来监控前端指标</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-08-31 21:16:13" datetime="2019-08-31T13:16:13.000Z" itemprop="datePublished">2019-08-31</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+
+
+            
+<span style="display: none">
+    <span id="busuanzi_container_page_pv" title="文章总阅读量" style="display:none">
+        <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+    </span>
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>网上关于前端监控的文章其实已经层出不穷，这篇稍微写些不一样的。近年来<a href="https://prometheus.io" target="_blank" rel="noopener">prometheus</a>打开的<strong>实时指标监控</strong>的新路子越来越被大家接受，都纷纷开始基于prometheus来搞自己的监控警报体系。我们公司也是大规模使用prometheus来搞指标监控，最近打算把前端的指标也接进来，我也趁这个机会写个简单的demo以及一些思考。</p>
+<h1 id="使用prometheus的优势与弊端"><a href="#使用prometheus的优势与弊端" class="headerlink" title="使用prometheus的优势与弊端"></a>使用prometheus的优势与弊端</h1><p>在过去我们公司是使用<a href="https://www.elastic.co" target="_blank" rel="noopener">elastic search</a>来存储前端发送的事件以及处理后的数据，使用ES有个好处，可以直接满足我们两种需求：查原文和查聚合指标。本文要讨论的prometheus并不能取代ES，因为在前端监控的产品中查原文是必不可少的（比如重现某个用户的资源请求情况、查错误日志等），但是prometheus在查聚合指标时会比ES快很多，尤其是算<strong>百分位数</strong>时，相比ES的龟速，prometheus接近实时的速度可以说是最大的亮点。</p>
+<p>当然考虑到prometheus会带来额外的开发成本，如果使用ES可以满足需求那只用ES就可以了。</p>
+<h1 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h1><p>由于Prometheus是主动拉取指标的模式，所以我们需要一个类似<a href="https://github.com/prometheus/pushgateway" target="_blank" rel="noopener">pushgateway</a>的服务来接收前端发来的事件并将指标聚合暴露给prometheus。整体如下</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="frontendmetricinfra.png" alt="infra" title>
+                </div>
+                <div class="image-caption">infra</div>
+            </figure>
+<p><em>为了方便起见，下面实现的demo不会实现虚线部分。</em></p>
+<h1 id="前端采集"><a href="#前端采集" class="headerlink" title="前端采集"></a>前端采集</h1><p>第一步当然就是实现前端采集指标的部分，我们通常关心下面几类指标：</p>
+<h2 id="资源和页面性能指标"><a href="#资源和页面性能指标" class="headerlink" title="资源和页面性能指标"></a>资源和页面性能指标</h2><p>这类指标可以通过<code>performance.getEntries()</code>直接拿到，其中<a href="https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming" target="_blank" rel="noopener"><code>PerformanceResourceTiming</code></a>和<a href="https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming" target="_blank" rel="noopener"><code>PerformanceNavigationTiming</code></a>两个类分别包含普通资源和当前页面的性能指标，同时也可以得到<code>paint</code>和自定义的timing。</p>
+<p>其中要注意的是<code>PerformanceResourceTiming</code>会同时包含所有ajax请求，如果你不想在这里采集到ajax指标的话可以通过<code>initiatorType !== &#39;fetch&#39; &amp;&amp; initiatorType !== &#39;xmlhttprequest&#39; &amp;&amp; initiatorType !== &#39;beacon&#39;</code>过滤掉。</p>
+<p>可以参考下图创建对应的指标</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="resource_loading.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h3 id="监听PerformanceEntry变化"><a href="#监听PerformanceEntry变化" class="headerlink" title="监听PerformanceEntry变化"></a>监听PerformanceEntry变化</h3><p>通常我们会在页面加载完时获取资源指标，但是如何取监听后续新的资源呢？</p>
+<p>最直观的方法就是使用<a href="https://developer.mozilla.org/en-US/docs/Web/API/PerformanceObserver" target="_blank" rel="noopener"><code>PerformanceObserver</code></a>来监听，如果要考虑兼容性的话可以使用<a href="https://github.com/fastly/performance-observer-polyfill" target="_blank" rel="noopener"><code>polyfill</code></a>或者用<code>setInterval</code>定时获取entries并筛选出新的。</p>
+<h2 id="AJAX指标"><a href="#AJAX指标" class="headerlink" title="AJAX指标"></a>AJAX指标</h2><p>如果你需要通过一些详细数据（比如header、request body等）作为labels的话，就需要额外监听ajax请求了，方法是覆盖默认的<code>fetch</code>以及<code>XMLHttpRequest</code>。</p>
+<h2 id="错误指标"><a href="#错误指标" class="headerlink" title="错误指标"></a>错误指标</h2><p>建议走自定义指标或者ES的聚合</p>
+<h2 id="自定义指标"><a href="#自定义指标" class="headerlink" title="自定义指标"></a>自定义指标</h2><p>约定好数据结构发送给聚合服务即可</p>
+<h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><p>对于资源指标，我基于<code>PerformanceObserver</code>写了一个<a href="https://github.com/Frezc/metrics-collector" target="_blank" rel="noopener">采集器</a>。</p>
+<p>对于自定义指标，由于我这里不会实现指标配置服务，所以使用了<a href="https://github.com/weaveworks/promjs" target="_blank" rel="noopener">promjs</a>这个库，但是这个库只有文本格式的输出，所以我又写了个<a href="https://github.com/Frezc/promjs-export" target="_blank" rel="noopener">promjs-export</a>来导出结构化的数据，并以此作为前后端通讯的结构。</p>
+<p><a href="https://github.com/Frezc/metrics-collector/blob/master/example/index.ts" target="_blank" rel="noopener">使用示例</a>，代码如下</p>
+<pre><code class="js">import { initCollector } from &#39;performance-resource-collector&#39;;
+import prom from &#39;promjs&#39;;
+import { exportMetrics } from &#39;promjs-export&#39;;
+
+const registry = prom();
+const unsupportedCounter = registry.create(&#39;counter&#39;, &#39;collector_unsupported_total&#39;, &#39;A counter for browser support for collector&#39;);
+const setupCounter = registry.create(&#39;counter&#39;, &#39;collector_setup_total&#39;, &#39;A counter for collector setup&#39;);
+
+function sendMetrics() {
+  navigator.sendBeacon(&quot;http://localhost:8080/custom_metrics&quot;, JSON.stringify(exportMetrics(registry)));
+  registry.reset();
+}
+
+initCollector({
+  // 将2s内新的资源batch调用
+  callback: (entries) =&gt; {
+    navigator.sendBeacon(&quot;http://localhost:8080/resources&quot;, JSON.stringify(entries))
+  },
+  // 当前浏览器不支持PerformanceObserver
+  onUnsupported: () =&gt; {
+    unsupportedCounter.inc();
+    sendMetrics();
+  },
+  // 监听成功
+  onSetUp: () =&gt; {
+    setupCounter.inc();
+    sendMetrics();
+  },
+  throttle: 2000,
+});
+</code></pre>
+<h1 id="指标聚合服务"><a href="#指标聚合服务" class="headerlink" title="指标聚合服务"></a>指标聚合服务</h1><p>我们需要实现3个接口：接收<code>PerformanceEntry</code>的接口、接收自定义指标的接口和返回规定指标格式给prometheus的接口。</p>
+<h2 id="资源聚合接口"><a href="#资源聚合接口" class="headerlink" title="资源聚合接口"></a>资源聚合接口</h2><p>资源聚合接口比较简单，因为是固定的指标，可以预先定好需要哪些指标、哪些维度，之后在代码里直接写死就好。</p>
+<h2 id="自定义指标聚合接口"><a href="#自定义指标聚合接口" class="headerlink" title="自定义指标聚合接口"></a>自定义指标聚合接口</h2><p>自定义指标的聚合会比较复杂，主要是因为官方实现的client是不能修改label个数的，你可能需要自己实现一个能merge的版本。</p>
+<p>或者采用预定义指标的形式，也就是需要一个额外的指标配置服务。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="metricdef.png" alt="指标配置" title>
+                </div>
+                <div class="image-caption">指标配置</div>
+            </figure>
+<h2 id="Example-1"><a href="#Example-1" class="headerlink" title="Example"></a>Example</h2><p>因为是个demo，于是就用rust来实现了，<a href="https://github.com/Frezc/frontend-metrics-aggregation" target="_blank" rel="noopener">项目地址</a>。</p>
+<p>这里我只聚合了资源中的<code>duration</code>指标以及自定义的<code>Counter</code>类型的指标。</p>
+<p>另外有点需要注意的是如果是用sendBeacon来发送事件的话，chrome目前是不允许我们修改<code>Content-Type</code>的，所以后端的web框架可能就不会自动解析json body了，需要手动parse一下。</p>
+<h1 id="一个完整的demo"><a href="#一个完整的demo" class="headerlink" title="一个完整的demo"></a>一个完整的demo</h1><p>接下来让我们搭一个完整的demo来看看效果如何。</p>
+<p>先把<a href="https://github.com/Frezc/frontend-metrics-aggregation" target="_blank" rel="noopener">frontend-metrics-aggregation</a>通过<code>cargo run</code>跑起来。</p>
+<p>然后到<a href="https://github.com/Frezc/metrics-collector" target="_blank" rel="noopener">metrics-collector</a>里执行<code>npm run pkg</code>将<code>example</code>打包生成单个js。接着通过<a href="https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo" target="_blank" rel="noopener">tampermonkey</a>创建一个脚本，把前面生成的js替换进去。修改<code>@match</code>为想监控的网站，比如<code>http*://*/*</code>来监控所有站点。</p>
+<p>最后下载<a href="https://prometheus.io" target="_blank" rel="noopener">prometheus</a>，修改<code>prometheus.yml</code>，在最后一行的<code>targets</code>里添加一项<code>&#39;localhost:8080&#39;</code>，并执行<code>prometheus</code>即可。</p>
+<p>随便访问些网站，打开<a href="http://localhost:9090/graph，查询`histogram_quantile" target="_blank" rel="noopener">http://localhost:9090/graph，查询`histogram_quantile</a>(0.95, sum(rate(resource_duration_milliseconds_bucket[1h])) by (le))`就能查看到数据了。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="queryp95.png" alt="查询duration的P95" title>
+                </div>
+                <div class="image-caption">查询duration的P95</div>
+            </figure>
+<h1 id="一些问题"><a href="#一些问题" class="headerlink" title="一些问题"></a>一些问题</h1><p>使用资源的<code>name</code>作为label可能会导致high cardinality问题，导致查询变得很慢，你可以看到上面例子里查询一个小时的P95已经需要5秒了，此时<code>name</code>数量大概是4500。所以建议不要采集一些易变的、带参数的资源，比如下面在B站采集的一些图片。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="highcardinalityname.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/monitor/">monitor</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/prometheus/">prometheus</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端监控/">前端监控</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/&title=《使用Prometheus来监控前端指标》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/&title=《使用Prometheus来监控前端指标》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用Prometheus来监控前端指标》 — Code for fun&url=https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/08/03/prometheus-metrics/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">一篇文章带你理解和使用Prometheus的指标</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p style="display: none">
+    <span id="busuanzi_container_site_uv" style="display:none">
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style="display:none">
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/&title=《使用Prometheus来监控前端指标》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/&title=《使用Prometheus来监控前端指标》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用Prometheus来监控前端指标》 — Code for fun&url=https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2019/08/31/frontend-metrics-to-prometheus/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACvUlEQVR42u3aQW4jMQwEwP3/p7PXABtPuknJmwA1J8Mej1UKIDIk//yJr49P1+d3/r3n+buvnvP8/vPzD1x4eHh4i6W3i8if/+r1q2163r5kzXh4eHi3ebNlPT8637gkGCRBAg8PD+938ZIQ0ibNyabg4eHh/S7e83OKRYzScTw8PLz/y5slvnmRok27E+rhWgseHh7eZA2rA/qdr6/09/Dw8PDWXfW8RNs2+5MhgzYYfLFaPDw8vAu8/MDNE+5Z2bcd+SruxMPDw3s7bxYeNoXdvLUWFZTx8PDwjvKSttasGXZqEKH9A0R7hoeHh7fgtUf/pjyxb2vNiiZ4eHh4N3jJUX62VbYJKsd6fXh4eHhrXn6sty2uFpan18Poh4eHh7fmJcdufhAnC8pLt7MNraMKHh4eXszLj++2YJGEgc3Y1rBKjYeHh3eBlz/67LDU/lfq0QE8PDy8dRU0P6bbTdmMq7bFCDw8PLzbvDb9zUsMyUbkiXte9o32Bg8PD2/BSwoKeUk3b5i146cHhq7w8PDwjvLa9n9yfM+WeKqp9s3oAB4eHt6ClzelzmaqeXKcb8oX7+Ph4eFd4M1S3nw79uGkbZXVAwR4eHh4C97mJ2d35m2tvIyLh4eH9x5eW6KdLT0PHu0wVhFI8PDw8A7xkmN3NkSVw9pCcBFC8PDw8K7xZgdxPljQJtDHwgMeHh7eW3htCWBfFG55xQbh4eHhvZ2XLCUfC5ht4io84OHh4R3lfZRXMgQwKzpsvvXyUzw8PLwLvPzKm1vtUEKSIp9qm+Hh4eGd4uXBIC/s5m2qvKwwDAx4eHh413htDaMlJYf4LIJ904TDw8PD+wG8TZt/c/QPS894eHh4P4CXl1mT4JF8uirX4uHh4V3jbcoESRrdfndfGsbDw8O7x9v/w58kuLOybBJCDlx4eHh4Ke8vGa7kKUBkqlQAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
