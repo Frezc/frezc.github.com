@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+<!-- Baidu Push -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<!-- End Baidu Push -->
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <meta name="baidu-site-verification" content="bmvYqUCgMu">
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2019/11/01/principles-of-UI-performance-improvement/">
+    
+    
+    <title>UI性能优化的两大原则 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="react,performance">
+    <meta name="description" content="优化原则之前在内部转岗面试时被问了一个问题：能不能对react的性能优化做一个总结？当时我的回答是：用shouldComponentUpdate来减少更新、用key来标志列表内的元素、注意第三方库的优化（直接调用chart api来更新）等等。现在回想起来这些作为总结来说都过于细节，而且如果react后面改了没有这些api，如果是换了一套UI框架，那这些不就没用了？在做总结时还是应该有更高抽象的“">
+<meta name="keywords" content="react,performance">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UI性能优化的两大原则">
+<meta property="og:url" content="https://frezc.github.io/2019/11/01/principles-of-UI-performance-improvement/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="优化原则之前在内部转岗面试时被问了一个问题：能不能对react的性能优化做一个总结？当时我的回答是：用shouldComponentUpdate来减少更新、用key来标志列表内的元素、注意第三方库的优化（直接调用chart api来更新）等等。现在回想起来这些作为总结来说都过于细节，而且如果react后面改了没有这些api，如果是换了一套UI框架，那这些不就没用了？在做总结时还是应该有更高抽象的“">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-11-09T08:06:50.696Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UI性能优化的两大原则">
+<meta name="twitter:description" content="优化原则之前在内部转岗面试时被问了一个问题：能不能对react的性能优化做一个总结？当时我的回答是：用shouldComponentUpdate来减少更新、用key来标志列表内的元素、注意第三方库的优化（直接调用chart api来更新）等等。现在回想起来这些作为总结来说都过于细节，而且如果react后面改了没有这些api，如果是换了一套UI框架，那这些不就没用了？在做总结时还是应该有更高抽象的“">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">UI性能优化的两大原则</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">UI性能优化的两大原则</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-11-01T07:44:08.000Z" itemprop="datePublished" class="page-time">
+  2019-11-01
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#优化原则"><span class="post-toc-number">1.</span> <span class="post-toc-text">优化原则</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#更新范围的优化"><span class="post-toc-number">2.</span> <span class="post-toc-text">更新范围的优化</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#更新频率的优化"><span class="post-toc-number">3.</span> <span class="post-toc-text">更新频率的优化</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-principles-of-UI-performance-improvement" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">UI性能优化的两大原则</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-11-01 15:44:08" datetime="2019-11-01T07:44:08.000Z" itemprop="datePublished">2019-11-01</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+
+
+            
+<span style="display: none">
+    <span id="busuanzi_container_page_pv" title="文章总阅读量" style="display:none">
+        <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+    </span>
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="优化原则"><a href="#优化原则" class="headerlink" title="优化原则"></a>优化原则</h1><p>之前在内部转岗面试时被问了一个问题：能不能对react的性能优化做一个总结？当时我的回答是：用shouldComponentUpdate来减少更新、用key来标志列表内的元素、注意第三方库的优化（直接调用chart api来更新）等等。现在回想起来这些作为总结来说都过于细节，而且如果react后面改了没有这些api，如果是换了一套UI框架，那这些不就没用了？在做总结时还是应该有更高抽象的“原则”来进行引导，就像设计模式有这么多，但是用熟之后就会发现六大原则才是最重要的，应用原则来设计架构而不是死套模式。</p>
+<p>就我的经验来说，对于react或者说所有UI程序的性能优化也有一个原则，那就是从<strong>空间</strong>和<strong>时间</strong>上进行优化。听起来是不是有点像算法里常提的时间复杂度和空间复杂度，不过呢和它们完全没关系。这里只是一个好记的说法，真正指的是<strong>更新范围</strong>和<strong>更新频率</strong>。</p>
+<h1 id="更新范围的优化"><a href="#更新范围的优化" class="headerlink" title="更新范围的优化"></a>更新范围的优化</h1><p>还记得好几年前还没接触前端前学过一点怎么写windows窗口程序，里面提到的标记矩形来更新的机制让我映像深刻。简单来讲就是当你更新UI时，需要计算出包裹你更新部分的最小矩形，然后更新重绘这部分的内容。这就是很经典的<strong>更新范围</strong>的优化了。</p>
+<p>现在前端的开发虽然不能控制这么多，但也能利用前端的抽象来实现最小范围的更新。这里我就拿React举例：</p>
+<ol>
+<li>有个巨无霸组件传入的props改变了，但是修改真正只影响其中很小的一个子组件，这时候想优化性能就需要给子组件写<code>shouldComponentUpdate</code>或者使用<code>PureComponent</code>(or <code>React.memo</code>)，必要时还得使用<code>Immutable data</code>。</li>
+<li>有个很长的列表，我想确保更新数据只会影响对应项时就要给每项一个唯一的<strong>key</strong>以及上面的一些操作。</li>
+</ol>
+<p>上面是React里大家耳熟能详的优化了，这里的核心就是减少<strong>组件范围</strong>的更新。当然标题里的<strong>范围</strong>肯定不止如此，我们看看另一种场景：</p>
+<p>某个图表库需要将我们传入的数据根据配置计算处理成坐标系上的坐标，然后在绘制出响应的图形，并且在绘制好后允许我们将图表镜像、旋转和缩放，那么在进行这些操作时还需要重新计算坐标位置吗？出于性能考虑，当然是不需要了，这些操作只需要知道转化后的坐标点就行（甚至可以直接操作像素点）。这里也是一种更新范围的优化，如果需要什么命名的话可以称为<strong>逻辑范围</strong>吧。</p>
+<p>就这点来说应该还有很多不同的优化方案，和设计模式一样，不用一个个去记，心中自有原则在，解决方法不就手到擒来。</p>
+<h1 id="更新频率的优化"><a href="#更新频率的优化" class="headerlink" title="更新频率的优化"></a>更新频率的优化</h1><p>更新频率的优化可以分为亮点两点面分开来说。</p>
+<ol>
+<li><p>过于频繁的更新<br>在前端开发时，在<code>input</code>、<code>scroll</code>、<code>resize</code>等触发频繁的事件里更新UI是很常见的，但是如果直接监听这些事件来更新复杂UI肯定会有性能问题。通常的优化方案就是降低更新频率到用户能接受的水准，比如使用<code>throttle</code>或者<code>debounce</code>。</p>
+</li>
+<li><p>无用的更新<br>通常编码上的失误或者对边界值的考虑不足等原因会导致出现一些无用的更新，这种大多属于BUG，所以就不详谈了。</p>
+</li>
+</ol>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这篇文章里讲的优化方案其实也不算新鲜了，我希望的是通过这些例子来理解UI性能优化的一个原则，通过原则我们才能更有条理地解决性能这一棘手问题。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/performance/">performance</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2019/11/01/principles-of-UI-performance-improvement/&title=《UI性能优化的两大原则》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2019/11/01/principles-of-UI-performance-improvement/&title=《UI性能优化的两大原则》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2019/11/01/principles-of-UI-performance-improvement/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《UI性能优化的两大原则》 — Code for fun&url=https://frezc.github.io/2019/11/01/principles-of-UI-performance-improvement/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2019/11/01/principles-of-UI-performance-improvement/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/08/31/frontend-metrics-to-prometheus/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">使用Prometheus来监控前端指标</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p style="display: none">
+    <span id="busuanzi_container_site_uv" style="display:none">
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style="display:none">
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2019/11/01/principles-of-UI-performance-improvement/&title=《UI性能优化的两大原则》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2019/11/01/principles-of-UI-performance-improvement/&title=《UI性能优化的两大原则》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2019/11/01/principles-of-UI-performance-improvement/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《UI性能优化的两大原则》 — Code for fun&url=https://frezc.github.io/2019/11/01/principles-of-UI-performance-improvement/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2019/11/01/principles-of-UI-performance-improvement/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACv0lEQVR42u3aQW4bMRAEQP//08rVQKJV93AY+1B7MmRJZNEAOW7O11f8vL4931/JP/vue/J35iPWDx4eHt7B1P9+ksGeB37+VD7W82ffLhweHh7eNd7JtJ4HSA6D2RI8zxkPDw/v9/DyV2a17klBj4eHh/f7eUmxG01iVI7j4eHh/SwvCSPyaGBWiM9C3rWsBQ8PD6/77MIG/T9/vnK/h4eHh3d8qz67DHuObmdHznC2eHh4eBd4+YbbXt7Pyt+8BSGfJx4eHt4u76ThKbnE2mpKaMfCw8PDu83LS+E2xp1dmLXXY2/fj4eHh3eBlxfNszI3L6NnpXn9l8TDw8M75iWbeNuedWNnbmMLPDw8vNu89lJqFg3ksDzq/TA6Hh4e3gVeHjecTPpD2DqLaNvDCQ8PD2+Jl0cA7ULk8W7eklWHuXh4eHgXeOclb3KRthth1AuHh4eHt8qbNUidNA3ksfKsrP9H1oKHh4e3ymsv+GeTaxeojTmKkhoPDw9videWxfkrP7U0eHh4eLd5+WHQTiK/7mqbw4ryHQ8PD+8yr410ZxPKg91X8HxYMjw8PLxrvPyCqt3W87L7+duGv8XDw8Nb5eVxat4OlcTB58FuNCIeHh7eBd5JhNpenhWJ8uiI+tA6gIeHh7fKuxeh5hv6LBZZiE7w8PDwRrxZK8BsUz45WvKDoV51PDw8vGNeu33PotskUGhHKZqu8PDw8JZ4bfyaX6FtNSXU/wbg4eHhrfJe5TNrO8gbsNo4+MNv8fDw8C7w2q02KZHzUCMPKZJFWThJ8PDw8GJe22K19f42vGiLfjw8PLzbvLwsPmfvxhAfDgk8PDy8X8M7iSeevye/9CouwPDw8PB+lJcP0wYKJ00G2WUfHh4e3iYvL4XbDbqNIWYXbwtZCx4eHt6kUq3/4c/j2t1WgOVWLTw8PLyU9wfaYAMnzMzUjgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
