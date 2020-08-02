@@ -58,13 +58,6 @@
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2016/03/06/%E6%A0%87%E5%87%86%E5%8C%96React-Redux-%E7%BA%AF%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%EF%BC%9F/</loc>
-    
-    <lastmod>2020-08-02T14:56:16.104Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://frezc.github.io/2016/03/02/%E5%BC%80%E5%A7%8B%E4%BD%BF%E7%94%A8Redux/</loc>
     
     <lastmod>2020-08-02T14:56:16.104Z</lastmod>
@@ -72,14 +65,21 @@
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2016/02/19/%E5%9C%A8Android%E7%9A%84%E5%8E%9F%E7%94%9F%E6%A8%A1%E5%9D%97%E4%B8%AD%E5%BE%97%E5%88%B0RN%E7%BB%84%E4%BB%B6%E7%9A%84%E5%BC%95%E7%94%A8/</loc>
+    <loc>https://frezc.github.io/2016/03/06/%E6%A0%87%E5%87%86%E5%8C%96React-Redux-%E7%BA%AF%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%EF%BC%9F/</loc>
+    
+    <lastmod>2020-08-02T14:56:16.104Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2015/12/25/%E5%8A%A8%E7%94%BB%E7%9A%84%E6%8E%92%E8%A1%8C%E6%A6%9C-%E9%A1%B5%E9%9D%A2%E5%AE%9E%E7%8E%B0/</loc>
     
     <lastmod>2020-08-02T14:56:16.103Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2015/12/25/%E5%8A%A8%E7%94%BB%E7%9A%84%E6%8E%92%E8%A1%8C%E6%A6%9C-%E9%A1%B5%E9%9D%A2%E5%AE%9E%E7%8E%B0/</loc>
+    <loc>https://frezc.github.io/2016/02/19/%E5%9C%A8Android%E7%9A%84%E5%8E%9F%E7%94%9F%E6%A8%A1%E5%9D%97%E4%B8%AD%E5%BE%97%E5%88%B0RN%E7%BB%84%E4%BB%B6%E7%9A%84%E5%BC%95%E7%94%A8/</loc>
     
     <lastmod>2020-08-02T14:56:16.103Z</lastmod>
     
@@ -121,14 +121,14 @@
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2020/08/02/upgrade-typescript/</loc>
+    <loc>https://frezc.github.io/2019/05/16/typescript-react-hooks-quickstart/</loc>
     
     <lastmod>2020-08-02T14:56:16.096Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2019/05/16/typescript-react-hooks-quickstart/</loc>
+    <loc>https://frezc.github.io/2020/08/02/upgrade-typescript/</loc>
     
     <lastmod>2020-08-02T14:56:16.096Z</lastmod>
     
@@ -177,14 +177,14 @@
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2019/08/03/prometheus-metrics/</loc>
+    <loc>https://frezc.github.io/2019/11/01/principles-of-UI-performance-improvement/</loc>
     
     <lastmod>2020-08-02T14:56:16.088Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2019/11/01/principles-of-UI-performance-improvement/</loc>
+    <loc>https://frezc.github.io/2019/08/03/prometheus-metrics/</loc>
     
     <lastmod>2020-08-02T14:56:16.088Z</lastmod>
     
@@ -268,14 +268,14 @@
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2016/04/25/React%E7%9A%84%E6%B8%B2%E6%9F%93%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</loc>
+    <loc>https://frezc.github.io/2016/04/17/React%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93/</loc>
     
     <lastmod>2020-08-02T14:56:16.031Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2016/04/17/React%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%B8%B2%E6%9F%93/</loc>
+    <loc>https://frezc.github.io/2016/04/25/React%E7%9A%84%E6%B8%B2%E6%9F%93%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</loc>
     
     <lastmod>2020-08-02T14:56:16.031Z</lastmod>
     
