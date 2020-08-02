@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+<!-- Baidu Push -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<!-- End Baidu Push -->
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <meta name="baidu-site-verification" content="bmvYqUCgMu">
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2020/08/02/upgrade-typescript/">
+    
+    
+    <title>升级项目中的typescript | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="typescript">
+    <meta name="description" content="升级TS，听起来应该是件很简单的事，如果你的项目相对独立那确实稍微花点时间就做完了。但通常一个大型项目会将各个模块分给每个小的业务组，还有负责基础库的基架组，这时候想要单独升级业务模块的TS版本，就要考虑对上游和下游的影响了。 麻烦的问题就来了，TS并不遵守 Semantic Version，它除了bugfix以外的版本更新几乎都会带来Break Changes。这里的Break Changes可">
+<meta name="keywords" content="typescript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="升级项目中的typescript">
+<meta property="og:url" content="https://frezc.github.io/2020/08/02/upgrade-typescript/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="升级TS，听起来应该是件很简单的事，如果你的项目相对独立那确实稍微花点时间就做完了。但通常一个大型项目会将各个模块分给每个小的业务组，还有负责基础库的基架组，这时候想要单独升级业务模块的TS版本，就要考虑对上游和下游的影响了。 麻烦的问题就来了，TS并不遵守 Semantic Version，它除了bugfix以外的版本更新几乎都会带来Break Changes。这里的Break Changes可">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-08-02T14:56:16.096Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="升级项目中的typescript">
+<meta name="twitter:description" content="升级TS，听起来应该是件很简单的事，如果你的项目相对独立那确实稍微花点时间就做完了。但通常一个大型项目会将各个模块分给每个小的业务组，还有负责基础库的基架组，这时候想要单独升级业务模块的TS版本，就要考虑对上游和下游的影响了。 麻烦的问题就来了，TS并不遵守 Semantic Version，它除了bugfix以外的版本更新几乎都会带来Break Changes。这里的Break Changes可">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">升级项目中的typescript</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">升级项目中的typescript</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2020-08-02T06:09:44.000Z" itemprop="datePublished" class="page-time">
+  2020-08-02
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#低版本TS代码在高版本TS下的错误"><span class="post-toc-number">1.</span> <span class="post-toc-text">低版本TS代码在高版本TS下的错误</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#可能会遇到的问题"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">可能会遇到的问题</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#error-TS2300-Duplicate-identifier-‘IteratorResult’"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">error TS2300: Duplicate identifier ‘IteratorResult’.</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#范型不再默认为-类型，改为了unknown"><span class="post-toc-number">1.1.2.</span> <span class="post-toc-text">范型不再默认为{}类型，改为了unknown</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Property-‘wheelDelta’-does-not-exist-on-type-‘WheelEvent’"><span class="post-toc-number">1.1.3.</span> <span class="post-toc-text">Property ‘wheelDelta’ does not exist on type ‘WheelEvent’.</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#无法推断的类型从any变为unknown"><span class="post-toc-number">1.1.4.</span> <span class="post-toc-text">无法推断的类型从any变为unknown</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#TS2744-Type-parameter-defaults-can-only-reference-previously-declared-type-parameters"><span class="post-toc-number">1.1.5.</span> <span class="post-toc-text">TS2744: Type parameter defaults can only reference previously declared type parameters.</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Property-‘children’-does-not-exist-on-type-‘xxx’"><span class="post-toc-number">1.1.6.</span> <span class="post-toc-text">Property ‘children’ does not exist on type ‘xxx’</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#在3-3之后类继承时方法会应用逆变逻辑"><span class="post-toc-number">1.1.7.</span> <span class="post-toc-text">在3.3之后类继承时方法会应用逆变逻辑</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#高版本TS编译出来的d-ts类型定义在低版本TS下的报错"><span class="post-toc-number">2.</span> <span class="post-toc-text">高版本TS编译出来的d.ts类型定义在低版本TS下的报错</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#一些错误"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">一些错误</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#An-accessor-cannot-be-declared-in-an-ambient-context-ts-1086"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">An accessor cannot be declared in an ambient context.ts(1086)</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Cannot-find-name-‘readonly’"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">Cannot find name ‘readonly’</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#TS2315-Type-‘Generator’-is-not-generic"><span class="post-toc-number">2.1.3.</span> <span class="post-toc-text">TS2315: Type ‘Generator’ is not generic</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解决方法"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">解决方法</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-upgrade-typescript" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">升级项目中的typescript</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2020-08-02 14:09:44" datetime="2020-08-02T06:09:44.000Z" itemprop="datePublished">2020-08-02</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+
+
+            
+<span style="display: none">
+    <span id="busuanzi_container_page_pv" title="文章总阅读量" style="display:none">
+        <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+    </span>
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>升级TS，听起来应该是件很简单的事，如果你的项目相对独立那确实稍微花点时间就做完了。但通常一个大型项目会将各个模块分给每个小的业务组，还有负责基础库的基架组，这时候想要单独升级业务模块的TS版本，就要考虑对上游和下游的影响了。</p>
+<p>麻烦的问题就来了，TS并<strong>不遵守</strong> <code>Semantic Version</code>，它除了bugfix以外的版本更新几乎都会带来<code>Break Changes</code>。这里的<code>Break Changes</code>可能是两个方面的：</p>
+<ol>
+<li>低版本TS代码在高版本TS下编译会报错，也就是说升级业务模块时要考虑底层依赖的影响。</li>
+<li>高版本TS编译出来的<code>d.ts</code>类型定义在低版本TS下编译会报错，这时就得考虑怎么样升级TS后模块的编译生成的文件给上层应用使用时不会报错。</li>
+</ol>
+<p>这篇文章会对上面两个问题给出我的解决方案，另外由于这篇文章是我去年年底写的，所以只考虑到<code>TS3.0~3.7</code>遇到的问题。</p>
+<h1 id="低版本TS代码在高版本TS下的错误"><a href="#低版本TS代码在高版本TS下的错误" class="headerlink" title="低版本TS代码在高版本TS下的错误"></a>低版本TS代码在高版本TS下的错误</h1><p>这个问题很好解决，只要让代码在两个版本的TS下同时编译通过即可。当然这要求你去修复所有报错的依赖库，我建议有权限的话就自己做，因为这里的错误不会太多相比跨组协同的成本不值一提。</p>
+<p>下面我总结了一些我遇到的问题以及解决方法。</p>
+<h2 id="可能会遇到的问题"><a href="#可能会遇到的问题" class="headerlink" title="可能会遇到的问题"></a>可能会遇到的问题</h2><h3 id="error-TS2300-Duplicate-identifier-‘IteratorResult’"><a href="#error-TS2300-Duplicate-identifier-‘IteratorResult’" class="headerlink" title="error TS2300: Duplicate identifier ‘IteratorResult’."></a>error TS2300: Duplicate identifier ‘IteratorResult’.</h3><p>升级<code>@types/node</code>即可。</p>
+<h3 id="范型不再默认为-类型，改为了unknown"><a href="#范型不再默认为-类型，改为了unknown" class="headerlink" title="范型不再默认为{}类型，改为了unknown"></a>范型不再默认为<code>{}</code>类型，改为了<code>unknown</code></h3><p>在<strong>3.5</strong>以下的版本中范型变量的类型默认为<code>{}</code>，在<strong>3.5</strong>之后你必须显式地指定范型上界<code>T extends {}</code>或者通过<strong>type guard</strong>才能使参数为对象类型。<a href="https://devblogs.microsoft.com/typescript/announcing-typescript-3-5/#breaking-changes" target="_blank" rel="noopener">see detail</a></p>
+<pre><code class="ts">// error
+function foo&lt;T&gt;(a: T) {
+    return a.toString();
+}
+
+// pass
+function foo&lt;T extends {}&gt;(a: T) {
+    return a.toString();
+}
+
+// pass: use type guard
+function isObject(data: any): data is object {
+    return typeof data === &#39;object&#39; &amp;&amp; data != null;
+}
+
+function foo&lt;T&gt;(a: T) {
+    if (isObject(a)) {
+        return a.toString();
+    }
+}
+</code></pre>
+<h3 id="Property-‘wheelDelta’-does-not-exist-on-type-‘WheelEvent’"><a href="#Property-‘wheelDelta’-does-not-exist-on-type-‘WheelEvent’" class="headerlink" title="Property ‘wheelDelta’ does not exist on type ‘WheelEvent’."></a>Property ‘wheelDelta’ does not exist on type ‘WheelEvent’.</h3><p><a href="https://stackoverflow.com/questions/54258968/how-to-fix-property-wheeldelta-does-not-exist-on-type-wheelevent-while-u" target="_blank" rel="noopener">使用deltaY</a></p>
+<h3 id="无法推断的类型从any变为unknown"><a href="#无法推断的类型从any变为unknown" class="headerlink" title="无法推断的类型从any变为unknown"></a>无法推断的类型从any变为unknown</h3><p>之前在<code>new Set()</code>如果没有指定范型，则会默认给<code>any</code>，现在改为了<code>unknown</code>。在自定义的范型函数中也很容易出现这个问题，原来infer不出来的类型会给个<code>any</code>，现在都改为了<code>unknown</code>。</p>
+<pre><code class="ts">// set is Set&lt;unknown&gt; now
+const set = new Set();
+// error
+set.add(1);
+
+const set = new Set&lt;number&gt;();
+// pass
+set.add(1);
+</code></pre>
+<h3 id="TS2744-Type-parameter-defaults-can-only-reference-previously-declared-type-parameters"><a href="#TS2744-Type-parameter-defaults-can-only-reference-previously-declared-type-parameters" class="headerlink" title="TS2744: Type parameter defaults can only reference previously declared type parameters."></a>TS2744: Type parameter defaults can only reference previously declared type parameters.</h3><p>在ts3.3之后在范型的默认值里就只能引用该项之前的类型。</p>
+<pre><code class="ts">// error
+class A&lt;T = D, D = string&gt; {}
+// work
+class A&lt;D = string, T = D&gt; {}
+</code></pre>
+<h3 id="Property-‘children’-does-not-exist-on-type-‘xxx’"><a href="#Property-‘children’-does-not-exist-on-type-‘xxx’" class="headerlink" title="Property ‘children’ does not exist on type ‘xxx’"></a>Property ‘children’ does not exist on type ‘xxx’</h3><p>出现这个错误很可能这个React组件使用里函数的方式来声明（如下）</p>
+<pre><code class="ts">function MyCom(props: { href: string }) {
+    return &lt;a {...props} /&gt;;
+}
+</code></pre>
+<p>这样子声明的组件是不会给Props自动加上<code>{ children?: ReactNode }</code>的。在旧版本的ts里对children的检查不会很严格所以不会报错，但这个问题在新版本里就会显现。</p>
+<p>解决方法：</p>
+<ol>
+<li>使用<code>React.FC</code>或<code>React.SFC</code>来指定类型</li>
+<li>手动加上<code>children</code>类型。</li>
+</ol>
+<h3 id="在3-3之后类继承时方法会应用逆变逻辑"><a href="#在3-3之后类继承时方法会应用逆变逻辑" class="headerlink" title="在3.3之后类继承时方法会应用逆变逻辑"></a>在3.3之后类继承时方法会应用<strong>逆变</strong>逻辑</h3><p>比如下面的代码在3.3以上时会报错</p>
+<pre><code class="ts">interface A {
+    a: string;
+}
+
+interface B extends A {
+    b: number;
+}
+
+class CA {
+    static a: (a: A) =&gt; void;
+}
+
+class CB extends CA {
+    // 由于函数参数是逆变的这里会导致报错
+    static a: (a: B) =&gt; void;
+}
+</code></pre>
+<p>一般来说只要类型没写错是不会遇到什么问题，但是我们项目中使用了React组件继承的写法，加上<code>contextType</code>时就会暴露问题了。它的类型<code>React.Context</code>是个逆变的类型，但是<code>context</code>又是协变的，这样就很矛盾了。所以不建议继承组件的<code>Context</code>，当然组件继承和<code>Context</code>继承都没啥意义。要写还是得hack一下类型。</p>
+<pre><code class="ts">// class B extends A {}
+// a = new A()
+// b = new B()
+class A extends React.Component&lt;any&gt; {
+    // contextType交给react使用的，不会被我们用到，所以这里指定类型为any
+    static contextType: React.Context&lt;any&gt; = React.createContext(a);
+    context: A;
+}
+
+class B extends A {
+    static contextType = React.createContext(b);
+    context: B;
+}
+</code></pre>
+<h1 id="高版本TS编译出来的d-ts类型定义在低版本TS下的报错"><a href="#高版本TS编译出来的d-ts类型定义在低版本TS下的报错" class="headerlink" title="高版本TS编译出来的d.ts类型定义在低版本TS下的报错"></a>高版本TS编译出来的<code>d.ts</code>类型定义在低版本TS下的报错</h1><p>这部分错误不太多，就一个个来解决</p>
+<h2 id="一些错误"><a href="#一些错误" class="headerlink" title="一些错误"></a>一些错误</h2><h3 id="An-accessor-cannot-be-declared-in-an-ambient-context-ts-1086"><a href="#An-accessor-cannot-be-declared-in-an-ambient-context-ts-1086" class="headerlink" title="An accessor cannot be declared in an ambient context.ts(1086)"></a>An accessor cannot be declared in an ambient context.ts(1086)</h3><p><a href="mailto:ts@3.7" target="_blank" rel="noopener">ts@3.7</a>会在<code>.d.ts</code>里生成 <code>getter</code> 和 <code>setter</code>，ts@&lt;3.6会不能识别。</p>
+<p><a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#class-field-mitigations" target="_blank" rel="noopener">release note</a></p>
+<h3 id="Cannot-find-name-‘readonly’"><a href="#Cannot-find-name-‘readonly’" class="headerlink" title="Cannot find name ‘readonly’"></a>Cannot find name ‘readonly’</h3><p>3.4后会默认将函数参数类型的Readonly转为readonly关键字</p>
+<p><a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#improvements-for-readonlyarray-and-readonly-tuples" target="_blank" rel="noopener">release note</a></p>
+<h3 id="TS2315-Type-‘Generator’-is-not-generic"><a href="#TS2315-Type-‘Generator’-is-not-generic" class="headerlink" title="TS2315: Type ‘Generator’ is not generic"></a>TS2315: Type ‘Generator’ is not generic</h3><p><a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-6.html#stricter-generators" target="_blank" rel="noopener">3.6修改了Generator类型</a>，导致编译generator函数生成的类型在旧版本TS里会报错。</p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>为了避免引用方大规模更新ts，需要考虑兼容方案。上面第二个问题可以通过<a href="https://github.com/microsoft/TypeScript/issues/30662#issuecomment-478461078" target="_blank" rel="noopener">指定类型来解决</a>，第三个问题也一样，不过考虑到3.6以下<code>Generator</code>不能指定元素类型，可以使用<code>IterableIterator</code>作为返回类型。</p>
+<p>第一个问题的话目前没有兼容性方案。不过在<a href="mailto:ts@3.1" target="_blank" rel="noopener">ts@3.1</a>里支持了<a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-1.html#version-selection-with-typesversions" target="_blank" rel="noopener">根据ts版本来选择文件的功能</a>，这样我们只要通过<a href="https://github.com/sandersn/downlevel-dts" target="_blank" rel="noopener">这个工具</a>，就能打包出一个兼容低版本的<code>.d.ts</code>文件。（PS: downlevel-dts只支持兼容到3.4版本，3.4下对很常用的readonly array&amp;tuple是不支持的，我在自己的fork里加了这个支持，代码见<a href="https://github.com/sandersn/downlevel-dts/pull/28/files" target="_blank" rel="noopener">PR</a>）。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>上面只提到了二方包情况，对于社区维护三方包通常会跟随TS版本升级和做兼容的，出现问题先升一下版本。</p>
+<p>虽然写了很多兼容方法，但我在实际执行时还是向着<strong>推动整个组的项目升级TS</strong>做的，第二个问题其实可以不用考虑，所以我也不能保证像downlevel-dts不会有什么其他问题。我其实也非常建议推动整个组升级，虽然跨组沟通成本很高，但是能将收益与风险向着好的方向走。我会在下一篇文章里讲讲如何推动全组来升级TS。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/typescript/">typescript</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2020/08/02/upgrade-typescript/&title=《升级项目中的typescript》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2020/08/02/upgrade-typescript/&title=《升级项目中的typescript》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2020/08/02/upgrade-typescript/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《升级项目中的typescript》 — Code for fun&url=https://frezc.github.io/2020/08/02/upgrade-typescript/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2020/08/02/upgrade-typescript/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/11/01/principles-of-UI-performance-improvement/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">UI性能优化的两大原则</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p style="display: none">
+    <span id="busuanzi_container_site_uv" style="display:none">
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style="display:none">
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2020</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2020/08/02/upgrade-typescript/&title=《升级项目中的typescript》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2020/08/02/upgrade-typescript/&title=《升级项目中的typescript》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2020/08/02/upgrade-typescript/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《升级项目中的typescript》 — Code for fun&url=https://frezc.github.io/2020/08/02/upgrade-typescript/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2020/08/02/upgrade-typescript/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACLElEQVR42u3aS46DQAxFUfa/aVrqUUtpyH02RMF1GUVEFHUYWOXPtuFr/72Ofv+983r/9V/y7HbHJUOGjMcy9tMrZZCtcwbZmwwZMtZhpK9M73RWON+bDBkyZHRI6XFThgwZMu4IuJ1Qyz+ZDBkyZPAklofRNCUm770sF5chQ8YDGf3GwH2/P9rfkCFDxlcy9vAi69SK/q1dyZAhYzSDpJS1VgFhd5oHG8lrZciQMZTBA9y1IxcXDIrJkCFjNKPzAC+i9fFB4U+GDBmDGLV0sXb4I8fHWoCWIUPGOgwem3n6SgJuvxgnQ4aM2QxyHCRNglrJrI+XIUPGCow7yme1MQ4SiA/3I0OGjNGMWluRvKy2Wm1NGTJkrMZIz5VkwCItz/H7MmTIWIHRKXihElh4BOQja2+ycBkyZAxldCY1CJivEK8mQ4aMZRi86MYLbXyAgw9tvGkMyJAhYxyDvCw9xnVCZ20FGTJkrMbgw1sE3C+x3dISkCFDxqMY6VBFWhTjTQUexIN5DRkyZAxi1B7mhzl+EEw/kAwZMlZg1BLU2oZ4IE4LcDJkyJjN2MOLBNA0oKfh/p9/ZciQMZpRS1NJoExbofxdtTAtQ4aMpzNqLcwUkB4f40E0GTJkLMCobYgfFlvxnjQVZMiQISNMXFMMPwK+mRmRIUOGDLDR85fxViVpZF4ccGXIkPH1DBIoU3C8FdxGPQy4MmTIGMpIE8hasto/IHY+gQwZMh7L+AEyXGC+kTzEZQAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
