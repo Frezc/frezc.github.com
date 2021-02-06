@@ -183,6 +183,53 @@ ga('send', 'pageview');
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-fix-to-ts-type-only-import" class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2021-01-24 22:32:16" datetime="2021-01-24T14:32:16.000Z" itemprop="datePublished">2021-01-24</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2021/01/24/fix-to-ts-type-only-import/">讲讲如何实现自动转换ts的import和type-only import</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        又有半年没写文章了，趁着最近不那么忙先来水一篇。恰巧最近给typescript-eslint实现的支持decorator metadata的PR合掉了，那就拿这个写写吧。标题因为不知道怎么取，就拿最终实现的目标写上去了。
+背景先说说做这件事的背景吧。我们公司一小伙苦于项目里的循环依赖，写了个脚本来检测，但是检测归检测并没有给出好的解决方案。我看了下如果要从根本上解决（比如抽离公共依赖之类的方...
+    
+
+        <a href="/2021/01/24/fix-to-ts-type-only-import/" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/eslint/">eslint</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/typescript/">typescript</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-js-prototype" class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
@@ -248,7 +295,7 @@ Javascript里的类ES6为我们带来了定义类的keyword class，但这只不
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2020/08/02/upgrade-typescript/">升级项目中的typescript</a>
+      <a class="post-title-link" href="/2020/08/02/upgrade-typescript/">升级typescript以及如何跨组升级</a>
     </h3>
   
 
@@ -614,60 +661,12 @@ Javascript里的类ES6为我们带来了定义类的keyword class，但这只不
 
         </li>
     
-        <li class="post-list-item fade">
-            <article id="post-touhou-luna-nights-review" class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2019-04-09 23:13:55" datetime="2019-04-09T15:13:55.000Z" itemprop="datePublished">2019-04-09</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/REVIEW/">REVIEW</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2019/04/09/touhou-luna-nights-review/">《Touhou Luna Nights》—— 令人惊喜的东方同人游戏</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        最近感觉和人说话的次数少了很多，总觉得这样下去不行啊，表达能力日渐衰退，有话不说憋着也难受。想了想多写写文章也许能发泄一下，就建了这个REVIEW目录。平时玩完游戏、看完动画、看完书之类的，如果有什么X后感的话就会写一下吧。
-这次就讲讲清明放假期间玩通的这款《Touhou Luna Nights（东方月神夜）》，这个中文译名总觉得很中二呢。
-总体评价这款游戏我认为是中等偏上的一款独立游戏，就...
-    
-
-        <a href="/2019/04/09/touhou-luna-nights-review/" class="post-more waves-effect waves-button">
-            阅读全文…
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Touhou-Luna-Nights/">Touhou Luna Nights</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/东方/">东方</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/同人游戏/">同人游戏</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/独立游戏/">独立游戏</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
     </ul>
 
     
 <nav id="page-nav">
     <div class="inner">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">下一页</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">下一页</a>
     </div>
 </nav>
 
@@ -695,7 +694,7 @@ Javascript里的类ES6为我们带来了定义类的keyword class，但这只不
         </p>
     </div>
     <div class="bottom">
-        <p><span>Freeze Crow &copy; 2015 - 2020</span>
+        <p><span>Freeze Crow &copy; 2015 - 2021</span>
             <span>
                 
                 Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>

@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://frezc.github.io/2020/08/08/js-prototype/</loc>
+    <loc>https://frezc.github.io/2021/01/24/fix-to-ts-type-only-import/</loc>
     
-    <lastmod>2020-08-08T14:31:25.010Z</lastmod>
+    <lastmod>2021-02-06T14:37:53.310Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://frezc.github.io/2020/08/02/upgrade-typescript/</loc>
     
-    <lastmod>2020-08-02T14:24:35.752Z</lastmod>
+    <lastmod>2021-02-06T14:31:05.530Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://frezc.github.io/2020/08/08/js-prototype/</loc>
+    
+    <lastmod>2020-08-08T14:31:25.010Z</lastmod>
     
   </url>
   
@@ -93,6 +100,13 @@
   </url>
   
   <url>
+    <loc>https://frezc.github.io/2015/05/19/japan-anime-reflections/</loc>
+    
+    <lastmod>2019-04-09T15:39:54.154Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://frezc.github.io/2015/11/02/my-first-blog/</loc>
     
     <lastmod>2019-04-09T15:39:54.154Z</lastmod>
@@ -107,21 +121,14 @@
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2015/05/19/japan-anime-reflections/</loc>
-    
-    <lastmod>2019-04-09T15:39:54.154Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://frezc.github.io/2016/04/18/%E8%B0%88%E8%B0%884%E6%9C%88%E6%96%B0%E7%95%AA/</loc>
+    <loc>https://frezc.github.io/2019/03/30/osaka-travel/</loc>
     
     <lastmod>2019-04-09T15:39:54.105Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2019/03/30/osaka-travel/</loc>
+    <loc>https://frezc.github.io/2016/04/18/%E8%B0%88%E8%B0%884%E6%9C%88%E6%96%B0%E7%95%AA/</loc>
     
     <lastmod>2019-04-09T15:39:54.105Z</lastmod>
     
@@ -261,7 +268,7 @@
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/</loc>
+    <loc>https://frezc.github.io/2015/05/01/2015-05-01-hexo-share/</loc>
     
     <lastmod>2019-04-09T15:39:43.064Z</lastmod>
     
@@ -275,7 +282,7 @@
   </url>
   
   <url>
-    <loc>https://frezc.github.io/2015/05/01/2015-05-01-hexo-share/</loc>
+    <loc>https://frezc.github.io/2018/08/17/how-to-impletement-denpendency-injection-in-typescript/</loc>
     
     <lastmod>2019-04-09T15:39:43.064Z</lastmod>
     

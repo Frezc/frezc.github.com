@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+<!-- Baidu Push -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<!-- End Baidu Push -->
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <meta name="baidu-site-verification" content="bmvYqUCgMu">
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2021/01/24/fix-to-ts-type-only-import/">
+    
+    
+    <title>讲讲如何实现自动转换ts的import和type-only import | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="typescript,eslint">
+    <meta name="description" content="又有半年没写文章了，趁着最近不那么忙先来水一篇。恰巧最近给typescript-eslint实现的支持decorator metadata的PR合掉了，那就拿这个写写吧。标题因为不知道怎么取，就拿最终实现的目标写上去了。 背景先说说做这件事的背景吧。我们公司一小伙苦于项目里的循环依赖，写了个脚本来检测，但是检测归检测并没有给出好的解决方案。我看了下如果要从根本上解决（比如抽离公共依赖之类的方法）解">
+<meta name="keywords" content="typescript,eslint">
+<meta property="og:type" content="article">
+<meta property="og:title" content="讲讲如何实现自动转换ts的import和type-only import">
+<meta property="og:url" content="https://frezc.github.io/2021/01/24/fix-to-ts-type-only-import/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="又有半年没写文章了，趁着最近不那么忙先来水一篇。恰巧最近给typescript-eslint实现的支持decorator metadata的PR合掉了，那就拿这个写写吧。标题因为不知道怎么取，就拿最终实现的目标写上去了。 背景先说说做这件事的背景吧。我们公司一小伙苦于项目里的循环依赖，写了个脚本来检测，但是检测归检测并没有给出好的解决方案。我看了下如果要从根本上解决（比如抽离公共依赖之类的方法）解">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2021-02-06T14:37:53.310Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="讲讲如何实现自动转换ts的import和type-only import">
+<meta name="twitter:description" content="又有半年没写文章了，趁着最近不那么忙先来水一篇。恰巧最近给typescript-eslint实现的支持decorator metadata的PR合掉了，那就拿这个写写吧。标题因为不知道怎么取，就拿最终实现的目标写上去了。 背景先说说做这件事的背景吧。我们公司一小伙苦于项目里的循环依赖，写了个脚本来检测，但是检测归检测并没有给出好的解决方案。我看了下如果要从根本上解决（比如抽离公共依赖之类的方法）解">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">讲讲如何实现自动转换ts的import和type-only import</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">讲讲如何实现自动转换ts的import和type-only import</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2021-01-24T14:32:16.000Z" itemprop="datePublished" class="page-time">
+  2021-01-24
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#背景"><span class="post-toc-number">1.</span> <span class="post-toc-text">背景</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#consistent-type-imports规则"><span class="post-toc-number">2.</span> <span class="post-toc-text">consistent-type-imports规则</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#什么时候会输出decorator-metadata"><span class="post-toc-number">3.</span> <span class="post-toc-text">什么时候会输出decorator metadata</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#类的定义上"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">类的定义上</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#类的成员变量上"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">类的成员变量上</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#类的方法上"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">类的方法上</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#类的方法的参数上"><span class="post-toc-number">3.4.</span> <span class="post-toc-text">类的方法的参数上</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#如何给typescript-eslint修复"><span class="post-toc-number">4.</span> <span class="post-toc-text">如何给typescript-eslint修复</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-fix-to-ts-type-only-import" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">讲讲如何实现自动转换ts的import和type-only import</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2021-01-24 22:32:16" datetime="2021-01-24T14:32:16.000Z" itemprop="datePublished">2021-01-24</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+
+
+            
+<span style="display: none">
+    <span id="busuanzi_container_page_pv" title="文章总阅读量" style="display:none">
+        <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+    </span>
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>又有半年没写文章了，趁着最近不那么忙先来水一篇。恰巧最近给typescript-eslint实现的<a href="https://github.com/typescript-eslint/typescript-eslint/pull/2751" target="_blank" rel="noopener">支持decorator metadata的PR</a>合掉了，那就拿这个写写吧。标题因为不知道怎么取，就拿最终实现的目标写上去了。</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>先说说做这件事的背景吧。我们公司一小伙苦于项目里的循环依赖，写了个脚本来检测，但是检测归检测并没有给出好的解决方案。我看了下如果要从根本上解决（比如抽离公共依赖之类的方法）解决那肯定少不了一番重构，可是老代码谁也不敢轻举妄动啊。</p>
+<p>刚好上半年把整个组的typescript升级到3.8以上了，我就想3.8新增的<a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export" target="_blank" rel="noopener">Type-Only Imports</a>或许能解决一部分问题。纵观循环依赖的代码，大概有一半以上确实只依赖了类型，比如下面这种很常见的情况</p>
+<pre><code class="ts">// Container.ts
+import Element from &#39;./Element&#39;;
+export default class Container {
+  elements: Element[];
+}
+
+// Element.ts
+import Container from &#39;./Container&#39;;
+export default class Element {
+  context: Container;
+}
+</code></pre>
+<p>虽然有从代码上优化的解决方法（比如抽离接口等方法，本文就不说明了），最简单的方法就是改成<code>import type</code>，另外明显后者是可以用工具自动完成的。</p>
+<h2 id="consistent-type-imports规则"><a href="#consistent-type-imports规则" class="headerlink" title="consistent-type-imports规则"></a>consistent-type-imports规则</h2><p>因为这个优化明显可以通过单文件的代码分析来完成，现成的工具里第一个想到做这个的就是eslint了，于是找了找发现果然有现成的规则[<a href="https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/consistent-type-imports.md" target="_blank" rel="noopener">consistent-type-imports</a>]。这个规则可以通过配置将文件里只有类型引用的import变量改为import type。</p>
+<p>但是试了下这个规则后发现有个问题，会导致项目里的decorator拿不到metadata，一些依赖类型信息实现的功能就会失效。看了下原因是因为当tsconfig里<code>emitDecoratorMetadata === true</code>时，ts会将带有decorator的类里的成员变量类型、方法参数和返回类型输出到js里。比如下面将成员变量类型输出的情况，会在js里引用该类型，而当前规则无法判断这个情况，将原代码改为<code>import type</code>，这时实际输出的js里就拿不到这个<code>Type</code>了。</p>
+<pre><code class="ts">// input ts with emitDecoratorMetadata = true
+import Type from &#39;type&#39;;
+class A {
+    @deco
+    a?: Type;
+}
+
+// output js ignore some helper function
+import Type from &#39;type&#39;;
+class A {
+}
+__decorate([
+    deco,   
+    __metadata(&quot;design:type&quot;, typeof (_a = typeof Type !== &quot;undefined&quot; &amp;&amp; Type) === &quot;function&quot; ? _a : Object)
+], A.prototype, &quot;a&quot;, void 0);
+</code></pre>
+<h2 id="什么时候会输出decorator-metadata"><a href="#什么时候会输出decorator-metadata" class="headerlink" title="什么时候会输出decorator metadata"></a>什么时候会输出decorator metadata</h2><p>为了修复这个问题首先要看看ts在什么时候会输出<strong>decorator metadata</strong>。<br>首先能添加到metadata的类型一定只能是个存在对应类的直接类型，任何加工过的类型和type alias都会给你个Object，下面列了一些不能输出或者输出异常的情况。</p>
+<pre><code class="ts">type Type = T1;
+class A {
+    // 下面decorator全都省略...
+    a: T1 | T2; // 直接输出Object
+    b: Pick&lt;T1, &#39;key&#39;&gt;; // 同上
+    c: Type; // 会将 Type 输出，但是type alias会被抹去，所以这里并不能引用到T1
+    d: React[&#39;Component&#39;]; // 直接输出Object，使用 React.Component 可以正常输出
+    e: (a: string) =&gt; string; // 直接输出Object
+}
+</code></pre>
+<p>decorator通常会出现在4个地方：1. 类的定义上；2. 类的成员变量上；3. 类的方法上；4. 类的方法的参数上；这里以这种方式分开讨论。</p>
+<h3 id="类的定义上"><a href="#类的定义上" class="headerlink" title="类的定义上"></a>类的定义上</h3><p>当类的定义上存在decorator时，构造函数的所有参数类型都会输出metadata。</p>
+<pre><code class="ts">@deco
+class A {
+    // Type会被输出到metadata
+    constructor(t: Type) {}
+}
+</code></pre>
+<h3 id="类的成员变量上"><a href="#类的成员变量上" class="headerlink" title="类的成员变量上"></a>类的成员变量上</h3><p>当类的成员变量上存在decorator时，该变量的类型会输出metadata</p>
+<pre><code class="ts">class A {
+    @deco
+    field: Type; // Type会被输出到metadata
+}
+</code></pre>
+<h3 id="类的方法上"><a href="#类的方法上" class="headerlink" title="类的方法上"></a>类的方法上</h3><p>当类的方法上存在decorator时，该方法<strong>显式声明</strong>的参数类型和返回类型会输出到metadata。另外要注意的是这里指的方法不包括赋值给成员变量的函数。</p>
+<pre><code class="ts">class A {
+    @deco
+    foo(input: Type1): Type2 {} // Type1, Type2会被输出到metadata
+
+    @deco
+    foo = (input: Type1): Type2 =&gt; {}; // 这样子只会被当作普通的成员变量处理
+}
+</code></pre>
+<p>这里有一种特例就是 <strong>getter</strong> 和 <strong>setter</strong>，对于<strong>相同名称</strong>的accessor，只要给其中一个添加decorator就会输出相关类型的metadata，这个类型<strong>以setter参数类型优先</strong>。比如下面虽然只给getter加了decorator，却只使用了setter的参数类型Type2作为metadata。</p>
+<pre><code class="ts">// source
+class A {
+    @deco
+    get foo(): Type1 {}
+    set foo(v: Type2) {}
+}
+
+// output metadata
+__decorate([
+    deco,
+    __metadata(&quot;design:type&quot;, typeof (_b = typeof Type2 !== &quot;undefined&quot; &amp;&amp; Type2) === &quot;function&quot; ? _b : Object),
+    __metadata(&quot;design:paramtypes&quot;, [typeof (_c = typeof Type2 !== &quot;undefined&quot; &amp;&amp; Type2) === &quot;function&quot; ? _c : Object])
+], A.prototype, &quot;foo&quot;, null);
+</code></pre>
+<p>这里 <strong>getter</strong> 和 <strong>setter</strong> 的metadata会按照一定规则合并，一般标识符类型和非复杂的计算值都是支持的。</p>
+<pre><code class="ts">class A {
+    // 相同的普通key、字符串、数字字面量和变量可以合并
+    get a() {}
+    set [&#39;a&#39;](v: Type) {}
+
+    get [1]() {}
+    set [1](v: Type) {}
+
+    // const key = &#39;k&#39;;
+    get [key]() {}
+    set [key](v: Type) {}
+
+    // 其他类型和表达式不可以合并
+    get [true]() {}
+    set [true](v: Type) {}
+
+    get [&#39;a&#39; + &#39;b&#39;]() {}
+    set [&#39;a&#39; + &#39;b&#39;](v: Type) {}
+}
+</code></pre>
+<h3 id="类的方法的参数上"><a href="#类的方法的参数上" class="headerlink" title="类的方法的参数上"></a>类的方法的参数上</h3><p>当类的方法的参数上存在decorator时结果和类方法上有decorator差不多，参数类型和返回类型都会添加到metadata。比如下面两种情况结果是一样的</p>
+<pre><code class="ts">class A {
+    @deco
+    foo(input: Type1): Type2 {}
+
+    foo(@deco input: Type1): Type2 {}
+}
+</code></pre>
+<p>同样 <strong>setter</strong> 上的参数decorator也是个特例，结果是啥也不会输出。这时不仅metadata不会输出，连decorator的功能也不会生效。<a href="https://github.com/microsoft/TypeScript/issues/41354" target="_blank" rel="noopener">这大概是个TS的BUG</a>。所以下面这种情况需要特殊判断排除掉</p>
+<pre><code class="ts">class A {
+    set foo(@deco input: Type1): Type2 {}
+}
+</code></pre>
+<h2 id="如何给typescript-eslint修复"><a href="#如何给typescript-eslint修复" class="headerlink" title="如何给typescript-eslint修复"></a>如何给typescript-eslint修复</h2><p>整理完规则后就是看看如何修复了，具体的代码比较多就不详细说明了，就讲讲涉及的一些模块吧。这里可以直接从<a href="https://github.com/typescript-eslint/typescript-eslint/blob/3cb3aade2864bab15ed1ff8d7cd32766aa57152f/packages/eslint-plugin/src/rules/consistent-type-imports.ts#L1" target="_blank" rel="noopener">consistent-type-imports</a>这个规则的代码入手。</p>
+<p>在代码里可以看到创建规则是通过给<code>createRule</code> 传入几个用来描述规则的参数和承载主要逻辑的 <code>create</code> 函数来实现，<code>create</code>函数返回的是ast visitor，在这里可以实现当前规则所需要的visitor，最后在<code>Program:exit</code> 通过<code>context.report</code> 报告错误信息和修复函数。</p>
+<p>一开始我的想法就是直接在规则代码里通过AST分析判断类型是否会被decorator metadata引用到，拿到最终变量的引用是否全是类型和当前的import类型来判断错误以及修复。后来经过维护者提醒需要将部分判断逻辑实现在scope-manager里，这样对所有规则都是有用的，我也觉得很有道理。</p>
+<p>scope manager是eslint就有的一个概念，它会根据AST生成作用域以及内部的所有变量和引用，eslint-typescript则是重写以支持了TS的语法特性，比如可以通过变量上的<code>references</code><a href="https://github.com/typescript-eslint/typescript-eslint/blob/3cb3aade2864bab15ed1ff8d7cd32766aa57152f/packages/eslint-plugin/src/rules/consistent-type-imports.ts#L145-L149" target="_blank" rel="noopener">拿到所有的引用</a>然后通过<code>Reference</code>上的<code>isValueReference</code>和<code>isTypeReference</code>判断引用类型，在[consistent-type-import]里就可以通过这两点在访问<code>ImportDeclaration</code>时就能判断是否是正确的import类型。原先的BUG也主要就是scope manager在生成引用类型时没有考虑decorator metadata的影响，那么如何修复就很明显了，在scope manager里生成变量引用时将decorator metadata考虑进来。</p>
+<p>scope manager这块也是写各种ast visitor，每次进入新的scope时要 <code>scopeManager.nestForScope(node)</code> 一下，定义了变量时 <code>currentScope.defineIdentifier(...)</code>，引用了变量时 <code>currentScope.referenceValue</code> 或 <code>currentScope.referenceType</code>。因为这个需求只和类有关，同时为了方便隔离嵌套类的情况，就独立了一个<a href="https://github.com/typescript-eslint/typescript-eslint/blob/3cb3aade28/packages/scope-manager/src/referencer/ClassVisitor.ts#L1" target="_blank" rel="noopener"><code>ClassVisitor</code></a>，专门处理class scope的生成，不过好像因为独立的这个visitor没有漏了一些ast node的处理后面还导致了一些bug。。。</p>
+<p>总之虽然目前还有<a href="https://github.com/typescript-eslint/typescript-eslint/pull/2751#discussion_r559297950" target="_blank" rel="noopener">一个小问题</a>，但不妨碍使用，可以升到<a href="https://github.com/typescript-eslint/typescript-eslint/releases/tag/v4.14.2" target="_blank" rel="noopener">4.14.2</a>愉快使用了。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/eslint/">eslint</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/typescript/">typescript</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2021/01/24/fix-to-ts-type-only-import/&title=《讲讲如何实现自动转换ts的import和type-only import》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2021/01/24/fix-to-ts-type-only-import/&title=《讲讲如何实现自动转换ts的import和type-only import》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2021/01/24/fix-to-ts-type-only-import/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《讲讲如何实现自动转换ts的import和type-only import》 — Code for fun&url=https://frezc.github.io/2021/01/24/fix-to-ts-type-only-import/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2021/01/24/fix-to-ts-type-only-import/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2020/08/08/js-prototype/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">一文带你搞懂Javascript里的原型和继承</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p style="display: none">
+    <span id="busuanzi_container_site_uv" style="display:none">
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style="display:none">
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2021</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2021/01/24/fix-to-ts-type-only-import/&title=《讲讲如何实现自动转换ts的import和type-only import》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2021/01/24/fix-to-ts-type-only-import/&title=《讲讲如何实现自动转换ts的import和type-only import》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2021/01/24/fix-to-ts-type-only-import/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《讲讲如何实现自动转换ts的import和type-only import》 — Code for fun&url=https://frezc.github.io/2021/01/24/fix-to-ts-type-only-import/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2021/01/24/fix-to-ts-type-only-import/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACNUlEQVR42u3aS1LDQBAEUd//0uIARnJWjQwxrdTKC3ngDRFN/14v/Bxvz9k77++TM8/OufmRIUPGtozj8rlmnH0m55NrIr+bDBkynsMgAbQLymkA5VcjQ4YMGSSwXodInjh2QVyGDBkyro/j6eP1Cf/8f0OGDBlbMUgRyxkp9U9rcRkyZGzIWCksv/35K/MNGTJkbMU4woeHUR4iyZDgw5kyZMgYzeia/t1Qs2u3BYsaMmTIGM1YCaO8xOWJ5tKimAwZMsYxePIXt+nx8HJljHqa4cqQIWMcIx0PpEPKLhEMSl8ZMmSMZpCSMgWT4EsugvB++ZvIkCFjKKNrynflKx+UlrW4DBkyhjJI0FxJ8taHASgZlSFDxlDGepG50p9Pw3TZNZQhQ8bmjC6Z65a9+Lg0vSYZMmTMZnTp4A3tMIxZWraQIUPGCAZp+qc1MRkhpOVxkBrKkCFjNCMtaMmbfMCZjkLjwYAMGTK2ZaTJWRdM+WWVaaIMGTJGM7rQyWHpasUKT4YMGU9gkOFlN0LgoZxf3+nOiAwZMkYz0lYaL2u7IjYN1jJkyHgCgw8Lu9FmupARr47JkCFjKOMIHxJ2+ZpXuikRJIUyZMgYxFgZc3aTxG6pgpfEMmTImMpYCbLpyld3MkouZciQ8QAGL27TtO+uEz4gZciQIaMqYtNxwlIOK0OGDBlVi637WSTI3hBwZciQsSGDlJppqOXXkQ5EZciQ8TRGl3d1I0bedFv/lgwZMkYwfgDR5iLg/JxCSQAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
