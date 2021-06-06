@@ -183,6 +183,58 @@ ga('send', 'pageview');
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-dashboard-performance-optimization" class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2019-04-13 14:04:47" datetime="2019-04-13T06:04:47.000Z" itemprop="datePublished">2019-04-13</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2019/04/13/dashboard-performance-optimization/">看板性能优化实践</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        最近比较有空就打算把看板的性能优化做一下，打开项目用chrome的performance记录了一下一个组件比较多的看板。这个结果还是比较让人惊讶，原本以为性能瓶颈主要在图表（G2的性能堪忧），没想到看板本身的性能也如此糟糕。
+
+                
+                    
+                    
+                
+       ...
+    
+
+        <a href="/2019/04/13/dashboard-performance-optimization/" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dashboard/">dashboard</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/frontend/">frontend</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-grid-layout/">react-grid-layout</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-touhou-luna-nights-review" class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
@@ -597,54 +649,6 @@ scaledDecimals指的则是单位转换过后的保留小数位，比如kbn转换
     <div class="post-footer">
         
 	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react-native/">react native</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/widgets/">widgets</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-React的渲染性能优化" class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2016-04-25 01:20:00" datetime="2016-04-24T17:20:00.000Z" itemprop="datePublished">2016-04-25</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2016/04/25/React的渲染性能优化/">React的渲染性能优化</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        都说网页的性能瓶颈在DOM操作，所以目前的主流前端框架（React、 Vue、AngularJs等）都在极力地减少DOM操作。
-就React而言，使用Virtual DOM和一个diff算法（实际就是使用一个uid来判断）来尽可能的重用现有的DOM，以此来减少DOM操作（毕竟添加比更新要耗时）。
-但是在一些需要高帧数刷新的组件里，即使是Virtual DOM的re-render也会显得十分耗时，那么我们看看怎么进行优化。
-    
-
-        <a href="/2016/04/25/React的渲染性能优化/" class="post-more waves-effect waves-button">
-            阅读全文…
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/performance/">performance</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/react/">react</a></li></ul>
 
     </div>
     
