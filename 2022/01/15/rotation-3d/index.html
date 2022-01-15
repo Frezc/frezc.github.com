@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+<!-- Baidu Push -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<!-- End Baidu Push -->
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <meta name="baidu-site-verification" content="bmvYqUCgMu">
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2022/01/15/rotation-3d/">
+    
+    
+    <title>三维旋转没那么复杂 | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="欧拉角,旋转矩阵,轴角旋转,四元数,三维旋转">
+    <meta name="description" content="前段时间看了一些网上关于三维旋转的文章和内容，发现很多人都会从欧拉角讲到四元数，洋洋洒洒讲了很多概念，看完后还是很难建立起清晰的认知以及如何正确使用。所以我就打算来写这么一篇文章，从程序开发的角度（其他领域可能对旋转的认识有所不同）把常见的4种表达方式（欧拉角、矩阵、轴角旋转、四元数）理一下。 表达方式的不同类型首先我们这里定义两种表达方式的类型：几何表达和数学表达（名字瞎起的）。 几何表达几何表">
+<meta name="keywords" content="欧拉角,旋转矩阵,轴角旋转,四元数,三维旋转">
+<meta property="og:type" content="article">
+<meta property="og:title" content="三维旋转没那么复杂">
+<meta property="og:url" content="https://frezc.github.io/2022/01/15/rotation-3d/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="前段时间看了一些网上关于三维旋转的文章和内容，发现很多人都会从欧拉角讲到四元数，洋洋洒洒讲了很多概念，看完后还是很难建立起清晰的认知以及如何正确使用。所以我就打算来写这么一篇文章，从程序开发的角度（其他领域可能对旋转的认识有所不同）把常见的4种表达方式（欧拉角、矩阵、轴角旋转、四元数）理一下。 表达方式的不同类型首先我们这里定义两种表达方式的类型：几何表达和数学表达（名字瞎起的）。 几何表达几何表">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://frezc.github.io/2022/01/15/rotation-3d/blender-rotation.png">
+<meta property="og:image" content="https://frezc.github.io/2022/01/15/rotation-3d/blender-rotation-panel.png">
+<meta property="og:image" content="https://frezc.github.io/2022/01/15/rotation-3d/gimballock.gif">
+<meta property="og:updated_time" content="2022-01-15T15:35:21.800Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="三维旋转没那么复杂">
+<meta name="twitter:description" content="前段时间看了一些网上关于三维旋转的文章和内容，发现很多人都会从欧拉角讲到四元数，洋洋洒洒讲了很多概念，看完后还是很难建立起清晰的认知以及如何正确使用。所以我就打算来写这么一篇文章，从程序开发的角度（其他领域可能对旋转的认识有所不同）把常见的4种表达方式（欧拉角、矩阵、轴角旋转、四元数）理一下。 表达方式的不同类型首先我们这里定义两种表达方式的类型：几何表达和数学表达（名字瞎起的）。 几何表达几何表">
+<meta name="twitter:image" content="https://frezc.github.io/2022/01/15/rotation-3d/blender-rotation.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">三维旋转没那么复杂</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">三维旋转没那么复杂</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2022-01-15T12:07:05.000Z" itemprop="datePublished" class="page-time">
+  2022-01-15
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#表达方式的不同类型"><span class="post-toc-number">1.</span> <span class="post-toc-text">表达方式的不同类型</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#几何表达"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">几何表达</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#数学表达"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">数学表达</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#实际应用"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">实际应用</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#欧拉角与万向节死锁"><span class="post-toc-number">2.</span> <span class="post-toc-text">欧拉角与万向节死锁</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#万向节死锁的原因"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">万向节死锁的原因</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#万向节死锁的影响"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">万向节死锁的影响</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#为什么需要四元数？"><span class="post-toc-number">3.</span> <span class="post-toc-text">为什么需要四元数？</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#四元数基础"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">四元数基础</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#与矩阵对比"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">与矩阵对比</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Reference"><span class="post-toc-number">4.</span> <span class="post-toc-text">Reference</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-rotation-3d" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">三维旋转没那么复杂</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2022-01-15 20:07:05" datetime="2022-01-15T12:07:05.000Z" itemprop="datePublished">2022-01-15</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+
+
+            
+<span style="display: none">
+    <span id="busuanzi_container_page_pv" title="文章总阅读量">
+        <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+    </span>
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>前段时间看了一些网上关于三维旋转的文章和内容，发现很多人都会从欧拉角讲到四元数，洋洋洒洒讲了很多概念，看完后还是很难建立起清晰的认知以及如何正确使用。所以我就打算来写这么一篇文章，从程序开发的角度（其他领域可能对旋转的认识有所不同）把常见的4种表达方式（<strong>欧拉角</strong>、<strong>矩阵</strong>、<strong>轴角旋转</strong>、<strong>四元数</strong>）理一下。</p>
+<h2 id="表达方式的不同类型"><a href="#表达方式的不同类型" class="headerlink" title="表达方式的不同类型"></a>表达方式的不同类型</h2><p>首先我们这里定义两种表达方式的类型：<strong>几何表达</strong>和<strong>数学表达</strong>（名字瞎起的）。</p>
+<h3 id="几何表达"><a href="#几何表达" class="headerlink" title="几何表达"></a>几何表达</h3><p>几何表达指的是通过这个表达方式可以立马在大脑里想象出来是如何旋转的，很明显上面4种表达方式中只有欧拉角和轴角旋转可以立马想象出旋转。</p>
+<p><code>R(Euler): x=45°, y=45°, z=45°, order=xyz</code> 表达的就是先绕x轴转45度，然后绕y转45度，最后绕z转45°可以得到结果。</p>
+<p><code>R(Axis-angle): axis=(0, 0, 1), angle=45°</code> 表达的就是绕(0, 0, 1)这个轴旋转45度</p>
+<p>几何表达很直观，但是计算多个角度的组合是十分常见的场景，用这种方式计算十分麻烦，你可以尝试用几何知识计算一下一个物体绕 <code>axis=(0,0,1),angle=45°</code> 和 <code>axis(1,0,0),angle=45°</code> 旋转后结果如何使用轴角的方式表示。</p>
+<h3 id="数学表达"><a href="#数学表达" class="headerlink" title="数学表达"></a>数学表达</h3><p>数学表达不像几何表达那么直观，但是这种表达方式在计算多个角度组合时十分方便</p>
+<p>比如上面提到的<code>axis=(0,0,1),angle=45°</code>对应的矩阵<code>M(R1)</code>长这样</p>
+<p>$$\begin{bmatrix}0.9996242168594817 &amp; -0.027412133592044294 &amp; 0 \\ 0.027412133592044294 &amp; 0.9996242168594817 &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix}$$</p>
+<p><code>axis(1,0,0),angle=45°</code>对应的矩阵<code>M(R2)</code>长这样</p>
+<p>$$\begin{bmatrix}1 &amp;0&amp;0 \\ 0&amp;0.9996242168594817&amp;-0.027412133592044294 \\ 0&amp;0.027412133592044294&amp;0.9996242168594817 \end{bmatrix}$$</p>
+<p>然后要计算这两个旋转的组合直接通过矩阵乘法即可 <code>M(R2) x M(R1)</code>（矩阵从右到左应用，先进行的旋转在右侧）。</p>
+<p>四元数有点像矩阵，应用以及组合都是通过四元数乘法，左乘右乘的性质和矩阵一样，具体会在下文介绍。</p>
+<h3 id="实际应用"><a href="#实际应用" class="headerlink" title="实际应用"></a>实际应用</h3><p>接下来看看这两种表达方式在实际的应用中是怎么分工的。<br>假设我们需要实现一个三维旋转控件，用户可以通过拖拽来对模型进行旋转，类似下图显示的blender里的旋转控件，拖红色圈使物体绕X轴旋转，绿色Y轴，蓝色Z轴（注意这里的轴都是全局坐标系）。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="blender-rotation.png" alt="blender的旋转组件" title>
+                </div>
+                <div class="image-caption">blender的旋转组件</div>
+            </figure>
+<p>这里的流程本质就是用户输入 <strong>几何表达</strong>（轴角旋转），然后在程序内部将其转换为 <strong>数学表达</strong>，并将其与之前的旋转合并 <code>R(输入旋转) x R(当前旋转)</code>，最后转化为变换矩阵来渲染模型。</p>
+<p>另外在blender右侧会显示当前模型的旋转信息，这里就是将 <strong>数学表达</strong> 转换为 <strong>几何表达</strong> 显示给用户了。（这里直接显示四元数可能是有什么特殊目的，因为Axis Angle和四元数之间是可以直接转换的）</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="blender-rotation-panel.png" alt="blender右侧栏的旋转" title>
+                </div>
+                <div class="image-caption">blender右侧栏的旋转</div>
+            </figure>
+<p>可以说 <strong>几何表达</strong> 是更接近 <strong>交互</strong> 的方式，而 <strong>数学表达</strong> 则是更偏向 <strong>计算</strong> 的方式。</p>
+<h2 id="欧拉角与万向节死锁"><a href="#欧拉角与万向节死锁" class="headerlink" title="欧拉角与万向节死锁"></a>欧拉角与万向节死锁</h2><p>提到欧拉角大家一定会提起的是万向节死锁，然后再提到四元数。（已经成为固定思维了）<br>关于四元数下面一节再提，先谈谈万向节死锁的问题，这个问题的原因是什么？会带来什么影响？</p>
+<h3 id="万向节死锁的原因"><a href="#万向节死锁的原因" class="headerlink" title="万向节死锁的原因"></a>万向节死锁的原因</h3><p>解释万向节死锁时很多人喜欢带上这种图</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="gimballock.gif" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>我一直认为这种图很难理解，主要是因为很难把欧拉角与其对应，我更建议看一下<a href="https://krasjet.github.io/quaternion/bonus_gimbal_lock.pdf" target="_blank" rel="noopener">这篇基于公式的解释</a>。</p>
+<p>一句话解释就是，假设欧拉角以XYZ的顺序旋转，当Y的旋转使旋转后的Z与旋转前的X重合时，那么就产生了万向节死锁，此时XZ轴本质是对全局坐标系下同一个轴的旋转。</p>
+<h3 id="万向节死锁的影响"><a href="#万向节死锁的影响" class="headerlink" title="万向节死锁的影响"></a>万向节死锁的影响</h3><p>那么丢失一个自由度会带来什么实际问题呢？<br>这个鲜有文章提及，我这里就提一点我遇到的吧。<br>当用户在输入<code>R(Euler): x=0°, y=90°, z=45°, order=xyz</code>这么一个欧拉角后，在程序内部转换为 <strong>数学表达</strong> 后再转回欧拉角就会遇到问题了。很明显这是存在万向节死锁的一个欧拉角，所有 <code>x + z == 45°</code>的旋转都是相等的，在转回来时是无法还原原来的角度的。</p>
+<h2 id="为什么需要四元数？"><a href="#为什么需要四元数？" class="headerlink" title="为什么需要四元数？"></a>为什么需要四元数？</h2><p>我一直不太理解四元数为什么总会和欧拉角一起被提及，首先他们是不同类型的表达，不应被相提并论。我认为正确的说法应是欧拉角存在万向节死锁的问题，需要使用<strong>轴角旋转</strong>来解决，而四元数则是轴角旋转的数学表达方式。</p>
+<h3 id="四元数基础"><a href="#四元数基础" class="headerlink" title="四元数基础"></a>四元数基础</h3><p>三言两语也解释的不是很清楚，建议有空看下<a href="https://krasjet.github.io/quaternion/quaternion.pdf" target="_blank" rel="noopener">这篇文章</a>。</p>
+<h3 id="与矩阵对比"><a href="#与矩阵对比" class="headerlink" title="与矩阵对比"></a>与矩阵对比</h3><p>轴角旋转能转换为矩阵和四元数，那么如何选择使用哪种方式呢？</p>
+<p>单纯的旋转计算上四元数会有一定的性能优势，但是如果涉及其他变换（偏移、缩放等）还是矩阵会快一点，看实际的使用场景选择吧。</p>
+<p>另外四元数有个独特的特性就是插值计算很方便，目前旋转的插值实现基本都会使用四元数进行插值，所以如果是用于旋转动画的数据建议直接使用四元数，否则还有转换的成本。</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a href="https://krasjet.github.io/quaternion/quaternion.pdf" target="_blank" rel="noopener">https://krasjet.github.io/quaternion/quaternion.pdf</a> （非常推荐）</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/三维旋转/">三维旋转</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/四元数/">四元数</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/旋转矩阵/">旋转矩阵</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/欧拉角/">欧拉角</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/轴角旋转/">轴角旋转</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2022/01/15/rotation-3d/&title=《三维旋转没那么复杂》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2022/01/15/rotation-3d/&title=《三维旋转没那么复杂》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2022/01/15/rotation-3d/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《三维旋转没那么复杂》 — Code for fun&url=https://frezc.github.io/2022/01/15/rotation-3d/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2022/01/15/rotation-3d/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2021/06/06/maximum-performance-of-a-team/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">LeetCode #1383 Maximum Performance of a Team</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p style="display: none">
+    <span id="busuanzi_container_site_uv">
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv">
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2022</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2022/01/15/rotation-3d/&title=《三维旋转没那么复杂》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2022/01/15/rotation-3d/&title=《三维旋转没那么复杂》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2022/01/15/rotation-3d/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《三维旋转没那么复杂》 — Code for fun&url=https://frezc.github.io/2022/01/15/rotation-3d/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2022/01/15/rotation-3d/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACHUlEQVR42u3aQY7jIBAF0L7/pT1Sr2bUHc//QCIZHqsotgzPkSpVBV9f8bi+R3vn9df4+c3Pq+1c9cDAwHgs47od9wt6NfH91WT2fG0YGBjnMMZCZ37/DCP6A8DAwMCIg2CS8LV3YmBgYLSM+6W0i8PAwMDIGXmK1rbe8mV9qBbHwMB4IGOs3f+Zz2/c38DAwHgI4ypHEkznw2K9KgwMjK0ZSVo2dqphZqugTTcxMDD2Zrxj0TPbnO3mwT//GxgYGJsyksnaVv7MoY32gBoGBsYJjPYIRZJpJpuaMyXxL8/BwMA4kjFTE7eMBcEdAwNja0ZCakNn/lLmi+Hil8HAwHgsYyYU5vcnJWteDL9MDTEwMA5j5OXrfEJ5/4RkdgwMjBMY+ZbhWOt/5iBFFKAxMDC2ZgyeI1vU7r9PLse2JTAwMPZjrH1o24DLk8LosAUGBsbWjLGA2wbftoWXv0QMDIy9GcmGZX5/24xr5/3P7BgYGFszZsrOlve+zxgYGLsy2iJ2/oBF3tDPN1MxMDBOY6xa0KoCOEo0MTAwtmbk07eA+Rbe4iIWAwPjsYyrHHlqOL8JWoR7DAyMrRltmJu/uuo1DQZuDAyMxzLyR7dF78zS6y0KDAyMAxhJoGxTwDHGYOjHwMDAiEPkWIDO73/5DQYGBsZQ86s4MDEUdjEwME5jvK+Ibbt9eVqJgYFxDmPtxsCq4xRj6SMGBsZ2jD//wtYseneXfAAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

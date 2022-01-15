@@ -60,7 +60,7 @@ ga('send', 'pageview');
 <meta property="og:site_name" content="Code for fun">
 <meta property="og:description" content="在昨天的leetcode challenge上碰到这道题，写完后感觉是道很不错的题目，就想按自己的理解写一下解题思路。另外官方的Solution写得已经很好了，建议英语不错的小伙伴看看。 题目给长度为 n 的两个数组 speed 和 efficiency ，两个数组里的第 i 个数字分别代表第 i 位工程师的速度和效率，现在要重中挑选最多 k 名工程师，要求有最大产出。 产出的定义为 所有工程师的">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-06-06T18:58:58.664Z">
+<meta property="og:updated_time" content="2021-06-09T17:15:15.691Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LeetCode #1383 Maximum Performance of a Team">
 <meta name="twitter:description" content="在昨天的leetcode challenge上碰到这道题，写完后感觉是道很不错的题目，就想按自己的理解写一下解题思路。另外官方的Solution写得已经很好了，建议英语不错的小伙伴看看。 题目给长度为 n 的两个数组 speed 和 efficiency ，两个数组里的第 i 个数字分别代表第 i 位工程师的速度和效率，现在要重中挑选最多 k 名工程师，要求有最大产出。 产出的定义为 所有工程师的">
@@ -210,7 +210,7 @@ ga('send', 'pageview');
 
             
 <span style="display: none">
-    <span id="busuanzi_container_page_pv" title="文章总阅读量" style="display:none">
+    <span id="busuanzi_container_page_pv" title="文章总阅读量">
         <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
     </span>
 </span>
@@ -242,7 +242,7 @@ ga('send', 'pageview');
 <h2 id="小顶堆"><a href="#小顶堆" class="headerlink" title="小顶堆"></a>小顶堆</h2><p>我们可以回过头来看看贪心算法带来了什么好处，其实就是我第一句所提到的，原来的方法是需要维护一个有序数组的，但是贪心不需要，它只需要每次能找到组成速度中的<strong>最小值</strong>即可。这不禁让人联想到某种排序算法，它也是需要在每次迭代找到数组中最小/最大的元素，没错，那就是选择排序…………的某个变种 —— 堆排序。</p>
 <p>我们知道堆排序的时间复杂度是<code>O(nlogn)</code>，很明显堆排序单次找到最大/最小值的时间复杂度就是<code>O(logn)</code>，目的和时间都符合我们的需求，何不直接拿来用呢？</p>
 <p>因为我们这里的目的是找到最小值，所以会采用小顶堆的方式，而且堆都是从头开始构建，所以也不需要实现从现成数组构建的逻辑，只需要实现单次插入（上浮）和拿走顶部元素（下沉）的逻辑即可。这个是很基础的问题了，可以自行查阅。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这道题比较考验对算法的理解程度，有一定难度的，不过不失为一道不错的题，所以就想写下来分享了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这道题比较考验对算法的理解程度，有一定难度的，不过不失为一道不错的题，所以就想写下来分享了。<a href="https://github.com/Frezc/leetcode-solutions/blob/master/leetcode-challenge/2021-06/Maximum-Performance-of-a-Team.ts" target="_blank" rel="noopener">我的AC代码</a></p>
 
         </div>
 
@@ -316,7 +316,14 @@ ga('send', 'pageview');
     </div>
 
     
-<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2022/01/15/rotation-3d/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">三维旋转没那么复杂</h4>
+      </a>
+    </div>
   
 
   
@@ -371,10 +378,10 @@ ga('send', 'pageview');
     <div class="top">
         
 <p style="display: none">
-    <span id="busuanzi_container_site_uv" style="display:none">
+    <span id="busuanzi_container_site_uv">
         站点总访客数：<span id="busuanzi_value_site_uv"></span>
     </span>
-    <span id="busuanzi_container_site_pv" style="display:none">
+    <span id="busuanzi_container_site_pv">
         站点总访问量：<span id="busuanzi_value_site_pv"></span>
     </span>
 </p>
@@ -388,7 +395,7 @@ ga('send', 'pageview');
         </p>
     </div>
     <div class="bottom">
-        <p><span>Freeze Crow &copy; 2015 - 2021</span>
+        <p><span>Freeze Crow &copy; 2015 - 2022</span>
             <span>
                 
                 Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
@@ -487,6 +494,27 @@ var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
 <script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
 
 
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
 
 
