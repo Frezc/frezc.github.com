@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-109126373-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+
+
+<!-- Baidu Push -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<!-- End Baidu Push -->
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <meta name="baidu-site-verification" content="bmvYqUCgMu">
+    
+    
+    <link rel="canonical" href="https://frezc.github.io/2022/05/29/ts-type-system-programming/">
+    
+    
+    <title>如何用TS的类型系统进行编程（TS类型体操入门） | Code for fun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="typscript,type system">
+    <meta name="description" content="关于TS的类型系统写了这么久的ts才了解到它的类型系统是图灵完备的，可以被拿来编程，网上称其为“类型体操（type gymnastics）”。这个词很有意思，虽然没有考据过来源，但是猜想这种编程和体操的性质很像——能锻炼技能但不实用。下文呢也是我接触学习后的一点总结，尽量从浅入深带大家了解一下。 TS由enhanced js + type system（类型系统）组成，其中编译后在.d.ts文件内">
+<meta name="keywords" content="typscript,type system">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何用TS的类型系统进行编程（TS类型体操入门）">
+<meta property="og:url" content="https://frezc.github.io/2022/05/29/ts-type-system-programming/index.html">
+<meta property="og:site_name" content="Code for fun">
+<meta property="og:description" content="关于TS的类型系统写了这么久的ts才了解到它的类型系统是图灵完备的，可以被拿来编程，网上称其为“类型体操（type gymnastics）”。这个词很有意思，虽然没有考据过来源，但是猜想这种编程和体操的性质很像——能锻炼技能但不实用。下文呢也是我接触学习后的一点总结，尽量从浅入深带大家了解一下。 TS由enhanced js + type system（类型系统）组成，其中编译后在.d.ts文件内">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://frezc.github.io/2022/05/29/ts-type-system-programming/get-output.png">
+<meta property="og:updated_time" content="2022-06-05T08:24:35.771Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何用TS的类型系统进行编程（TS类型体操入门）">
+<meta name="twitter:description" content="关于TS的类型系统写了这么久的ts才了解到它的类型系统是图灵完备的，可以被拿来编程，网上称其为“类型体操（type gymnastics）”。这个词很有意思，虽然没有考据过来源，但是猜想这种编程和体操的性质很像——能锻炼技能但不实用。下文呢也是我接触学习后的一点总结，尽量从浅入深带大家了解一下。 TS由enhanced js + type system（类型系统）组成，其中编译后在.d.ts文件内">
+<meta name="twitter:image" content="https://frezc.github.io/2022/05/29/ts-type-system-programming/get-output.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Code for fun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/images/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Freeze Crow</h5>
+          <a href="mailto:frezcw@gmail.com" title="frezcw@gmail.com" class="mail">frezcw@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories">
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/Frezc" target="_blank">
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">如何用TS的类型系统进行编程（TS类型体操入门）</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">如何用TS的类型系统进行编程（TS类型体操入门）</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2022-05-29T05:51:52.000Z" itemprop="datePublished" class="page-time">
+  2022-05-29
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#关于TS的类型系统"><span class="post-toc-number">1.</span> <span class="post-toc-text">关于TS的类型系统</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#将会用到的TS类型语法"><span class="post-toc-number">2.</span> <span class="post-toc-text">将会用到的TS类型语法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#泛型"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">泛型</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#定义了泛型的函数"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">定义了泛型的函数</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#定义了泛型的类型别名-Type-alias"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">定义了泛型的类型别名(Type alias)</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#元组与字符串模板类型"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">元组与字符串模板类型</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#元组-Tuple"><span class="post-toc-number">2.2.1.</span> <span class="post-toc-text">元组(Tuple)</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#字符串模板-Template-Literal-Types"><span class="post-toc-number">2.2.2.</span> <span class="post-toc-text">字符串模板(Template Literal Types)</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#类型推导与模式匹配"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">类型推导与模式匹配</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#extends关键字与条件类型-Conditional-Types"><span class="post-toc-number">2.3.1.</span> <span class="post-toc-text">extends关键字与条件类型(Conditional Types)</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#使用infer搭配条件类型的extends"><span class="post-toc-number">2.3.2.</span> <span class="post-toc-text">使用infer搭配条件类型的extends</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#使用类型系统的编程基础"><span class="post-toc-number">3.</span> <span class="post-toc-text">使用类型系统的编程基础</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#定义变量"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">定义变量</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#字面量"><span class="post-toc-number">3.1.1.</span> <span class="post-toc-text">字面量</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#联合类型"><span class="post-toc-number">3.1.2.</span> <span class="post-toc-text">联合类型</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#剩下的常用于比较判断"><span class="post-toc-number">3.1.3.</span> <span class="post-toc-text">剩下的常用于比较判断</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#局部变量"><span class="post-toc-number">3.1.4.</span> <span class="post-toc-text">局部变量</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#定义函数"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">定义函数</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#分支与判断"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">分支与判断</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#字面量与字面量的比较"><span class="post-toc-number">3.3.1.</span> <span class="post-toc-text">字面量与字面量的比较</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#字面量与集合比较"><span class="post-toc-number">3.3.2.</span> <span class="post-toc-text">字面量与集合比较</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#传入联合类型"><span class="post-toc-number">3.3.3.</span> <span class="post-toc-text">传入联合类型</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#循环与递归"><span class="post-toc-number">3.4.</span> <span class="post-toc-text">循环与递归</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#使用递归替代循环"><span class="post-toc-number">3.4.1.</span> <span class="post-toc-text">使用递归替代循环</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#再来个例子"><span class="post-toc-number">3.4.2.</span> <span class="post-toc-text">再来个例子</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#递归深度限制与尾递归优化"><span class="post-toc-number">3.4.3.</span> <span class="post-toc-text">递归深度限制与尾递归优化</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#基础数学运算"><span class="post-toc-number">3.5.</span> <span class="post-toc-text">基础数学运算</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#判断正负"><span class="post-toc-number">3.5.1.</span> <span class="post-toc-text">判断正负</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#正整数加法"><span class="post-toc-number">3.5.2.</span> <span class="post-toc-text">正整数加法</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#实战类型体操"><span class="post-toc-number">4.</span> <span class="post-toc-text">实战类型体操</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#FlattenDepth"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">FlattenDepth</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#有更复杂的吗"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">有更复杂的吗</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#结语"><span class="post-toc-number">5.</span> <span class="post-toc-text">结语</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Reference"><span class="post-toc-number">6.</span> <span class="post-toc-text">Reference</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-ts-type-system-programming" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">如何用TS的类型系统进行编程（TS类型体操入门）</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2022-05-29 13:51:52" datetime="2022-05-29T05:51:52.000Z" itemprop="datePublished">2022-05-29</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+
+
+            
+<span style="display: none">
+    <span id="busuanzi_container_page_pv" title="文章总阅读量">
+        <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+    </span>
+</span>
+
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="关于TS的类型系统"><a href="#关于TS的类型系统" class="headerlink" title="关于TS的类型系统"></a>关于TS的类型系统</h2><p>写了这么久的ts才了解到它的类型系统是<a href="https://github.com/microsoft/TypeScript/issues/14833" target="_blank" rel="noopener">图灵完备</a>的，可以被拿来编程，网上称其为“类型体操（type gymnastics）”。这个词很有意思，虽然没有考据过来源，但是猜想这种编程和体操的性质很像——能锻炼技能但不实用。下文呢也是我接触学习后的一点总结，尽量从浅入深带大家了解一下。</p>
+<p>TS由enhanced js + type system（类型系统）组成，其中编译后在.d.ts文件内的就是类型系统的代码了，所以对于类型系统编程完全可以在.d.ts内实现，只是需要给每条语句前加上<code>declare</code>关键字。为了简洁一点，本文的代码都是在.ts文件内的代码。</p>
+<p>代码可以直接在typescript的<a href="https://www.typescriptlang.org/play" target="_blank" rel="noopener">playground</a>里写，由于没有系统的IO接口，只能通过hover到类型名上看输出，如下图。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="get-output.png" alt="get output" title>
+                </div>
+                <div class="image-caption">get output</div>
+            </figure>
+<h2 id="将会用到的TS类型语法"><a href="#将会用到的TS类型语法" class="headerlink" title="将会用到的TS类型语法"></a>将会用到的TS类型语法</h2><p>本节会聊一些重要的TS特性，对于之后的编程都是必须掌握的。知道的可以复习一下，不了解的可以学习一下，对于日常编程也是有帮助的。（一些太基础的不做解释，对应的特性都会<strong>标识</strong>出来）</p>
+<p><em>本节的代码可以在<a href="https://www.typescriptlang.org/play?#code/FAej-ACAXBnRvH0NHqg0f0NBekKZMUW-4MKMJy0kCztQSTlAN5UHnEjTUkSQdW1AjdNuGgE8AHAU0gBBAIwjIAXkgiA3Fz6DRAJkmQA5AEMARgGM1cngOEiAzKoDaIgDSQlNzWoC6BhcYAsqgN6QNALnUaapAAvi5GogCsqtAATgCu-HK4kIAqAYAQKkjy4UriUuIAPraQhQ5hikoqUkI5xcYmSWCQgJZKgNBygCFugBx6gBSugHFygCvWgMHxgCRKgLWmWYomuZAAdnEAtlr8MTIMkIACRoCQ5oAOpixtgGNpaePCJpWQsLEAltMA5iuNmyyAZN6ATHL7h4YTZlIa09wrkAD7htADwKbyOQhMHik034ADclv9GoAvLz2TEggAEdQAXCXQbIBGVx6gFg5QC-AYBaE0AsolIQDUSoBYFUA-vJdQAw-2tAKdygCvlQBY8oAKdUAnk7kQCjBoBWxRa9PBbhEAB4ACoAPlUksg-AAHtB+NMACawSBXABmS0gABkAPY6DQAG3lAH5IAAKYAAgFGk3m4AASkg-hh8OWTAgFEogF-FLYMCBowDbNogqdTAPfKzMAyvqAHXlAyKPpAAHLzSWGgDKlxu4oAktNeHFoArlaqNTN5osYjYAAoxfjai6Kssq9Wa84xK7XVRqK7F6D+NSyqQAAwAJJ4G02W8Ep4XB8Ex3JGgCAHqbrfb9eQHf2g8b-eHk+nw87i8Hi-Xy-JAHTDRzQSn3gaGKPs+QV-vuYwVyfgC1SbDQ4lNUtYTNBIAW1OJph0aALkNaZIC0Q01W4I4cxiVR0zmTMsJ7cURCUExpQaZhAE34wAZxLaQMCUAejNAAA5QBJb0AG0VAEQbI4ADENAAa34ABZDReHFIQYmwpV20rWYFiWcxHHrRs1QueC2wrTVrV4D1qyWN0JFlH5uFHHxfjKSAACVRFUHj+KEkTLBsOxIBMBS0wzbNc2uMifSgQAwJUAelNADg5UZg3ANF2FoQKIraQYjgAcX4aABP4WBYA0a5+ClVxJPUqtZJiUc7XtSVsvLDtpEgK01G4FKgn8RoSqMCRmukIqARUHLysawQqumQ06sBZhKha7q2sgbq1PKswqt4GJDS0bRTW4AaGtcZqpBMMbPQRI45lgXspASpKUrSjLxSUbzkgiwKDlilMju61NH0y7rCoPCbOuknTsN676VuYD5DW1ca1patQZJrNQxo+srKy7HtKvUeGbn+yAADoMeh0qpM1LjYPgxDkKqmC4IQpC6qxoxPs1eaACt+FUqq6YZ6AKYPbbvRTaBS0OxLHue8VNF0EdyNSDJEHZXzAAB9QAQTUAMBcGUANz1ADAdQBlv0AHPM0kVhlADdFQBaOQ59lAGqIwBu5UAEzSjlgwnYAE-bVCO5LUvSzKCmc2o3DI1ZAA+3WMegqwozEKDxfMpQBgGK6SAHZO53IEAFfjAD21SAACIatgJPaiT2b5sW7h08KDnLema2Jt56B+afcVA8geTLrIQAq-UAeudAsAJATACV9UKwDRRvAC-1Ho28AU3NADztQAG5wZPpACDNFo2DaZtTVNMT324QNuIuOeF40bhRPEybK0M+SbAANUg-g3vtBfzDUU1VWuaAAAsnB3zUAAZKrGg95PdN+z+36nq8MmwMZox1HqcyKVoCOFfgBAE5gj6mgSAAjGXFV7z3EhvcUoDziH2PtKCBvgv4nnkmZN82EpBILXqgzeDlbA2BcvYQItdmBkJQYvNocBrS01gC6QAEk7ABJgTJCkBZ7MI3pKLM1piEb38HvVyEE4H8Ckb8F0CjuAf08GNRs0A4gxGQhI7gaMr43DvpIFqL8LT4Orrg8x5hZHwPRhjIR69uCiPERQtGsBTQqX4NaEQLobA2P4C6ZwwBgjAB0Ehc4PhxJTAcRQ5xVCnK0ICGoF0cgwnTFgIaK++jDTXGtJoKJagbDEJ8aLQAAd6ADRlJhjiV7kMXhKBej8TIqNcrAhIp8AQNN-uYf+digHTF1NhDB4DIGnhgcfBBaMqkUPQWArBcicGfzPIQtEgBYxX7oAKjlADR8oABW0cApgAFKGiuAAdXzHWLeElYadk8vvSAWZ+Dfg0NAQ0lycZnE8u04QP8rnV2AdhAAEvwDQaoJl-IsmAiBZizyTk8IC4F85PDn0vtfO+D9f7iCqgNe5jznkxARYcq4MzMF3IeW+J5LzpTLkWaeNQ+g9muAAKLKnfPBAiNxHFSkacja4Nc5RmSZbEDQrLPKct-ty4ykozIEumBcrlNzXLYrJbiuV3YbifM6T88wAqWXQDZdccUYK4VqmlBM7VQrdWeQ5WCoZCyrSNGovSQAYXJmuFaq64gAYlRdRat1jj+6ADsPcggAK4xGIAL8V+5tDoJkaFU4jUIqRQYm+98IHosRrS90JKcUvPxUcmVQybCKvfLiylY5qUnlpWZLsUxpXigvrffgc9+r2AAO4vNNGqJw9grAizRG3QAj7aADK9DYgAFNMAGxKyRADYSoAL71GLrMAP6p-bABccvqNoWxAAjfkcIS-FHEACFuD6lVOKfUjSIZLBsBg0CpYxXyosI4Yy56wIXwTai5NPyj1WnvaWfwm7+A7r3Qe-UNgL5P0Kb0j9t6K2xFONW79v790yrcAAThNeoLtDCYCwDcGjKIgAG00AHkajrACf2oAPh025tEABjy5TIC325rwWAvgwBNsY2jD4sAdDdl4NAU0PxrhoxedcEAapjSwBALfH4apUKGl4iARsV8NCwH4AAWj6iqYTLG2MXA4wptwCmIho2o3MU0ABiaAGhV4KcbDoLRsBCYKfrRcOYVwnk2aQgptJykyYPlNApljyQCPSpHjOkjrcKM8IOTm+p3y3nctuQW8lrzcrcrPSlC9KqEZSFpeqyLuUtXMvNXqg1-S9RGuQ4Ar1eqrWFcGWA215jpUSjzRmpVLybAwo-Qi2NU540oqTY0jF6gsWksLVmscso8Fng-auZgA6Yz+UAIDGgAGJQQ0to4XYviQDq+KGDFDd1wfFEtpDnbu24F9N3QAAh5bEAGbagAF+MAOneHdsDJDgFRTYK7rs3ceO6wYjxAC-CYAQpsNgMkAADpgBAyMAE9mgB+v0AIqmgBftTRKMQAxtaAHxYhkMZABYCYAcfjAA28Qup4zxABsjoAOBVACEVoAeH1ACcymSQANN4zsR4Ad+V+6jCOPhEV8pf4nuwoUcVqgYWSmXGZfMsB92pUlKJ6YAAtJYhpxSpmPd9CVHk3XS9lL-McCmpxgtwlSq0sQoL+G1GaeTZkZMnRflIAXQvYAi5+BLuaRFvIpmN6lJ+UxzcnSt+LyX4oFMiDQ4AAqVACrNgyYHI9ADfcoAeEMdhtAD+yQYgBYTUAELmDJqKAHQlENjFACznr3TRvAr6QCfbfEebR4eABdTLYAfwRqjVKJWX+UbDbprzWYy5hAFbcXjtg9QgSsY1bxvdvMrt04Mfd1pwRvktgWBWqVQQhK9ESfjYYi3lGj4j7f20drIiRzafgAP321H-3RxGywAvRPqY0+q-7ZsPttDgxADkmoAeB1ACADIAecV-cP8ABpyr+zb++YsxQAQAy-5wCAA" target="_blank" rel="noopener">这里</a>查看。</em></p>
+<h3 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h3><p>泛型是可以自定义的局部类型变量</p>
+<h4 id="定义了泛型的函数"><a href="#定义了泛型的函数" class="headerlink" title="定义了泛型的函数"></a>定义了泛型的函数</h4><pre><code class="ts">function foo&lt;T&gt;(input: T) {}
+foo(&#39;a&#39;);
+</code></pre>
+<h4 id="定义了泛型的类型别名-Type-alias"><a href="#定义了泛型的类型别名-Type-alias" class="headerlink" title="定义了泛型的类型别名(Type alias)"></a>定义了泛型的<strong>类型别名(Type alias)</strong></h4><pre><code class="ts">type Wrapper&lt;AType&gt; = { a: AType }; 
+const obj: Wrapper&lt;Date&gt; = { a: new Date() };
+</code></pre>
+<h3 id="元组与字符串模板类型"><a href="#元组与字符串模板类型" class="headerlink" title="元组与字符串模板类型"></a>元组与字符串模板类型</h3><p>ts的<strong>字面量类型</strong>除了常见的数字、字符串、对象、布尔值外还有比较特殊的元组和字符串模板类型。</p>
+<h4 id="元组-Tuple"><a href="#元组-Tuple" class="headerlink" title="元组(Tuple)"></a><strong>元组(Tuple)</strong></h4><p>ts的元组本质就是js里数组的子集，可以理解为指定长度以及每项类型的列表。下面<code>Tuple</code>类型限制了长度为3，每项为确定类型的元组。</p>
+<pre><code class="ts">type Tuple = [number, string, 123];
+const tuple: Tuple = [1, &#39;s&#39;, 123];
+</code></pre>
+<p>元组可以使用类似js解构的语法组合，下面<code>Tuple1</code>通过组合的方式复用了Tuple类型。</p>
+<pre><code class="ts">type Tuple1 = [&#39;a&#39;, ...Tuple];
+const tuple1: Tuple1 = [&#39;a&#39;, 1, &#39;s&#39;, 123];
+</code></pre>
+<p>PS: 如果想指定数组内某项类型也可以用该语法，下面<code>StrLeadingArr</code>类型的数组长度至少为1，且首项必须为字符串。</p>
+<pre><code class="ts">type StrLeadingArr = [string, ...number[]];
+const slarr: StrLeadingArr = [&#39;1&#39;, 1];
+</code></pre>
+<h4 id="字符串模板-Template-Literal-Types"><a href="#字符串模板-Template-Literal-Types" class="headerlink" title="字符串模板(Template Literal Types)"></a><strong>字符串模板(Template Literal Types)</strong></h4><p>字符串与js里有差不多的能力，作为类型的字符串模板可以使用泛型替代其中部分内容。<br>下面<code>Hello&lt;string&gt;</code>类型可以匹配<code>hello</code>开头的字符串，而<code>Hello&lt;&#39;world&#39;&gt;</code>类型只能匹配<code>hello world</code>。</p>
+<pre><code class="ts">type Hello&lt;Name extends string&gt; = `hello ${Name}`;
+const greeting: Hello&lt;string&gt; = &#39;hello type&#39;;
+const greetingToWorld: Hello&lt;&#39;world&#39;&gt; = &#39;hello world&#39;;
+</code></pre>
+<h3 id="类型推导与模式匹配"><a href="#类型推导与模式匹配" class="headerlink" title="类型推导与模式匹配"></a>类型推导与模式匹配</h3><h4 id="extends关键字与条件类型-Conditional-Types"><a href="#extends关键字与条件类型-Conditional-Types" class="headerlink" title="extends关键字与条件类型(Conditional Types)"></a>extends关键字与条件类型(Conditional Types)</h4><p>extends关键字除了实现继承以及限制泛型下界外还会用于<a href="https://www.typescriptlang.org/docs/handbook/2/conditional-types.html" target="_blank" rel="noopener">Conditional Types</a>特性。该特性类似js里的三元表达式，通过<code>extends</code>关键字进行前后类型的匹配。</p>
+<p>匹配是看<code>extends</code>前的类型是否是<code>extends</code>后类型的<strong>子集</strong>，比如下面类型<code>&#39;猫&#39;</code>不是类型<code>&#39;狗&#39;</code>的子集。</p>
+<pre><code class="ts">type 叫声&lt;动物 extends &#39;狗&#39; | &#39;猫&#39;&gt; = 动物 extends &#39;狗&#39; ? &#39;汪&#39; : &#39;喵&#39;;
+type 叫一声 = 叫声&lt;&#39;猫&#39;&gt;; // &#39;喵&#39;
+</code></pre>
+<p>下面类型<code>123</code>是类型<code>number</code>的子集</p>
+<pre><code class="ts">type 类型&lt;值 extends number | string&gt; = 值 extends number ? &#39;数字&#39; : &#39;字符串&#39;;
+type 值类型 = 类型&lt;123&gt;; // &#39;数字&#39;
+</code></pre>
+<h4 id="使用infer搭配条件类型的extends"><a href="#使用infer搭配条件类型的extends" class="headerlink" title="使用infer搭配条件类型的extends"></a>使用infer搭配条件类型的extends</h4><p>先说说类型推断(Type Inference)，TS可以在很多地方自动判断类型而不需要用户主动声明，不如下面的变量声明和泛型函数</p>
+<pre><code class="ts">// 类型123
+const typeinfer = 123;
+// 类型number
+let typeinfer1 = 123;
+
+declare function typeinferfn&lt;T&gt;(input: T): T;
+// 自动推断T为类型&#39;hello&#39;
+typeinferfn(&#39;hello&#39;);
+</code></pre>
+<p>TS也提供了在条件类型里推断类型的能力，条件类型没有设计定义泛型的地方，而是新增了一个<code>infer</code>关键字。下面拿到函数类型返回类型的类型里用<code>infer R</code>替代了原来的类型约束，使TS去推断出R的类型使其能在<code>?</code>后的第一个分支内使用。</p>
+<pre><code class="ts">type MyReturnType&lt;F extends Function&gt; = F extends (...params: any) =&gt; infer R ? R : never;
+// 如果条件类型支持泛型的话可能就会变成这样，如果对泛型函数(&lt;T&gt;() =&gt; T)比较熟可能这样会比较好理解
+// type MyReturnType&lt;F extends Function&gt; = &lt;R&gt; F extends (...params: any) =&gt; R ? R : never;
+type RType = MyReturnType&lt;(input: string, input2: number) =&gt; { combined: string }&gt;; // { combined: string } 
+</code></pre>
+<p>infer也能推导interface和type alias里的泛型类型</p>
+<pre><code class="ts">type GetPromiseResultType&lt;P extends Promise&lt;any&gt;&gt; = P extends Promise&lt;infer R&gt; ? R : never;
+type RType1 = GetPromiseResultType&lt;Promise&lt;string | number&gt;&gt;; // string | number
+</code></pre>
+<p>infer也能推导元组内某个元素的类型</p>
+<pre><code class="ts">type GetTupleFirstType&lt;Arr extends any[]&gt; = Arr extends [infer First, ...any] ? First : never;
+type TupleFirst = GetTupleFirstType&lt;Tuple&gt;; // number
+
+type GetTupleSecondType&lt;Arr extends any[]&gt; = Arr extends [any, infer Second, ...any] ? Second : never;
+type TupleSecond = GetTupleSecondType&lt;Tuple&gt;; // string
+
+type GetTupleLastType&lt;Arr extends any[]&gt; = Arr extends [...any, infer Last] ? Last : never;
+type TupleLast = GetTupleLastType&lt;Tuple&gt;; // 123
+</code></pre>
+<p>infer也能推导字符串模板内的泛型，这里有点像正则匹配了</p>
+<pre><code class="ts">type GetGreetingTo&lt;Str extends string&gt; = Str extends `hello ${infer Name}` ? Name : never;
+type Target = GetGreetingTo&lt;&#39;hello world&#39;&gt;; // &#39;world&#39;
+</code></pre>
+<h2 id="使用类型系统的编程基础"><a href="#使用类型系统的编程基础" class="headerlink" title="使用类型系统的编程基础"></a>使用类型系统的编程基础</h2><p>OK，讲完了TS的一些基础语法，下面就过一遍编程语言教程都会讲的桥段。</p>
+<p><em>本节的代码可以在<a href="https://www.typescriptlang.org/play?ssl=65&amp;ssc=43&amp;pln=64&amp;pc=30#code/FAej-ACAXBnRvH0NHqg0f0NBekKZMUW-4MKMJy0kCztQSTlAN5UHnEjTUkSQdW1AjdNuGgE8AHAU0gBBAIwjIAXkgiA3Fz6DRAJkmQA5AEMARgGM1cngOEiAzKoDaIgDSQlNzWoC6BhcYAsqgN6QNALnUaapAAvi5GogCsqtAATgCu-HK4kIAqAYAQKkjy4UriUuIAPraQhQ5hikoqUkI5xcYmSWCQgJZKgNBygCFugBx6gBSugHFygCvWgMHxgCRKgLWmWYomuZAAdnEAtlr8MbWwsQCW0wDmtRrT3LXT-ABuSw3MgAI6gBcJdDaAjK49gLBygL8BgLQmgLKJSIDUSoCwKoD+8l2AGH-AAJGgFO5QBXyoAseUAFOqATydyIBRg0ArYotf7jYRuEQAHgAKgA+VTYyD8AAe0H40wAJrBIBsAGZLSAAGQA9joNAAbQkAfkgAApgJBBUzWRzscAAJSQfyHE4xM4QCiUQC-ioAHUwYECYkEA2zaIL7fQD3yiDAMr6gB15VWowyCABy82xzIAyustpiAJLTXhxaBE0nkqkzeaLGI2AAKMX4tLWxO9ZMp1NWMQ22ykag2Hug-jU+KkAAMACSeUPhyPBfNutPBbNyRqCgB6dfrDZrkEbQtbtZbbc7Xbbjd7rd7A77yUF0w0c0EXd4GhiY+7kCnM7mMFcc9XFPDGji7K9Rw5CUFtLi0x00DWzOmkC0zIp3DRjuWUhtczt98TmJEShMuLOkEAm-GAGcS2lVB5AHozQAAOUASW9ABtFQBEGzRAAxDQAGt+AAWQ0XhMSEGJlhJGM-VmBYlnMRwQzDCk1hPaNfWpXleGlAMlklCR8V2bgsx8PYykgAAlURVEQlD0MwywbDsSATFIyAnxfJ1Nm-JgFUAMCVAHpTQA4OVGdVwE1dhaDU3TRjRABxfhoFQ-hYFgDRNn4HFXDwmj-SImIswFIVsXsn1Y2kSAeTUbgLKCfxGg8owJHC6Q3MFFQHO80LBD86ZmSCwVGkqCL4qiyB4uo7yzD83gYmZLRtHZbgUpC1xwqkEwsplU40TmWAk0gEyzIsqybMxJQFOSXS1MAMbS0kMy1WtM+KrTHWz4tc1sctigjGOWRKloq5hLWZWlsqqiK1EIwM1Cy+avL9eNE189Qzq2NbIAAOnuo7PPw6l4KPE8zwvPzD2PU9zyCx6jAW6lioAK34Ki-NB8HoH+1t6rlNFoC9KQ2omqbMU0XRMx-dIkAhJTAAB9QAQTUAMBcAUANz1ADAdQBlv0AHPM0nJgFADdFQBaOXhiFAGqIwBu5UAEzS0SPD7YFQ5rVDa8zLOs2yCgk2o3G-BhIEAD7cjR6HzCjMQoPCUz5AGAYroxvaiWbMgQAV+MAPbVIAAIgC2BLdqS3CuK0ruDtwp4f56ZBZylHxoUSbx0xDXIBI3qyEAKv1AHrnNTACQEwAlfS0sBNUjwAv9R6OPAFNzQA87UABucAT6QAgzRaNg2gjdl2WwmduFVBC1jLiuNG4LCcNyv02JImwADU934WahQr8w1HZclNmgAALJwW+pAAGXystbEipTnvvm6B4O2Jse7brpBkeIs6BHFn1dBXMLv2QSDf7vg2vy5whvMV31ZO+73ED98JfOxI7jpwfSAr7r2-G6iVsDYSS9hAih2YH-G+lc2hwF5CDWA4pAASTsAb671zyQFLtAhu2J7S8m-g3fwbcpK7jPvwIhexxQUO4AvTwWUwzQDiDEC8BDuC3SHlsMekgIozy5O-YOr9+HmFIefO690sH124Lg-BADbqwHZJRfgvIRDihsCI-g4pnDAGCMAHQ55Vg+BwlMCRADpFAPEqAgIahxRyD0dMWAzIh7sOZJsXkmgjFqBsN-FRP5ACxiunQAVHKAGj5QACtpogAKKkhnCeV8WxJE4knpAK6mwQ4Em4pE2IGgYlyQSavZJHFsTcQAFLMg2E3XCJ04xyXbpAe0-AFwaGgMyCpz0klyV7oKCuiTzAZOidAWJmxMTb2WAACX4BoCkuIL63V6Vk-pcl4nDN4nvF+F1GgAX+IAMLlZnZITFsQAMSo7PmXszYkj06ADsPcggAK4xGIAL8V05tDoJkbseZPBjImSWTw-dB7DzHhPVe4g-IpTqQ0ppMRPklLKQ-aANgQXTkac03EFZF7djUPoNE8YpiQumJiAeo9+Bl2SvYAA7s09kFInD2CsJmTUcdACPtoAMr1ACQ5oABTTABsSmidCKFJEACFuCMnJJiRkiT9pLBsA-LcXo8nVIPlIVJUgJXbgHhwke48D6r2FTyRVXp-Bcv4Ly-lgrGQ2AHlPTxYjbrascApUa8ZKiQGxZiPVBqBU4oiFPKZ6hqUQJgLANwt0oiAAbTQAeRqbMAJ-agA+HTjm0QAGPKADRlSAo8ka8FgL4MAxKM23UtLAHQCZeDQHZLsTYt1mmbBABSVksAQCj12BSK8zIkIgDDEPDQsB+AAFokpkirdm3Nax83trcO2iIt0k1zHZAAYmgBoWu7aww6CYbAD67aCVrDmBsRpy7zztrsRRX6o52TtuzckMN2Kc5gQCVG2O8aUGjWxViLp0qTk1LhTOMFiTkniospKj9clVBoo6cIFelTg5HIGUM6Y9JRnjMmdMsDCyAEQag8s1Yqy+HdnvffPesL6nwrBTYV52rPnvIpJ875Kq-nqpA4C9QwLcNvuaRWfEb9uzaqrMwRlhoVKAEBjQADEoAE5BMYtiGYKQmHnUAL5a6zEgn+Oes8djRSUBk6AAEPFUgAzbUAAvxgB07wTtgZIcB-xAiZW0DTOnABk3vswY5nAC-CYAQpsmUAkAADpgBAyMAE9mgB+v0AIqmgBftU1KMQAxtaAHxYgEhpABYCYAcfjAA28YALjkWDmcAExygA2R0AHAqgBCK0APD6gBOZTeIAGm8L1BcAO-K6cRquFkic3JIHRXLEKPk1QrzsQVm4i6WAArLLYhrdMAAWksZkmIrQiqWgUh0OSrT4lXtmdt+YllPmRTyWI+5-C0g5G27izaOozykC1trsAOu7B60Vd8NrXDrcslPKY22Op7e671zE7aRA+sAAVKgBVmwBC5nOgBvuUAPCGKoWBtBexCQYgBYTUAELmAIAKAHQlW5YFACznqnRhvAh6QAo6PHObQAuABdTFUL20RCApBSLCg3nI2B5UTwMHFzCbwk5XKTgqhCeqp8hfVknDU4p5S-ZVvy1Vre-duCZFJVB44JyIKeNgPwKUaIAGBVADsFgCe49KGXsrBE8HjU8AB+sn-vPbRGGWAkr+dTCFzJwTNhZM+sGIAck1ADwOoAQAZADzis9m3gANOUdzzZ7EEIKACAGT3OAgA" target="_blank" rel="noopener">这里</a>查看。</em></p>
+<h3 id="定义变量"><a href="#定义变量" class="headerlink" title="定义变量"></a>定义变量</h3><p>下面的代码都是基于TS类型系统，这节虽然定义的都是<code>&quot;类型&quot;</code>但都会称为<code>&quot;变量&quot;</code>，在后文里同样会优先使用编程语言的术语。</p>
+<h4 id="字面量"><a href="#字面量" class="headerlink" title="字面量"></a>字面量</h4><p>支持的字面量有下面几种</p>
+<pre><code class="ts">type A11 = 1;
+type A12 = &#39;abc&#39;;
+type A13 = [1, 2, &#39;a&#39;];
+type A14 = { a: &#39;a&#39; };
+type A15 = true;
+</code></pre>
+<h4 id="联合类型"><a href="#联合类型" class="headerlink" title="联合类型"></a>联合类型</h4><p>联合类型组合成的变量值也会偶尔用到，这里提一下</p>
+<pre><code class="ts">type A21 = 1 | 2 | &#39;a&#39;;
+type A22 = A21 | A13;
+</code></pre>
+<h4 id="剩下的常用于比较判断"><a href="#剩下的常用于比较判断" class="headerlink" title="剩下的常用于比较判断"></a>剩下的常用于比较判断</h4><pre><code class="ts">type A31 = number; // 所有数字的集合
+type A32 = string; // 所有字符串的集合
+type A33 = any;    // 所有值的集合
+type A34 = never;  // 空集
+</code></pre>
+<h4 id="局部变量"><a href="#局部变量" class="headerlink" title="局部变量"></a>局部变量</h4><p>每个泛型都可以看作是局部变量，infer推断的类型也可以看作是局部变量，它们的作用域有所不同</p>
+<pre><code class="ts">type A41&lt;T&gt; = T extends infer LocalT ? (
+    LocalT
+) : never;
+</code></pre>
+<h3 id="定义函数"><a href="#定义函数" class="headerlink" title="定义函数"></a>定义函数</h3><p>泛型类型别名可以当作函数使用</p>
+<pre><code class="ts">type NumToString&lt;Input extends number, Prefix extends string = &#39;input: &#39;&gt; = `${Prefix}${Input}`;
+//   ^^^^^^^^^^^ ^^^^^         ^^^^^^                        ^^^^^^^^^^^    ^^^^^^^^^^^^^^^^^^^ 
+//   name        param         param type                    default value  function body
+type Str = NumToString&lt;123&gt;; // &quot;input: 123&quot;
+</code></pre>
+<p>由于TS语法限制，泛型在使用时必须指定确定类型，使得这里的函数不是一等公民</p>
+<pre><code class="ts">type FakeMap&lt;Arr extends number[], Predict extends (p: number) =&gt; any&gt; = any;
+type RA1 = FakeMap&lt;[1, 2, 3], NumToString&gt;;
+//                            ^^^^^^^^^^^
+//                            Generic type &#39;NumToString&#39; requires between 1 and 2 type arguments.(2707)
+</code></pre>
+<h3 id="分支与判断"><a href="#分支与判断" class="headerlink" title="分支与判断"></a>分支与判断</h3><h4 id="字面量与字面量的比较"><a href="#字面量与字面量的比较" class="headerlink" title="字面量与字面量的比较"></a>字面量与字面量的比较</h4><p>在字面量之间使用extends相当于<code>===</code>，所以前后可以互换</p>
+<pre><code class="ts">type GetMessage&lt;Type extends number&gt; =
+    Type extends 1 ? &#39;yes&#39; : // Type === 1
+    2 extends Type ? &#39;no&#39; :  // 2 === Type
+    Type extends 3 ? &#39;probably&#39; : // Type === 3
+    never;
+type msg = GetMessage&lt;2&gt;; // &quot;no&quot;
+</code></pre>
+<h4 id="字面量与集合比较"><a href="#字面量与集合比较" class="headerlink" title="字面量与集合比较"></a>字面量与集合比较</h4><p>判断字面量是否属于某个集合，这里前后不能互换</p>
+<pre><code class="ts">type GetTypeName&lt;Type&gt; =
+    Type extends number ? &#39;number&#39; : // typeof Type === &#39;number&#39;
+    Type extends string ? &#39;string&#39; : // ...
+    Type extends Function ? &#39;function&#39; :
+    Type extends object ? &#39;object&#39; :
+    never;
+type tt = GetTypeName&lt;&#39;abc&#39;&gt;; // &quot;string&quot;
+</code></pre>
+<h4 id="传入联合类型"><a href="#传入联合类型" class="headerlink" title="传入联合类型"></a>传入联合类型</h4><p>联合类型会分开处理，并将结果合并，其中never会被去除</p>
+<pre><code class="ts">type unionsMsg = GetMessage&lt;1 | 3 | 4&gt;; // 相当于 1 | 3 | 4 分别调用 GetMessage 返回 &quot;yes&quot; | &quot;probably&quot; | never
+type unionsType = GetTypeName&lt;3 | []&gt;; // &quot;number&quot; | &quot;object&quot;
+</code></pre>
+<h3 id="循环与递归"><a href="#循环与递归" class="headerlink" title="循环与递归"></a>循环与递归</h3><h4 id="使用递归替代循环"><a href="#使用递归替代循环" class="headerlink" title="使用递归替代循环"></a>使用递归替代循环</h4><p>TS的类型系统不支持循环，但是由于类型支持一定程度的递归，所以我们可以像函数式编程语言一样使用递归替代循环。下面的FillArray就是递归填充数组的例子。</p>
+<p>思路是每次生成一个新数组返回，新数组第一个元素为填充元素，后面的元素通过递归传入数组</p>
+<pre><code class="ts">type FillArray&lt;Arr extends any[], Value&gt; =
+    Arr[&#39;length&#39;] extends 0 ?                    // 递归结束条件
+        [] :                                     // 结束
+        Arr extends [any, ...infer Rest] ?       // 模式匹配拿到除了第一项外的剩余项
+            [Value, ...FillArray&lt;Rest, Value&gt;] : // 填充值和剩余项递归调用组合成结果
+            [];                                  // 数组没有一个元素时会走这里
+type arr = FillArray&lt;[1, 2, 3], &#39;a&#39;&gt;;            // [&quot;a&quot;, &quot;a&quot;, &quot;a&quot;]
+</code></pre>
+<p>上面的例子如果不理解可以参照下面的TS版看</p>
+<pre><code class="ts">function fillArrayTS(array: any[], value: any): any[] {
+    return array.length === 0 ?
+        [] :
+        [value, ...fillArrayTS(array.slice(1), value)];
+}
+const arr1 = fillArrayTS([1, 2, 3], &#39;a&#39;);
+console.log(&#39;arr1&#39;, arr1);  // [&quot;a&quot;, &quot;a&quot;, &quot;a&quot;]
+</code></pre>
+<p>PS: <code>FillArray</code>函数里<code>Arr extends [any, ...infer Rest]</code>其实已经包含了数组内必须有一个元素的条件，所以<code>Arr[&#39;length&#39;] extends 0</code>的判断其实不需要，可以简化一下</p>
+<pre><code class="ts">type FillArray1&lt;Arr extends any[], Value&gt; =
+    Arr extends [any, ...infer Rest] ?
+        [Value, ...FillArray&lt;Rest, Value&gt;] :
+        [];
+</code></pre>
+<h4 id="再来个例子"><a href="#再来个例子" class="headerlink" title="再来个例子"></a>再来个例子</h4><p>实现一个将字符串数组转为字符串的join函数，可以指定分隔符。</p>
+<p>思路和上面差不多，停止条件不变，生成结果改为字符串模板，每次取第一项字符串加到结果里，然后判断当前数组长度是否等于1，如果不是则在当前项后面加上分隔符，然后剩下部分递归数组剩余项生成。代码如下</p>
+<pre><code class="ts">type JoinWIP&lt;Arr extends string[], Separator extends string&gt; =
+    Arr extends [infer Head, ...infer Rest] ?
+        `${Head}${Arr[&#39;length&#39;] extends 1 ? &#39;&#39; : Separator}${Join&lt;Rest, Separator&gt;}` :
+        &#39;&#39;;
+</code></pre>
+<p>看起来没啥问题但是在编译器里提示<code>Head</code>和<code>Rest</code>类型不对，不清楚为什么这里不能推断出正确类型，但是有个解决方法是通过另外定义个带类型约束泛型的类型别名去做类似<code>type guard</code>的工作。如下定义了约束<code>string</code>和<code>string[]</code>的<code>type guard</code>来使<code>Head</code>和<code>Rest</code>成为需要的类型。</p>
+<pre><code class="ts">type ExtractStringArray&lt;T extends string[]&gt; = T;
+type ExtractString&lt;T extends string&gt; = T;
+type Join&lt;Arr extends string[], Separator extends string&gt; =
+    Arr extends [ExtractString&lt;infer Head&gt;, ...ExtractStringArray&lt;infer Rest&gt;] ? // 这里使用了ExtractString和ExtractStringArray来确定推断出来的变量类型
+        `${Head}${Arr[&#39;length&#39;] extends 1 ? &#39;&#39; : Separator}${Join&lt;Rest, Separator&gt;}` :
+        &#39;&#39;;
+type str1 = Join&lt;[&#39;hello&#39;, &#39;world&#39;], &#39;,&#39;&gt;; // &quot;hello,world&quot;
+</code></pre>
+<h4 id="递归深度限制与尾递归优化"><a href="#递归深度限制与尾递归优化" class="headerlink" title="递归深度限制与尾递归优化"></a>递归深度限制与尾递归优化</h4><p>类型嵌套有深度限制，也就是说只能做有次数限制的循环递归，这点限制了很多复杂逻辑的实现。目前普通递归的次数不超过50次左右，比如对之前的<code>Join</code>函数传入长度超过48的数组就会报错</p>
+<pre><code class="ts">// 创建一个长度为L的数组
+type MakeArrayByLen&lt;L extends number, Result extends string[] = []&gt; = Result[&#39;length&#39;] extends L ? Result : MakeArrayByLen&lt;L, [&#39;0&#39;, ...Result]&gt;;
+type str2 = Join&lt;MakeArrayByLen&lt;49&gt;, &#39;,&#39;&gt;;
+//          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//          Type instantiation is excessively deep and possibly infinite.(2589)
+</code></pre>
+<p>ts4.5 新增了对<a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-5.html#tail-recursion-elimination-on-conditional-types" target="_blank" rel="noopener">尾递归的优化</a>，如果递归符合<a href="https://zh.wikipedia.org/wiki/%E5%B0%BE%E8%B0%83%E7%94%A8#:~:text=%E4%BC%98%E5%8C%96%E6%9D%A5%E8%A7%A3%E5%86%B3%E3%80%82-,%E5%B0%BE%E9%80%92%E5%BD%92,%E8%B0%83%E7%94%A8%E8%87%AA%E8%BA%AB%E7%9A%84%E9%80%92%E5%BD%92%E5%87%BD%E6%95%B0%E3%80%82" target="_blank" rel="noopener">尾递归</a>的写法递归深度就支持更多的层次。</p>
+<p>这里将上面的<code>Join</code>改成尾递归的写法，由于尾递归优化后程序不会保留函数上下文，需要在递归函数内手动传递，所以改造思路就是将结果字符串传给下一个递归函数，每个函数内将新的结果和传入的字符串拼接然后接着传。</p>
+<pre><code class="ts">type Join1&lt;Arr extends string[], Separator extends string, Result extends string = &#39;&#39;&gt; =
+    Arr extends [ExtractString&lt;infer Head&gt;, ...ExtractStringArray&lt;infer Rest&gt;] ?
+        Join1&lt;Rest, Separator, `${Result}${Head}${Arr[&#39;length&#39;] extends 1 ? &#39;&#39; : Separator}`&gt; :
+        Result;
+</code></pre>
+<p>优化后深度可以达到1000左右了</p>
+<pre><code class="ts">type str3 = Join1&lt;MakeArrayByLen&lt;999&gt;, &#39;,&#39;&gt;; // &quot;0,0,0,.....,0,0&quot;
+</code></pre>
+<h3 id="基础数学运算"><a href="#基础数学运算" class="headerlink" title="基础数学运算"></a>基础数学运算</h3><p>类型系统内没有对数学运算的支持所以这块反而是最难实现的，如果要实现一套完善的浮点数运算就需要从二进制部分实现了，这里就简单提一下在<strong>特定条件</strong>下的数学运算。</p>
+<h4 id="判断正负"><a href="#判断正负" class="headerlink" title="判断正负"></a>判断正负</h4><p>思路就是通过转字符串判断是否以负号开头（用高级特性实现基础特性也是没谁了）</p>
+<pre><code class="ts">type ToString&lt;T extends number | string&gt; = `${T}`;
+type IsLessThanZero&lt;N extends number&gt; = ToString&lt;N&gt; extends `-${infer Num}` ? true : false;
+type reless0 = IsLessThanZero&lt;1&gt;; // false
+type reless01 = IsLessThanZero&lt;-1&gt;; // true
+</code></pre>
+<h4 id="正整数加法"><a href="#正整数加法" class="headerlink" title="正整数加法"></a>正整数加法</h4><p>通过构建各自长度的元组，然后合并拿到结果的<code>length</code>，当然这么做还是会受到递归深度的影响</p>
+<pre><code class="ts">type Add&lt;A extends number, B extends number&gt; = [...MakeArrayByLen&lt;A&gt;, ...MakeArrayByLen&lt;B&gt;][&#39;length&#39;];
+type resultadd = Add&lt;10, 12&gt;; // 22
+// 由于递归深度限制只能支持0~999的加法
+type resultadd1 = Add&lt;999, 999&gt;; // 1998
+</code></pre>
+<p>另外比较大小、减法、乘法、除法等等略过吧。。</p>
+<h2 id="实战类型体操"><a href="#实战类型体操" class="headerlink" title="实战类型体操"></a>实战类型体操</h2><p>那么如何用上面的语言去大展身手呢？似乎没有什么实用场景，只能拿来写写算法了。目前有一个为这种语言量身定制的<a href="3">题库</a>，挑一道题来练练手吧。</p>
+<h3 id="FlattenDepth"><a href="#FlattenDepth" class="headerlink" title="FlattenDepth"></a><a href="https://www.typescriptlang.org/play?#code/PQKgUABBDMBMAs0IFoIDEA2BDALjgpgHYAi+ADjgBaQrJ300BGAnhAFYCWWhA5gM6VuEABQABTt36DCAW3w4sASggBiOQBMOAVxmqsAJ31ZmNGivMQAilvx8cHAPaFTUAEr4Axlv18OAN3wMVgAzbDwiCAMjVi0yCBwHCHVyKniOOT4AOhd0B30IfAAPLBkyDHwALhyAA1qcZjJbD30OChp6xsiIAF50MIISFMoAHgBtAEYAGghYadHoafgAXTnR0YBWJa2VmYA+CGBgCAnp2ZhFuc2lzIhQ3AJ9Qhm0jPaG-AhGHr77olIKEYnGZzBYQZarDbbJb7Q7HKbA85g1ZXa4Qf6pZLBLBaDA4PjxRKMD7jGi1ao5ACSwXilA+yQBEA4+LI+gcfg4yXU0w4OAA5PieFoDNwCPh1ATPh8yA5fPYAozCAQePh9NkoDR9gA1Dj4ADuECcEAA4jyABJaRgVCCUPBkPgVQ54jyUTJsLJ5HjAOCIMAgYBgAOgCAAfVDYfDYYgAE0HN4IABhBzJCCmlUfCMZ0MQP0BjofTC-QjDACChgKhQG6nx3GYo2h3xopfyRUr+NGHEIwRVKfwWC5EEyg47Xfy7jsSwgAH4aFBRoPMqm++XW5FCLWJ5Oe0uraNF+odvOC+Ei2OcLsJ1aZxAmwBuXPvH7H9EjJvLohV1fr6blAIYN+ED9CB0Il8l6eEPFjRVuxbd98QABjrb4632XorwgrQoP0UZeXKXgqF5CcYIA-Ef0CKcrygV8qigGjHwGEtDH2IiP1fadaNoqiKJoo8BmfYYeKIBj9F2b98F-OZ53QzDpjg6E7zAPN4lsHBvgEwYATGeEzjWaAtkWHZoF2eSg0zDMIAAFWUhMsD4WwQ1M8Ns39dJpX0FTFIAbwgABRABHIUMGmbzCkaDwVIAX1uVldF5UQ82QZ0sAwXDlT4YAtHsDA+F5e9Og8Gy7N6UYaGC0KcGGPyAv4-o-iGMZoTmaERJKkLPHKyqkuqws+KBM5QWWES4VOaZ+qayYWrKir-M6tSevhUZYC2QberGia2qmqrZrq3qQX0iEUR2WBlq0kaLmOK5dmaqBSvWjqMC6p9tpO45Rv2qFjuGxF4GRbZLvG67WrCjaZpq9SqE0uZtNBUZvvOqEDI+hF+suJarp8wH2um+6to0oEFt245YchKFpnGABOWAADY4IADnGAB2RG+rOzY-rAJYA0DEB7IcrM0G8KhuwAZQIO0ed5pywFADUICFwR9A+ZhY3yPgHAwDLHEIe1rVte1HT4Z1XXdfRPW9aBgG4PhdRVGXtT1CBVfV+wnG1m0cDtB1gCdF03UyD0vQQc3HY1l2ZYAWTyD540EZKiFSq03Y9-XDd9j1fX9MAgA" target="_blank" rel="noopener">FlattenDepth</a></h3><p>这道题比较常规也比较实用就拿来写写吧。</p>
+<p><a href="https://www.typescriptlang.org/play?#code/PQKgUABBDMBMAs0IFoIDEA2BDALjgpgHYAi+ADjgBaQrJ300BGAnhAFYCWWhA5gM6VuEABQABTt36DCAW3w4sASggBiOQBMOAVxmqsAJ31ZmNGivMQAilvx8cHAPaFTUAEr4Axlv18OAN3wMVgAzbDwiCAMjVi0yCBwHCHVyKniOOT4AOhd0B30IfAAPLBkyDHwALhyAA1qcZjJbD30OChp6xsiIAF50MIISFMoAHgBtAEYAGghYadHoafgAXTnR0YBWJa2VmYA+CGBgCAnp2ZhFuc2lzIhQ3AJ9Qhm0jPaG-AhGHr77olIKEYnGZzBYQZarDbbJb7Q7HKbA85g1ZXa4Qf6pZLBLBaDA4PjxRKMD7jGi1ao5ACSwXilA+yQBEA4+LI+gcfg4yXU0w4OAA5PieFoDNwCPh1ATPh8yA5fPYAozCAQePh9NkoDR9gA1Dj4ADuECcEAA4jyABJaRgVCCUPBkPgVQ54jyUTJsLJ5HjAOCIMAgYBgAOgCAAfVDYfDYYgAE0HN4IABhBzJCCmlUfCMZ0MQP0BjofTC-QjDACChgKhQG6nx3GYo2h3xopfyRUr+NGHEIwRVKfwWC5EEyg47Xfy7jsSwgAH4aFBRoPMqm++XW5FCLWJ5Oe0uraNF+odvOC+Ei2OcLsJ1aZxAmwBuXPvH7H9EjJvLohV1fr6blAIYN+ED9CB0Il8l6eEPFjRVuxbd98QABjrb4632XorwgrQoP0UZeXKXgqF5CcYIA-Ef0CKcrygV8qigGjHwGEtDH2IiP1fadaNoqiKJoo8BmfYYeKIBj9F2b98F-OZ53QzDpjg6E7zAPN4lsHBvgEwYATGeEzjWaAtkWHZoF2eSg0zDMIAAFWUhMsD4WwQ1M8Ns39dJpX0FTFIAbwgABRABHIUMGmbzCkaDwVIAX1uVldF5UQ82QZ0sAwXDlT4YAtHsDA+F5e9Og8Gy7N6UYaGC0KcGGPyAv4-o-iGMZoTmaERJKkLPHKyqkuqws+KBM5QWWES4VOaZ+qayYWrKir-M6tSevhUZYC2QberGia2qmqrZrq3qQX0iEUR2WBlq0kaLmOK5dmaqBSvWjqMC6p9tpO45Rv2qFjuGxF4GRbZLvG67WrCjaZpq9SqE0uZtNBUZvvOqEDI+hF+suJarp8wH2um+6to0oEFt245YchKFpnGABOWAADY4IADnGAB2RG+rOzY-rAJYA0DEB7IcrM0G8KhuwAZQIO0ed5pywFADUICFwR9A+ZhY3yPgHAwDLHEIe1rVte1HT4Z1XXdfRPW9aBgG4PhdRVGXtT1CBVfV+wnG1m0cDtB1gCdF03UyD0vQQc3HY1l2ZYAWTyD540EZKiFSq03Y9-XDd9j1fX9MAgA" target="_blank" rel="noopener">解题代码</a></p>
+<p>如果是单层的Flatten会比较简单，只需要写一个之前提过的循环去遍历每一项判断是否是数组(<code>item extends any[]</code>)，如果是通过组合元组的<code>...</code>语法与剩下项合并即可。</p>
+<pre><code class="ts">type Flatten&lt;Arr extends any[]&gt; = 
+  Arr extends [infer Head, ...infer Rest] ?
+    [...Head extends any[] ? Head : [Head], ...Flatten&lt;Rest&gt;] : 
+    Arr;
+</code></pre>
+<p>这题需要支持多层flatten的话就需要不断去调用<code>Flatten</code>函数直到: 1. 达到指定的<code>level</code> 2. 数组中已经没有需要flatten的元素</p>
+<p>其中1比较好判断，可以设置一个计数器(实用数组实现，数组长度即为当前计数)每次递归累加，然后判断是否等于<code>level</code>即可。2的话有多种方法，其中可以判断当前传入的数组是否<code>arr extends number[]</code>，对于只会传入数字数组的这道题来说是ok的，不过如果想要更通用一点可以去比较Flatten后的数组是否和之前一样，这里我们用这种方法去实现题解。</p>
+<pre><code class="ts">type FlattenDepth&lt;Arr extends any[], level extends number = 1, counter extends 0[] = []&gt; = 
+    counter[&#39;length&#39;] extends level ?
+      Arr :
+      Flatten&lt;Arr&gt; extends Arr ?
+        Arr :
+        FlattenDepth&lt;Flatten&lt;Arr&gt;, level, [...counter, 0]&gt;;
+</code></pre>
+<p>虽然可以不用考虑性能，但是<code>Flatten</code>虽然调用了两次还是可以优化的，大家可以尝试一下。（提示用之前提过的局部变量）</p>
+<p><a href="https://www.typescriptlang.org/play?#code/PQKgUABBDMBMAs0IFoIDEA2BDALjgpgHYAi+ADjgBaQrJ300BGAnhAFYCWWhA5gM6VuEABQABTt36DCAW3w4sASggBiOQBMOAVxmqsAJ31ZmNGivMQAilvx8cHAPaFTUAEr4Axlv18OAN3wMVgAzbDwiCAMjVi0yCBwHCHVyKniOOT4AOhd0B30IfAAPLBkyDHwALhyAA1qcZjJbD30OChp6xsiIAF50MIISFMoAHgBtAEYAGghYadHoafgAXTnR0YBWJa2VmYA+CGBgCAnp2ZhFuc2lzIhQ3AJ9Qhm0jPaG-AhGHr77olIKEYnGZzBYQZarDbbJb7Q7HKbA85g1ZXa4Qf6pZLBLBaDA4PjxRKMD7jGi1ao5ACSwXilA+yQBEA4+LI+gcfg4yXU0w4OAA5PieFoDNwCPh1ATPh8yA5fPYAozCAQePh9NkoDR9gA1Dj4ADuECcEAA4jyABJaRgVCCUPBkPgVQ54jyUTJsLJ5HjAOCIMAgYBgAOgCAAfVDYfDYYgAE0HN4IABhBzJCCmlUfCMZ0MQP0BjofTC-QjDACChgKhQG6nx3GYo2h3xopfyRUr+NGHEIwRVKfwWC5EEyg47Xfy7jsSwgAH4aFBRoPMqm++XW5FCLWJ5Oe0uraNF+odvOC+Ei2OcLsJ1aZxAmwBuXPvCAAUQrRg8OCbwwAKsuiFXV+v9l6T87zAPMfmPdERibH9CD-Gs62mcoAgwGC-0IHQiXyXp4Q8WNFW7Ftf3xAAGOtvjrQCICvXCtHw-RRl5cpeCoXkJ0I2D8SQwIpyvKBoKqKBBPAgYS0MfZ2L-Z8cFfd9DGGYduyPAYm32achKEpSiGgiT8WgtT1KE-jePUzTBgBYZTKbRD8GQuZ5xoujpmI+sBIMiBCBslUQLAgg7G+UzILGeEzjWaAtkWHZoF2ECg0zDMIE-WwcATLA+FsEM4vDbN-XSaV9GSsCAG8nwARyFDBpmfRo3wgABfW5WV0XlRDzZBnSwDAmOVPhgC0ewMD4Xl706DxUvS3pRhoKrPBwYZHzKjqLP6P4hjGaE5mhXZJimwpqtm+byqWwtAqBM5QWWLa4VOaZzs27aoGmt85oWjAjog1agVGWAtku067p2vbnsOgKPuCkEIohFEdlgX6wcReBLh+raAZmoHFpB8zTvBsEdjWSFtlh674eRAnkYe3bUYO9HlrMqggrmELQVGBHjihyLCYRc7Ef+8nAap16Mbpz7GbmFn8e2aZxgATlgAA2YiAA5xgAdg5s6LggTZdmRpYA0DEAMsyrM0G8KhuwAZQIO1DaN7KwFADUIHNwR9A+ZhY3yPgHAwPrHEIe1rVte1HT4Z1XXdfRPW9aBgG4PhdRVR3tT1CAvZ9+wnADm0cDtB1gCdF03UyD0vQQGO099zPHYAWTyD540ETqiG6q1s9zkOw6Lj1fX9MAgA" target="_blank" rel="noopener">优化后的代码</a></p>
+<h3 id="有更复杂的吗"><a href="#有更复杂的吗" class="headerlink" title="有更复杂的吗"></a>有更复杂的吗</h3><p>有不少大佬实现了比较复杂的算法逻辑，可以参考<a href="https://zhuanlan.zhihu.com/p/426966480" target="_blank" rel="noopener">中国象棋</a>、<a href="https://zhuanlan.zhihu.com/p/427309936" target="_blank" rel="noopener">Lisp解释器</a>、<a href="https://zhuanlan.zhihu.com/p/423175613" target="_blank" rel="noopener">BigInt加法</a>等等，你也可以尝试一下。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>如果看完后对这门语言还是不太理解也不用担心，本质上类型体操也是为了加深对TS的理解，能有所启发就达到目的了。TS还有很多有用的类型特性等你探索，比如官方文档的<a href="https://www.typescriptlang.org/docs/handbook/2/types-from-types.html" target="_blank" rel="noopener">Type Manipulation</a>这章值得去看看。</p>
+<p>最后提醒一下，请不要在生产代码中去写这些代码。</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a href="https://juejin.cn/post/7025619077158666270" target="_blank" rel="noopener">https://juejin.cn/post/7025619077158666270</a></li>
+<li><a href="https://juejin.cn/post/7079305963131371550" target="_blank" rel="noopener">https://juejin.cn/post/7079305963131371550</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <footer>
+        <a href="https://frezc.github.io">
+            <img src="/images/avatar.jpg" alt="Freeze Crow">
+            Freeze Crow
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/type-system/">type system</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/typscript/">typscript</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2022/05/29/ts-type-system-programming/&title=《如何用TS的类型系统进行编程（TS类型体操入门）》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2022/05/29/ts-type-system-programming/&title=《如何用TS的类型系统进行编程（TS类型体操入门）》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2022/05/29/ts-type-system-programming/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《如何用TS的类型系统进行编程（TS类型体操入门）》 — Code for fun&url=https://frezc.github.io/2022/05/29/ts-type-system-programming/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2022/05/29/ts-type-system-programming/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2022/01/15/rotation-3d/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">三维旋转没那么复杂</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'frezc';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p style="display: none">
+    <span id="busuanzi_container_site_uv">
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv">
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Freeze Crow &copy; 2015 - 2022</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+    
+        <!-- Highlight.js -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github-gist.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js">
+        </script>
+        <script>
+            hljs.initHighlightingOnLoad();
+        </script>
+    
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://frezc.github.io/2022/05/29/ts-type-system-programming/&title=《如何用TS的类型系统进行编程（TS类型体操入门）》 — Code for fun&pic=https://frezc.github.io/images/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://frezc.github.io/2022/05/29/ts-type-system-programming/&title=《如何用TS的类型系统进行编程（TS类型体操入门）》 — Code for fun&source=Freeze crow 's blog" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://frezc.github.io/2022/05/29/ts-type-system-programming/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《如何用TS的类型系统进行编程（TS类型体操入门）》 — Code for fun&url=https://frezc.github.io/2022/05/29/ts-type-system-programming/&via=https://frezc.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://frezc.github.io/2022/05/29/ts-type-system-programming/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACI0lEQVR42u3aQXaDMAwFwNz/0ukBaOBLggX2sMpL0uBh8StL/nzi6xtfx+8nv3l8//PEhYGB8VpGdVnH93t3Ob97vjYMDIx9GL9u/Ov1eVBWwzf5nYs1Y2BgYAwiMoFVAx0DAwMjD74ElgTrOQ8DAwMj38ROwre6lX1wL46BgfFCxmRj+fTrR+YbGBgYr2J8i1fSbstjNykQo1VhYGAszcgDLi/RJqPK3nowMDDWZpw3syZbyuTT3nA06tthYGAsx0ja8edNrny00HsQF2AMDIylGZNCcP5pNT8LEYyBgbENozc8yCMyKRmrRScGBsZ6jF6DPr9N9dFU1xCdX8PAwHg5I2/KJzldLfgmD+WfO2JgYCzK6LXJ7jqvVY3pi64hBgbGoozeHrfaxJ+PNgsrxMDAWJpR/blzQO+hTDbAGBgY+zAmg8Nq638ytiz898DAwHg5YxKXvSNfecFXCFkMDIxtGHk7rPpX+VGMPJoxMDD2YVSzqxfHvZ1ms7bFwMBYlNE79FBt0+dR3htqYmBg7MBIirbenCEP6HwwcFHnYmBgLMroDTXzoKwOSvOjHhgYGGszepvVyXeq29Qo+jEwMJZm9Mq7SUOtR2r2DjEwMBZiVA9JVFtjvfCtgjEwMHZgTIJvHpe9TSwGBgbGpNKsUidtOwwMDIzkO81iLh5OREgMDIwNGPNGf+9xTA7IYmBg7MO4q+6qtv7zJd42yMTAwHgf4w8vgSLgDHuJwAAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
