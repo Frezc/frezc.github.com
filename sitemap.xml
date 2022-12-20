@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://frezc.github.io/2022/12/11/undo-redo-with-async-actions/</loc>
+    
+    <lastmod>2022-12-20T04:54:24.950Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://frezc.github.io/2022/05/29/ts-type-system-programming/</loc>
     
-    <lastmod>2022-06-05T08:24:35.771Z</lastmod>
+    <lastmod>2022-12-11T11:10:34.250Z</lastmod>
     
   </url>
   

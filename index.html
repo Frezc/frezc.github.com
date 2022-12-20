@@ -183,6 +183,55 @@ ga('send', 'pageview');
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-undo-redo-with-async-actions" class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2022-12-11 19:09:57" datetime="2022-12-11T11:09:57.000Z" itemprop="datePublished">2022-12-11</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2022/12/11/undo-redo-with-async-actions/">撤销恢复 VS 异步操作</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        过去一段时间遇到了一些异步操作导致的撤销恢复问题，想了一些解决方案，但考虑到任务排期并没有使用比较好的解决方案。不过这是个很有意思的问题，就想着写篇文章来记录一下。
+撤销恢复撤销恢复简单来讲就是：假设有一个状态A，经过一个操作action变为了状态B，此时我们可以通过撤销(undo)操作退回状态A，然后可以通过恢复(redo)操作变为状态B。
+graph LR
+   A--action-->...
+    
+
+        <a href="/2022/12/11/undo-redo-with-async-actions/" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/asynchronous/">asynchronous</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/undo/">undo</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-ts-type-system-programming" class="article-card article-type-post" itemprop="blogPost">
 
     <div class="post-meta">
@@ -221,7 +270,7 @@ TS由enhanced js + type system（类型系统）组成，其中编译后在.d.ts
     
     <div class="post-footer">
         
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/type-system/">type system</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/typscript/">typscript</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/type-system/">type system</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/typescript/">typescript</a></li></ul>
 
     </div>
     
@@ -606,55 +655,6 @@ Javascript里的类ES6为我们带来了定义类的keyword class，但这只不
 
         </li>
     
-        <li class="post-list-item fade">
-            <article id="post-leetcode-largest-rectangle-in-histogram" class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2019-05-25 21:21:43" datetime="2019-05-25T13:21:43.000Z" itemprop="datePublished">2019-05-25</time>
-
-        
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/DEVELOPING/">DEVELOPING</a></li></ul>
-
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2019/05/25/leetcode-largest-rectangle-in-histogram/">leetcode #84 直方图内最大矩形解题思路</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        题目：https://leetcode.com/problems/largest-rectangle-in-histogram/
-网上也有很多人写了解法了，但是我认为都没有把思路写清楚，需要花一些时间来理解。我写这篇文章主要也是记录一下我自己的思路，希望给人以启发。
-这道题被打上了 stack 的标签，大概是因为栈的解法十分巧妙，但是解这道题栈不是重点，想清楚了我们也能用其他的解法。
-拆分子...
-    
-
-        <a href="/2019/05/25/leetcode-largest-rectangle-in-histogram/" class="post-more waves-effect waves-button">
-            阅读全文…
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
     </ul>
 
     
@@ -755,6 +755,15 @@ Javascript里的类ES6为我们带来了定义类的keyword class，但这只不
 </div>
 
 
+
+
+
+<script src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js"></script>
+<script>
+    if (window.mermaid) {
+    mermaid.initialize({theme: 'forest'});
+    }
+</script>
 
 
     <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>

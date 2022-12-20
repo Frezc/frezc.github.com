@@ -51,9 +51,9 @@ ga('send', 'pageview');
     <meta name="theme-color" content="#3F51B5">
     
     
-    <meta name="keywords" content="typscript,type system">
+    <meta name="keywords" content="typescript,type system">
     <meta name="description" content="关于TS的类型系统写了这么久的ts才了解到它的类型系统是图灵完备的，可以被拿来编程，网上称其为“类型体操（type gymnastics）”。这个词很有意思，虽然没有考据过来源，但是猜想这种编程和体操的性质很像——能锻炼技能但不实用。下文呢也是我接触学习后的一点总结，尽量从浅入深带大家了解一下。 TS由enhanced js + type system（类型系统）组成，其中编译后在.d.ts文件内">
-<meta name="keywords" content="typscript,type system">
+<meta name="keywords" content="typescript,type system">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何用TS的类型系统进行编程（TS类型体操入门）">
 <meta property="og:url" content="https://frezc.github.io/2022/05/29/ts-type-system-programming/index.html">
@@ -61,7 +61,7 @@ ga('send', 'pageview');
 <meta property="og:description" content="关于TS的类型系统写了这么久的ts才了解到它的类型系统是图灵完备的，可以被拿来编程，网上称其为“类型体操（type gymnastics）”。这个词很有意思，虽然没有考据过来源，但是猜想这种编程和体操的性质很像——能锻炼技能但不实用。下文呢也是我接触学习后的一点总结，尽量从浅入深带大家了解一下。 TS由enhanced js + type system（类型系统）组成，其中编译后在.d.ts文件内">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://frezc.github.io/2022/05/29/ts-type-system-programming/get-output.png">
-<meta property="og:updated_time" content="2022-06-05T08:24:35.771Z">
+<meta property="og:updated_time" content="2022-12-11T11:10:34.250Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何用TS的类型系统进行编程（TS类型体操入门）">
 <meta name="twitter:description" content="关于TS的类型系统写了这么久的ts才了解到它的类型系统是图灵完备的，可以被拿来编程，网上称其为“类型体操（type gymnastics）”。这个词很有意思，虽然没有考据过来源，但是猜想这种编程和体操的性质很像——能锻炼技能但不实用。下文呢也是我接触学习后的一点总结，尽量从浅入深带大家了解一下。 TS由enhanced js + type system（类型系统）组成，其中编译后在.d.ts文件内">
@@ -475,7 +475,7 @@ type resultadd1 = Add&lt;999, 999&gt;; // 1998
 
         <div class="post-footer">
             
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/type-system/">type system</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/typscript/">typscript</a></li></ul>
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/type-system/">type system</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/typescript/">typescript</a></li></ul>
 
 
             
@@ -530,7 +530,14 @@ type resultadd1 = Add&lt;999, 999&gt;; // 1998
     </div>
 
     
-<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2022/12/11/undo-redo-with-async-actions/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">撤销恢复 VS 异步操作</h4>
+      </a>
+    </div>
   
 
   
@@ -669,6 +676,15 @@ type resultadd1 = Add&lt;999, 999&gt;; // 1998
 </div>
 
 
+
+
+
+<script src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js"></script>
+<script>
+    if (window.mermaid) {
+    mermaid.initialize({theme: 'forest'});
+    }
+</script>
 
 
     <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
